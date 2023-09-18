@@ -9,25 +9,27 @@ This software tells you how much the real-time PP, UR, and also the offset of th
 # How to use
 
 (English)
-First, the Node.js download is required to use this software. Download the latest version from the link below
+~~First, the Node.js download is required to use this software. Download the latest version from the link below~~
 
-[Node.js Download link](https://nodejs.org/)
+~~[Node.js Download link](https://nodejs.org/)~~
 
- or use the stable installer located in the folder The installer in the folder is the installer for v18.17.1, the stable version of Node.js, taken directly from the web.
+ ~~or use the stable installer located in the folder The installer in the folder is the installer for v18.17.1, the stable version of Node.js, taken directly from the web.~~
 
-If you have already downloaded or already have Node.js, start "RealtimePPUR.exe" in the folder!
+~~If you have already downloaded or already have Node.js, start "RealtimePPUR.exe" in the folder!~~
 
-The first time you start the program, you will see a console screen. That's a update console of Gosumemory. It should not appear on the next startup.
+~~The first time you start the program, you will see a console screen. That's a update console of Gosumemory. It should not appear on the next startup.~~
 
 (日本語)
-はじめに、このソフトウェアを使うにはNode.jsのインストールが必須となっています。下のリンクからダウンロードするか、フォルダ内にあるインストローラーを使用してください。
-フォルダ内にあるインストローラーは、Node.jsの安定版であるv18.17.1のインストローラーです。
+~~はじめに、このソフトウェアを使うにはNode.jsのインストールが必須となっています。下のリンクからダウンロードするか、フォルダ内にあるインストローラーを使用してください。~~
+~~フォルダ内にあるインストローラーは、Node.jsの安定版であるv18.17.1のインストローラーです。~~
 
-[Node.js ダウンロードリンク](https://nodejs.org/jp)
+~~[Node.js ダウンロードリンク](https://nodejs.org/jp)~~
 
-ダウンロードが終わった、もしくは既にNode.jsを持っている方は、フォルダ内にある"RealtimePPUR.exe"を起動してください！
+~~ダウンロードが終わった、もしくは既にNode.jsを持っている方は、フォルダ内にある"RealtimePPUR.exe"を起動してください！~~
 
-初回起動時にコンソール画面が表示されると思いますが、これはGosumemoryのアップデートですので、閉じずにそのまま起動していてください。次の起動時には表示されないはずです。
+~~初回起動時にコンソール画面が表示されると思いますが、これはGosumemoryのアップデートですので、閉じずにそのまま起動していてください。次の起動時には表示されないはずです。~~
+
+V1.1.0でNode.jsのインストールが不要になりました。
 
 # ScreenShot
 
