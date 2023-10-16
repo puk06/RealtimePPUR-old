@@ -12,12 +12,14 @@ This software tells you how much the real-time PP, UR, and also the offset of th
 Just Launch RealtimePPUR.exe
 
 How to switch to Offset Helper and RealtimePP
+
 Right-click on the software and select Mode.
 
 (日本語)
 RealtimePPUR.exeを起動するだけです。
 
 Offset Helper、RealtimePPへの切り替え方法
+
 ソフト上で右クリック→Modeから変更できます。
 
 # Dependencies software
