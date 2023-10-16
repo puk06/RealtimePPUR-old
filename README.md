@@ -1,28 +1,30 @@
 # RealtimePPUR
 
 (English)
+
 This software tells you how much the real-time PP, UR, and also the offset of the map is off in the game of osu!
 
-<br>
 
 (日本語)
+
 このソフトウェアは、osuのゲーム内でリアルタイムPP、URと、オフセットがどれほどズレているか教えてくれるソフトです。
 
 # How to use
 
 (English)
+
 Just Launch RealtimePPUR.exe
-<br>
-How to switch to Offset Helper and RealtimePP
+
+(日本語)
+
+RealtimePPUR.exeを起動するだけです。
+
+### How to switch to Offset Helper and RealtimePP
+(English)
 
 Right-click on the software and select Mode.
 
-<br>
-
 (日本語)
-RealtimePPUR.exeを起動するだけです。
-<br>
-Offset Helper、RealtimePPへの切り替え方法
 
 ソフト上で右クリック→Modeから変更できます。
 
