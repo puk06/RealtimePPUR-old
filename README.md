@@ -24,11 +24,11 @@ Offset Helper、RealtimePPへの切り替え方法
 
 - Gosumemory (Read memory)
   >* Github: https://github.com/l3lackShark/gosumemory
-  >* License: [GPL-3.0 license]
+  >* License: [GPL-3.0 license](https://github.com/l3lackShark/gosumemory/blob/master/LICENSE)
 
 - Rosu-pp (Calculate PP)
   >* Github: https://github.com/MaxOhn/rosu-pp
-  >* License: [MIT license]
+  >* License: [MIT license](https://github.com/MaxOhn/rosu-pp/blob/master/LICENSE)
 
 - Node.js (Launch js file)
   >* Official link: https://nodejs.org/en
