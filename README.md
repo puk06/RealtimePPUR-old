@@ -32,7 +32,7 @@ Offset Helper、RealtimePPへの切り替え方法
 
 - Node.js (Launch js file)
   >* Official link: https://nodejs.org/en
-  >* Githubhttps://github.com/nodejs/node
+  >* Github: https://github.com/nodejs/node
 
 # Troubleshooting
 
