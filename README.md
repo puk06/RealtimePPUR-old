@@ -16,10 +16,14 @@ Just Launch RealtimePPUR.exe
 How to switch to Offset Helper and RealtimePP
 
 Right-click on the software and select Mode.
+
 <br>
+
 (日本語)
 RealtimePPUR.exeを起動するだけです。
+
 <br>
+
 Offset Helper、RealtimePPへの切り替え方法
 
 ソフト上で右クリック→Modeから変更できます。
@@ -29,11 +33,15 @@ Offset Helper、RealtimePPへの切り替え方法
 - Gosumemory (Read memory)
   >* Github: https://github.com/l3lackShark/gosumemory
   >* License: [GPL-3.0 license](https://github.com/l3lackShark/gosumemory/blob/master/LICENSE)
+
 <br>
+
 - Rosu-pp (Calculate PP)
   >* Github: https://github.com/MaxOhn/rosu-pp
   >* License: [MIT license](https://github.com/MaxOhn/rosu-pp/blob/master/LICENSE)
+
 <br>
+
 - Node.js (Launch js file)
   >* Official link: https://nodejs.org/en
   >* Github: https://github.com/nodejs/node
@@ -57,7 +65,9 @@ may be left behind, so try stopping it and then starting it.
 gosumemory.exe can be downloaded from "https://github.com/l3lackShark/gosumemory", but downloading RealtimePPUR again will also solve the problem.
 
 I have only heard of gosumemory.exe disappearing once, and it was caused by security software, so make sure your security software is not interfering with the software startup. If there is, put it in the exclusion list so that the security software does not delete gosumemory.exe.
+
 <br>
+
 (日本語)
 ソフトがうまく動かなかったりした場合、まずはタスクマネージャーから
 "Node.js runtime"
