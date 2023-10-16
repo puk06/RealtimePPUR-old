@@ -21,9 +21,7 @@ Right-click on the software and select Mode.
 
 (日本語)
 RealtimePPUR.exeを起動するだけです。
-
 <br>
-
 Offset Helper、RealtimePPへの切り替え方法
 
 ソフト上で右クリック→Modeから変更できます。
