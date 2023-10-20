@@ -1,4 +1,6 @@
-﻿namespace RealtimePPUR
+﻿using System.Drawing;
+
+namespace RealtimePPUR
 {
     partial class RealtimePPUR
     {
@@ -44,6 +46,17 @@
             this.realtimePPURToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.offsetHelperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.realtimePPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.osuModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.inGameOverlayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.currentPPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sSPPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hitsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.offsetHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.avgOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.inGameValue = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -149,9 +162,12 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.modeToolStripMenuItem});
+            this.modeToolStripMenuItem,
+            this.osuModeToolStripMenuItem,
+            this.inGameOverlayToolStripMenuItem,
+            this.closeToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(106, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 114);
             // 
             // modeToolStripMenuItem
             // 
@@ -160,7 +176,7 @@
             this.offsetHelperToolStripMenuItem,
             this.realtimePPToolStripMenuItem});
             this.modeToolStripMenuItem.Name = "modeToolStripMenuItem";
-            this.modeToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
+            this.modeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.modeToolStripMenuItem.Text = "Mode";
             // 
             // realtimePPURToolStripMenuItem
@@ -184,22 +200,118 @@
             this.realtimePPToolStripMenuItem.Text = "RealtimePP";
             this.realtimePPToolStripMenuItem.Click += new System.EventHandler(this.realtimePPToolStripMenuItem_Click);
             // 
+            // osuModeToolStripMenuItem
+            // 
+            this.osuModeToolStripMenuItem.Name = "osuModeToolStripMenuItem";
+            this.osuModeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.osuModeToolStripMenuItem.Text = "osu! mode";
+            this.osuModeToolStripMenuItem.Click += new System.EventHandler(this.osuModeToolStripMenuItem_Click);
+            // 
+            // closeToolStripMenuItem
+            // 
+            this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.closeToolStripMenuItem.Text = "Close";
+            this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
+            // 
+            // inGameOverlayToolStripMenuItem
+            // 
+            this.inGameOverlayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sRToolStripMenuItem,
+            this.currentPPToolStripMenuItem,
+            this.sSPPToolStripMenuItem,
+            this.hitsToolStripMenuItem,
+            this.uRToolStripMenuItem,
+            this.offsetHelpToolStripMenuItem,
+            this.avgOffsetToolStripMenuItem});
+            this.inGameOverlayToolStripMenuItem.Name = "inGameOverlayToolStripMenuItem";
+            this.inGameOverlayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.inGameOverlayToolStripMenuItem.Text = "InGameOverlay";
+            // 
+            // sRToolStripMenuItem
+            // 
+            this.sRToolStripMenuItem.Checked = true;
+            this.sRToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.sRToolStripMenuItem.Name = "sRToolStripMenuItem";
+            this.sRToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sRToolStripMenuItem.Text = "SR";
+            this.sRToolStripMenuItem.Click += new System.EventHandler(this.sRToolStripMenuItem_Click);
+            // 
+            // currentPPToolStripMenuItem
+            // 
+            this.currentPPToolStripMenuItem.Checked = true;
+            this.currentPPToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.currentPPToolStripMenuItem.Name = "currentPPToolStripMenuItem";
+            this.currentPPToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.currentPPToolStripMenuItem.Text = "CurrentPP";
+            this.currentPPToolStripMenuItem.Click += new System.EventHandler(this.currentPPToolStripMenuItem_Click);
+            // 
+            // sSPPToolStripMenuItem
+            // 
+            this.sSPPToolStripMenuItem.Name = "sSPPToolStripMenuItem";
+            this.sSPPToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.sSPPToolStripMenuItem.Text = "SSPP";
+            this.sSPPToolStripMenuItem.Click += new System.EventHandler(this.sSPPToolStripMenuItem_Click);
+            // 
+            // hitsToolStripMenuItem
+            // 
+            this.hitsToolStripMenuItem.Checked = true;
+            this.hitsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.hitsToolStripMenuItem.Name = "hitsToolStripMenuItem";
+            this.hitsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.hitsToolStripMenuItem.Text = "Hits";
+            this.hitsToolStripMenuItem.Click += new System.EventHandler(this.hitsToolStripMenuItem_Click);
+            // 
+            // uRToolStripMenuItem
+            // 
+            this.uRToolStripMenuItem.Checked = true;
+            this.uRToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.uRToolStripMenuItem.Name = "uRToolStripMenuItem";
+            this.uRToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.uRToolStripMenuItem.Text = "UR";
+            this.uRToolStripMenuItem.Click += new System.EventHandler(this.uRToolStripMenuItem_Click);
+            // 
+            // offsetHelpToolStripMenuItem
+            // 
+            this.offsetHelpToolStripMenuItem.Name = "offsetHelpToolStripMenuItem";
+            this.offsetHelpToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.offsetHelpToolStripMenuItem.Text = "OffsetHelp";
+            this.offsetHelpToolStripMenuItem.Click += new System.EventHandler(this.offsetHelpToolStripMenuItem_Click);
+            // 
+            // avgOffsetToolStripMenuItem
+            // 
+            this.avgOffsetToolStripMenuItem.Name = "avgOffsetToolStripMenuItem";
+            this.avgOffsetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.avgOffsetToolStripMenuItem.Text = "AvgOffset";
+            this.avgOffsetToolStripMenuItem.Click += new System.EventHandler(this.avgOffsetToolStripMenuItem_Click);
+            // 
+            // inGameValue
+            // 
+            this.inGameValue.AutoSize = true;
+            this.inGameValue.ForeColor = System.Drawing.Color.White;
+            this.inGameValue.Location = new System.Drawing.Point(0, 0);
+            this.inGameValue.Name = "inGameValue";
+            this.inGameValue.Size = new System.Drawing.Size(0, 12);
+            this.inGameValue.TabIndex = 1;
+            this.inGameValue.Visible = false;
+            // 
             // RealtimePPUR
             // 
-            this.AVGOFFSETHELP.Font = new System.Drawing.Font(FontCollection.Families[0], 20F, System.Drawing.FontStyle.Bold);
-            this.UR.Font = new System.Drawing.Font(FontCollection.Families[0], 25F, System.Drawing.FontStyle.Bold);
-            this.AVGOFFSET.Font = new System.Drawing.Font(FontCollection.Families[0], 13F, System.Drawing.FontStyle.Bold);
-            this.MISS.Font = new System.Drawing.Font(FontCollection.Families[0], 15F, System.Drawing.FontStyle.Bold);
-            this.OK.Font = new System.Drawing.Font(FontCollection.Families[0], 15F, System.Drawing.FontStyle.Bold);
-            this.GOOD.Font = new System.Drawing.Font(FontCollection.Families[0], 15F, System.Drawing.FontStyle.Bold);
-            this.SSPP.Font = new System.Drawing.Font(FontCollection.Families[0], 13F, System.Drawing.FontStyle.Bold);
-            this.SR.Font = new System.Drawing.Font(FontCollection.Families[0], 13F, System.Drawing.FontStyle.Bold);
-            this.CurrentPP.Font = new System.Drawing.Font(FontCollection.Families[0], 20F, System.Drawing.FontStyle.Bold);
+            this.AVGOFFSETHELP.Font = new System.Drawing.Font(FontCollection.Families[1], 20F, System.Drawing.FontStyle.Bold);
+            this.UR.Font = new System.Drawing.Font(FontCollection.Families[1], 25F, System.Drawing.FontStyle.Bold);
+            this.AVGOFFSET.Font = new System.Drawing.Font(FontCollection.Families[1], 13F, System.Drawing.FontStyle.Bold);
+            this.MISS.Font = new System.Drawing.Font(FontCollection.Families[1], 15F, System.Drawing.FontStyle.Bold);
+            this.OK.Font = new System.Drawing.Font(FontCollection.Families[1], 15F, System.Drawing.FontStyle.Bold);
+            this.GOOD.Font = new System.Drawing.Font(FontCollection.Families[1], 15F, System.Drawing.FontStyle.Bold);
+            this.SSPP.Font = new System.Drawing.Font(FontCollection.Families[1], 13F, System.Drawing.FontStyle.Bold);
+            this.SR.Font = new System.Drawing.Font(FontCollection.Families[1], 13F, System.Drawing.FontStyle.Bold);
+            this.CurrentPP.Font = new System.Drawing.Font(FontCollection.Families[1], 20F, System.Drawing.FontStyle.Bold);
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::RealtimePPUR.Properties.Resources.PPUR;
             this.ClientSize = new System.Drawing.Size(316, 130);
             this.ContextMenuStrip = this.contextMenuStrip1;
+            this.Controls.Add(this.inGameValue);
             this.Controls.Add(this.CurrentPP);
             this.Controls.Add(this.SR);
             this.Controls.Add(this.SSPP);
@@ -209,15 +321,19 @@
             this.Controls.Add(this.AVGOFFSET);
             this.Controls.Add(this.UR);
             this.Controls.Add(this.AVGOFFSETHELP);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "RealtimePPUR";
             this.Text = "RealtimePPUR";
             this.TopMost = true;
+            this.TransparencyKey = this.BackColor;
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
+            this.Closed += new System.EventHandler(this.RealtimePPUR_Closed);
 
         }
 
@@ -228,6 +344,17 @@
         private System.Windows.Forms.ToolStripMenuItem offsetHelperToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem realtimePPToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem realtimePPURToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem osuModeToolStripMenuItem;
+        private System.Windows.Forms.Label inGameValue;
+        private System.Windows.Forms.ToolStripMenuItem inGameOverlayToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sRToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem currentPPToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sSPPToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem hitsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uRToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem offsetHelpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem avgOffsetToolStripMenuItem;
     }
 }
 
