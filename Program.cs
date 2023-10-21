@@ -10,6 +10,11 @@ namespace RealtimePPUR
         [STAThread]
         static void Main()
         {
+            if (Process.GetProcessesByName("RealtimePPUR").Length > 1)
+            {
+                MessageBox.Show("RealtimePPURは既に起動しています。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             CultureInfo.CurrentCulture = new CultureInfo("en-us");
             CultureInfo.CurrentUICulture = new CultureInfo("en-us");
             Application.EnableVisualStyles();

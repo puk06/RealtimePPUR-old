@@ -37,7 +37,9 @@ namespace RealtimePPUR
         private int x, y;
         private static Process _ppurProcess;
         private static Process _gosumemoryProcess;
-        private static bool gosumemoryLaunched = false;
+        private bool gosumemoryLaunched;
+        private bool gosumemoryRunning;
+        private bool PPURRunning;
         Dictionary<string, string> configDictionary = new Dictionary<string, string>();
 
         [DllImport("user32.dll")]
@@ -60,7 +62,7 @@ namespace RealtimePPUR
         public RealtimePPUR()
         {
             launchSoftwares();
-            string filePath = "Config.txt";
+            string filePath = "./Config.txt";
             string[] lines = File.ReadAllLines(filePath);
             foreach (string line in lines)
             {
@@ -89,21 +91,18 @@ namespace RealtimePPUR
             {
                 inGameValue.Font = new Font(FontCollection.Families[0], fontsize);
             }
-            if (configDictionary["SR"] == "true")
-                sRToolStripMenuItem.Checked = true;
-            if (configDictionary["SSPP"] == "true")
-                sSPPToolStripMenuItem.Checked = true;
-            if (configDictionary["CURRENTPP"] == "true")
-                currentPPToolStripMenuItem.Checked = true;
-            if (configDictionary["HITS"] == "true")
-                hitsToolStripMenuItem.Checked = true;
-            if (configDictionary["UR"] == "true")
-                uRToolStripMenuItem.Checked = true;
-            if (configDictionary["AVGOFFSET"] == "true")
-                avgOffsetToolStripMenuItem.Checked = true;
-            if (configDictionary["OFFSETHELP"] == "true")
-                offsetHelpToolStripMenuItem.Checked = true;
-            githubUpdateChecker();
+
+            if (configDictionary["UPDATECHECK"] == "true")
+            {
+                githubUpdateChecker();
+            }
+            sRToolStripMenuItem.Checked = configDictionary["SR"] == "true";
+            sSPPToolStripMenuItem.Checked = configDictionary["SSPP"] == "true";
+            currentPPToolStripMenuItem.Checked = configDictionary["CURRENTPP"] == "true";
+            hitsToolStripMenuItem.Checked = configDictionary["HITS"] == "true";
+            uRToolStripMenuItem.Checked = configDictionary["UR"] == "true";
+            avgOffsetToolStripMenuItem.Checked = configDictionary["AVGOFFSET"] == "true";
+            offsetHelpToolStripMenuItem.Checked = configDictionary["OFFSETHELP"] == "true";
             updateLoop();
         }
 
@@ -171,6 +170,47 @@ namespace RealtimePPUR
                     string dataurl = "http://127.0.0.1:3000/";
                     try
                     {
+                        if (Process.GetProcessesByName("gosumemory").Length > 0 && !gosumemoryRunning)
+                        {
+                            gosumemoryRunning = true;
+                        }
+                        else if (gosumemoryRunning && Process.GetProcessesByName("gosumemory").Length == 0)
+                        {
+                            gosumemoryRunning = false;
+                            MessageBox.Show("gosumemoryがクラッシュした、もしくはgosumemoryを起動していたソフトが閉じられた可能性があります。ソフトを再起動してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            try
+                            {
+                                _ppurProcess.Kill();
+                                System.Windows.Forms.Application.Exit();
+                            }
+                            catch
+                            {
+                                System.Windows.Forms.Application.Exit();
+                            }
+                        }
+
+                        if (!_ppurProcess.HasExited && !PPURRunning)
+                        {
+                            PPURRunning = true;
+                        }
+                        else if (_ppurProcess.HasExited && PPURRunning)
+                        {
+                            PPURRunning = false;
+                            MessageBox.Show("PPUR.jsがクラッシュした可能性があります。ソフトを再起動してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            try
+                            {
+                                if (gosumemoryLaunched)
+                                {
+                                    _gosumemoryProcess.Kill();
+                                }
+                                System.Windows.Forms.Application.Exit();
+                            }
+                            catch
+                            {
+                                System.Windows.Forms.Application.Exit();
+                            }
+                        }
+
                         HttpResponseMessage response = await client.GetAsync(dataurl);
                         string json = await response.Content.ReadAsStringAsync();
                         JObject data = JsonConvert.DeserializeObject<JObject>(json);
@@ -242,8 +282,8 @@ namespace RealtimePPUR
                             }
                         }
                         if (uRToolStripMenuItem.Checked) displayFormat += "UR: " + ur.ToString("F0") + "\n";
-                        if (avgOffsetToolStripMenuItem.Checked) displayFormat += "AvgOffset: " + AvgOffset + "\n";
                         if (offsetHelpToolStripMenuItem.Checked) displayFormat += "OffsetHelp: " + AvgOffsethelp.ToString("F0") + "\n";
+                        if (avgOffsetToolStripMenuItem.Checked) displayFormat += "AvgOffset: " + AvgOffset + "\n";
                     }
                     catch
                     {
@@ -296,7 +336,7 @@ namespace RealtimePPUR
 
                 if (latestRelease.Name != currentVersionString)
                 {
-                    DialogResult result = MessageBox.Show($"最新バージョンがあります！\n\n現在: {currentVersionString} \n更新後: {latestRelease.TagName}\n\nダウンロードページを開きますか？", "アップデートのお知らせ", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    DialogResult result = MessageBox.Show($"最新バージョンがあります！\n\n現在: {currentVersionString} \n更新後: {latestRelease.Name}\n\nダウンロードページを開きますか？", "アップデートのお知らせ", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                     if (result == DialogResult.Yes)
                     {
                         Process.Start(softwareReleasesLatest);
@@ -497,7 +537,6 @@ namespace RealtimePPUR
 
         private void launchSoftwares()
         {
-            // Launch gosumemory
             if (Process.GetProcessesByName("gosumemory").Length == 0)
             {
                 try
@@ -530,7 +569,6 @@ namespace RealtimePPUR
 
             try
             {
-                //Launch PPUR.js
                 _ppurProcess = new Process();
                 _ppurProcess.StartInfo.FileName = "./src/nodejs/node.exe";
                 _ppurProcess.StartInfo.Arguments = "./src/PPUR.js";
@@ -555,10 +593,11 @@ namespace RealtimePPUR
                 }
 
                 _ppurProcess.Kill();
+                System.Windows.Forms.Application.Exit();
             }
             catch
             {
-                // ignored
+                System.Windows.Forms.Application.Exit();
             }
         }
 
