@@ -5,6 +5,7 @@ const path = require('path');
 const app = express()
 
 let dataobjectForJson;
+let hiterror;
 
 function Main() {
     return new Promise(async (resolve, reject) => {
@@ -64,12 +65,19 @@ function Main() {
                 for (const error of Hitserrorarray) Offset += error;
                 return Offset / Hitserrorarray.length;
             }
+
+            if (hiterror == null || dataobject.status == 2) {
+                hiterror = {
+                    AvgOffset: calculateUR(dataobject.Hiterror),
+                    UR: dataobject.UR
+                }
+            }
+
             let PP = calculatePPSR();
-            let UR = calculateUR(dataobject.Hiterror);
             dataobjectForJson = {
                 Hiterror: {
-                    AvgOffset: parseFloat(UR).toFixed(2),
-                    UR: parseFloat(dataobject.UR).toFixed(2)
+                    AvgOffset: parseFloat(hiterror.AvgOffset).toFixed(2),
+                    UR: parseFloat(hiterror.UR).toFixed(2)
                 },
                 PP: {
                     SR: parseFloat(PP.sr).toFixed(2),
