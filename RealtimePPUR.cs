@@ -311,7 +311,7 @@ namespace RealtimePPUR
 
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Windows.Forms.Application.Exit();
+            Close();
         }
 
         private void osuModeToolStripMenuItem_Click(object sender, EventArgs e)
