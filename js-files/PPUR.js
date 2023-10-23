@@ -439,7 +439,11 @@ app.listen(3000, () =>
 
 async function loop() {
     await Main();
-    setTimeout(loop, looptimeout);
+    if (looptimeout != 0) {
+        setTimeout(loop, looptimeout);
+    } else {
+        loop();
+    }
 }
 
 function checkConfig() {
