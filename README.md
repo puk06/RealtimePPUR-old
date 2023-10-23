@@ -44,6 +44,9 @@ InGameOverlayに表示するものは右クリックメニューのInGameOverlay
 <br>
 その他細かい設定(デフォルトでオンにしておく物や位置、フォントサイズなど)はフォルダ内のConfig.txtを編集することで設定を変更できます。
 
+# Special Thanks
+
+
 # Dependencies software
 
 - Gosumemory (Read memory)
