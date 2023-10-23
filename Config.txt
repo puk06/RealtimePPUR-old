@@ -1,0 +1,40 @@
+# IngameOverlay Location Settings
+# LEFTは左からどれほど離すか、TOPは上からどれほど離すかという値です。
+# これらの基準点(0)はosu!のウィンドウの左上です。TOPが100なのは、HPバーとIngameOverlayが被らないようにするためです。
+
+LEFT=0
+TOP=100
+
+# IngameOverlay Font Settings
+# IngameOverlayのFontを設定できます。初期値は19です。
+
+FONTSIZE=19
+
+# IngameOverlay Default Settings
+# これらは起動時、IngameOverlayの何を有効化しておくか決めることが出来ます。trueかfalseで指定してください。
+
+SR=true
+SSPP=false
+CURRENTPP=true
+HITS=true
+UR=true
+OFFSETHELP=true
+AVGOFFSET=false
+
+# Software PP Settings
+# PPの表示を0からスタートするか100の状態から減らすか決めることが出来ます。
+# 0からスタートする際はtrue、100からはfalseにしてください。デフォルトはtrueです。
+# ※Combo数がPPに影響するosu! standard、osu! Catchは100から減らすものに対応してません。
+
+STARTFROMZERO=true
+
+# Loop Timeout Settings
+# 一度処理してからどのくらい間を開けて更新するかを決められます(単位: ms)
+# 処理が重くなってしまう人向けです。デフォルトは0msです(1000msで1秒です)
+
+LOOPTIMEOUT=0
+
+# UpdateCheck Settings
+# アップデートチェックをするかを決めることが出来ます。true、falseで指定してください。
+
+UPDATECHECK=true
