@@ -11,6 +11,7 @@ let currentMode;
 let currentStatus;
 let isZeroToOneHundred = true;
 let isplaying = false;
+let looptimeout = 0;
 
 const calculateUR = (Hitserrorarray) => {
     let Offset = 0;
@@ -448,6 +449,12 @@ function checkConfig() {
         for (const line of config) {
             if (line.startsWith("STARTFROMZERO=")) {
                 isZeroToOneHundred = line.split("=")[1] == "true\r";
+            }
+
+            if (line.startsWith("LOOPTIMEOUT=")) {
+                looptimeout = parseInt(line.split("=")[1]);
+                if (looptimeout < 0) looptimeout = 0;
+                if (isNaN(looptimeout)) looptimeout = 0;
                 break;
             }
         }
@@ -459,7 +466,7 @@ function checkConfig() {
 
 function Program() {
     checkConfig()
-    loop();
+    setTimeout(loop, looptimeout);
 }
 
 Program();
