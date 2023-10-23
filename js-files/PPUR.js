@@ -439,7 +439,7 @@ app.listen(3000, () =>
 
 async function loop() {
     await Main();
-    loop();
+    setTimeout(loop, looptimeout);
 }
 
 function checkConfig() {
@@ -465,8 +465,8 @@ function checkConfig() {
 }
 
 function Program() {
-    checkConfig()
-    setTimeout(loop, looptimeout);
+    checkConfig();
+    loop();
 }
 
 Program();
