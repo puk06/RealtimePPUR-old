@@ -30,14 +30,11 @@ namespace RealtimePPUR
         private bool isosumode;
         private string displayFormat;
         private bool nowPlaying;
-        private int bad;
-        private int katu;
-        private int geki;
         private int currentGamemode;
         private int x, y;
-        private static Process _ppurProcess;
-        private static Process _gosumemoryProcess;
-        private bool gosumemoryLaunched;
+        public static Process _ppurProcess;
+        public static Process _gosumemoryProcess;
+        public bool gosumemoryLaunched;
         private bool gosumemoryRunning;
         private bool PPURRunning;
         Dictionary<string, string> configDictionary = new Dictionary<string, string>();
@@ -218,15 +215,15 @@ namespace RealtimePPUR
                         double sr = (double)data["PP"]["SR"];
                         double sspp = (double)data["PP"]["SSPP"];
                         double currentPP = (double)data["PP"]["CurrentPP"];
-                        double Good = (double)data["PP"]["good"];
-                        double Ok = (double)data["PP"]["ok"];
-                        double Miss = (double)data["PP"]["miss"];
+                        int Good = (int)data["PP"]["good"];
+                        int Ok = (int)data["PP"]["ok"];
+                        int Miss = (int)data["PP"]["miss"];
                         double AvgOffset = -(double)data["Hiterror"]["AvgOffset"];
                         double ur = (double)data["Hiterror"]["UR"];
                         double AvgOffsethelp = -(AvgOffset);
-                        bad = (int)data["PP"]["bad"];
-                        katu = (int)data["PP"]["katu"];
-                        geki = (int)data["PP"]["geki"];
+                        int bad = (int)data["PP"]["bad"]; ;
+                        int katu = (int)data["PP"]["katu"];
+                        int geki = (int)data["PP"]["geki"];
                         currentGamemode = (int)data["PP"]["mode"];
                         status = (int)data["PP"]["status"];
 
@@ -242,21 +239,91 @@ namespace RealtimePPUR
                         SR.Text = sr.ToString();
                         SSPP.Text = sspp.ToString("F0");
 
-                        GOOD.Text = Good.ToString();
-                        int textWidthGood = TextRenderer.MeasureText(GOOD.Text, GOOD.Font).Width;
-                        GOOD.Width = textWidthGood;
-                        GOOD.Left = ((ClientSize.Width - GOOD.Width) / 2) - 120;
+                        if (currentGamemode == 0)
+                        {
+                            GOOD.Text = Good.ToString();
+                            int textWidthGood = TextRenderer.MeasureText(GOOD.Text, GOOD.Font).Width;
+                            GOOD.Width = textWidthGood;
+                            GOOD.Left = ((ClientSize.Width - GOOD.Width) / 2) - 120;
 
+                            OK.Text = (Ok + bad).ToString();
+                            int textWidthOK = TextRenderer.MeasureText(OK.Text, OK.Font).Width;
+                            OK.Width = textWidthOK;
+                            OK.Left = ((ClientSize.Width - OK.Width) / 2) - 61;
 
-                        OK.Text = Ok.ToString();
-                        int textWidthOK = TextRenderer.MeasureText(OK.Text, OK.Font).Width;
-                        OK.Width = textWidthOK;
-                        OK.Left = ((ClientSize.Width - OK.Width) / 2) - 61;
+                            MISS.Text = Miss.ToString();
+                            int textWidthMiss = TextRenderer.MeasureText(MISS.Text, MISS.Font).Width;
+                            MISS.Width = textWidthMiss;
+                            MISS.Left = ((ClientSize.Width - MISS.Width) / 2) - 3;
+                        }
+                        else if (currentGamemode == 1)
+                        {
+                            GOOD.Text = Good.ToString();
+                            int textWidthGood = TextRenderer.MeasureText(GOOD.Text, GOOD.Font).Width;
+                            GOOD.Width = textWidthGood;
+                            GOOD.Left = ((ClientSize.Width - GOOD.Width) / 2) - 120;
 
-                        MISS.Text = Miss.ToString();
-                        int textWidthMiss = TextRenderer.MeasureText(MISS.Text, MISS.Font).Width;
-                        MISS.Width = textWidthMiss;
-                        MISS.Left = ((ClientSize.Width - MISS.Width) / 2) - 3;
+                            OK.Text = Ok.ToString();
+                            int textWidthOK = TextRenderer.MeasureText(OK.Text, OK.Font).Width;
+                            OK.Width = textWidthOK;
+                            OK.Left = ((ClientSize.Width - OK.Width) / 2) - 61;
+
+                            MISS.Text = Miss.ToString();
+                            int textWidthMiss = TextRenderer.MeasureText(MISS.Text, MISS.Font).Width;
+                            MISS.Width = textWidthMiss;
+                            MISS.Left = ((ClientSize.Width - MISS.Width) / 2) - 3;
+                        }
+                        else if (currentGamemode == 2)
+                        {
+                            GOOD.Text = Good.ToString();
+                            int textWidthGood = TextRenderer.MeasureText(GOOD.Text, GOOD.Font).Width;
+                            GOOD.Width = textWidthGood;
+                            GOOD.Left = ((ClientSize.Width - GOOD.Width) / 2) - 120;
+
+                            OK.Text = (Ok + bad).ToString();
+                            int textWidthOK = TextRenderer.MeasureText(OK.Text, OK.Font).Width;
+                            OK.Width = textWidthOK;
+                            OK.Left = ((ClientSize.Width - OK.Width) / 2) - 61;
+
+                            MISS.Text = Miss.ToString();
+                            int textWidthMiss = TextRenderer.MeasureText(MISS.Text, MISS.Font).Width;
+                            MISS.Width = textWidthMiss;
+                            MISS.Left = ((ClientSize.Width - MISS.Width) / 2) - 3;
+                        }
+                        else if (currentGamemode == 3)
+                        {
+                            GOOD.Text = (Good + geki).ToString();
+                            int textWidthGood = TextRenderer.MeasureText(GOOD.Text, GOOD.Font).Width;
+                            GOOD.Width = textWidthGood;
+                            GOOD.Left = ((ClientSize.Width - GOOD.Width) / 2) - 120;
+
+                            OK.Text = (katu + Ok + bad).ToString();
+                            int textWidthOK = TextRenderer.MeasureText(OK.Text, OK.Font).Width;
+                            OK.Width = textWidthOK;
+                            OK.Left = ((ClientSize.Width - OK.Width) / 2) - 61;
+
+                            MISS.Text = Miss.ToString();
+                            int textWidthMiss = TextRenderer.MeasureText(MISS.Text, MISS.Font).Width;
+                            MISS.Width = textWidthMiss;
+                            MISS.Left = ((ClientSize.Width - MISS.Width) / 2) - 3;
+                        }
+                        else
+                        {
+                            GOOD.Text = Good.ToString();
+                            int textWidthGood = TextRenderer.MeasureText(GOOD.Text, GOOD.Font).Width;
+                            GOOD.Width = textWidthGood;
+                            GOOD.Left = ((ClientSize.Width - GOOD.Width) / 2) - 120;
+
+                            OK.Text = (Ok + bad).ToString();
+                            int textWidthOK = TextRenderer.MeasureText(OK.Text, OK.Font).Width;
+                            OK.Width = textWidthOK;
+                            OK.Left = ((ClientSize.Width - OK.Width) / 2) - 61;
+
+                            MISS.Text = Miss.ToString();
+                            int textWidthMiss = TextRenderer.MeasureText(MISS.Text, MISS.Font).Width;
+                            MISS.Width = textWidthMiss;
+                            MISS.Left = ((ClientSize.Width - MISS.Width) / 2) - 3;
+                        }
 
                         displayFormat = "";
                         if (sRToolStripMenuItem.Checked) displayFormat += "SR: " + sr + "\n";
@@ -264,7 +331,7 @@ namespace RealtimePPUR
                         if (currentPPToolStripMenuItem.Checked) displayFormat += "PP: " + currentPP.ToString("F0") + "pp\n";
                         if (hitsToolStripMenuItem.Checked)
                         {
-                            if (currentGamemode == 0 || currentGamemode == 2)
+                            if (currentGamemode == 0)
                             {
                                 displayFormat += $"Hits: {Good}/{Ok}/{bad}/{Miss}" + "\n";
                             }
@@ -274,11 +341,15 @@ namespace RealtimePPUR
                             }
                             else if (currentGamemode == 2)
                             {
+                                displayFormat += $"Hits: {Good}/{Ok}/{bad}/{Miss}" + "\n";
+                            }
+                            else if (currentGamemode == 3)
+                            {
                                 displayFormat += $"Hits: {geki}/{Good}/{katu}/{Ok}/{bad}/{Miss}" + "\n";
                             }
                             else
                             {
-                                displayFormat += $"Hits: {geki}/{Good}/{katu}/{Miss}" + "\n";
+                                displayFormat += $"Hits: {Good + geki}/{Ok + katu}/{bad}/{Miss}" + "\n";
                             }
                         }
                         if (uRToolStripMenuItem.Checked) displayFormat += "UR: " + ur.ToString("F0") + "\n";
@@ -362,8 +433,7 @@ namespace RealtimePPUR
             var topresult = int.TryParse(configDictionary["TOP"], out top);
             if (!leftresult || !topresult)
             {
-                MessageBox.Show("Config.txtのLEFTまたはTOPの値が不正です。数値以外入力しないでください。", "エラー", MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show("Config.txtのLEFTまたはTOPの値が不正です。数値以外入力しないでください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 osuModeToolStripMenuItem.Checked = false;
                 isosumode = false;
                 return;
@@ -421,7 +491,6 @@ namespace RealtimePPUR
                         return;
                     }
 
-                    // 現在のformの位置を取得
                     string processNameToFind = "osu!";
                     Process[] processes = Process.GetProcessesByName(processNameToFind);
 

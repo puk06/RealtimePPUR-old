@@ -17,9 +17,31 @@ namespace RealtimePPUR
             }
             CultureInfo.CurrentCulture = new CultureInfo("en-us");
             CultureInfo.CurrentUICulture = new CultureInfo("en-us");
+            Application.ApplicationExit += Application_ApplicationExit;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new RealtimePPUR());
+        }
+
+        private static void Application_ApplicationExit(object sender, EventArgs e)
+        {
+            try
+            {
+                RealtimePPUR._gosumemoryProcess.Kill();
+            }
+            catch
+            {
+                // ignored
+            }
+
+            try
+            {
+                RealtimePPUR._ppurProcess.Kill();
+            }
+            catch
+            {
+                // ignored
+            }
         }
     }
 }
