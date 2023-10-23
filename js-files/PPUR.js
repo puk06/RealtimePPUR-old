@@ -147,7 +147,7 @@ function Main() {
     
                     let score = {
                         mode: mode,
-                        mods: dataobject.mods,
+                        mods: dataobject.mods
                     };
     
                     const calc = new Calculator(score);
