@@ -1,6 +1,6 @@
-const axios = require("../src/node_modules/axios");
-const { Beatmap, Calculator } = require("../src/node_modules/rosu-pp");
-const express = require('../src/node_modules/express');
+const axios = require("./node_modules/axios");
+const { Beatmap, Calculator } = require("./node_modules/rosu-pp");
+const express = require('./node_modules/express');
 const path = require('path');
 const fs = require('fs');
 const app = express();
@@ -328,14 +328,14 @@ function Main() {
 
                     let pp;
                     if (isZeroToOneHundred) {
-                        pp = dataobject.status == 5 ? sspp : calc.passedObjects(passedObjects).performance(map).pp;
+                        pp = dataobject.status == 5 || dataobject.status == 0 ? sspp : calc.passedObjects(passedObjects).performance(map).pp;
                     } else {
-                        pp = dataobject.status == 5 ? sspp : calc.performance(map).pp;
+                        pp = dataobject.status == 5 || dataobject.status == 0 ? sspp : calc.performance(map).pp;
                     }
                     if (isNaN(pp)) pp = 0;
 
                     let sr;
-                    if (dataobject.status == 5 || dataobject.status == 7) {
+                    if (dataobject.status == 5 || dataobject.status == 0) {
                         sr = calc.performance(map).difficulty.stars;
                     } else {
                         sr = calc.passedObjects(passedObjects).performance(map).difficulty.stars;
