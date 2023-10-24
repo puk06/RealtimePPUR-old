@@ -96,6 +96,7 @@ function Main() {
 
             switch (dataobject.status) {
                 case 0:
+                    currentMode = dataobject.menuMode;
                     isplaying = false;
                     break;
                 case 1:
@@ -353,7 +354,7 @@ function Main() {
                 let PP = calculatePPSR();
 
                 // Hiterrorが計算されていない場合は計算する
-                if (hiterror == undefined ||  hiterror == null || dataobject.status == 2) {
+                if (hiterror == undefined || hiterror == null || dataobject.status == 2) {
                     hiterror = {
                         AvgOffset: calculateUR(dataobject.Hiterror),
                         UR: dataobject.UR
@@ -393,7 +394,7 @@ function Main() {
 
             // 解決
             resolve();
-        } catch (error) { // エラー時の処理。gosumemoryにアクセスできない(起動してない)時に発生する。
+        } catch (error) { // エラー時の処理。主にgosumemoryにアクセスできない(起動してない)時に発生する。
 
             // エラー時の送信用データの作成
             dataobjectForJson = {
@@ -433,7 +434,7 @@ app.get("/", (req, res, next) =>
 
 app.listen(3000, () =>
     {
-        console.log(`Please close this software now! It is not designed to run by itself!\nこのソフトを今すぐ閉じてください！これ単体で動作することを想定されていません！`)
+        console.log(`Please close this software now! It is not designed to run by itself!\nこのソフトを今すぐ閉じてください！これ単体で動作することを想定されていません！`);
     }
 )
 
