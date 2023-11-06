@@ -44,7 +44,7 @@ namespace RealtimePPUR
                             return;
                         }
 
-                        MessageBox.Show("ダウンロードページをwebブラウザで開きます。\nインストール方法: ダウンロードしたフォルダを開き、\"src/gosumemory/gosumemory.exe\"となるように配置する。config.iniもgosumemory.exeと同じフォルダに入れておく。", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("ダウンロードページをwebブラウザで開きます。\nインストール方法: ダウンロードしたフォルダを開き、\"src/gosumemory/gosumemory.exe\"となるように配置する。config.iniもgosumemory.exeと同じフォルダに入れてください。", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         Process.Start("https://github.com/l3lackShark/gosumemory/releases/");
                         return;
                     }
@@ -97,7 +97,7 @@ namespace RealtimePPUR
                 Application.ApplicationExit += Application_ApplicationExit;
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new RealtimePPUR());    
+                Application.Run(new RealtimePpur());    
             }
             catch
             {

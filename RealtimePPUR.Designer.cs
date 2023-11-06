@@ -2,7 +2,7 @@
 
 namespace RealtimePPUR
 {
-    partial class RealtimePPUR
+    sealed partial class RealtimePpur
     {
         /// <summary>
         /// 必要なデザイナー変数です。
@@ -31,16 +31,16 @@ namespace RealtimePPUR
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RealtimePPUR));
-            this.CurrentPP = new System.Windows.Forms.Label();
-            this.SR = new System.Windows.Forms.Label();
-            this.SSPP = new System.Windows.Forms.Label();
-            this.GOOD = new System.Windows.Forms.Label();
-            this.OK = new System.Windows.Forms.Label();
-            this.MISS = new System.Windows.Forms.Label();
-            this.AVGOFFSET = new System.Windows.Forms.Label();
-            this.UR = new System.Windows.Forms.Label();
-            this.AVGOFFSETHELP = new System.Windows.Forms.Label();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RealtimePpur));
+            this._currentPp = new System.Windows.Forms.Label();
+            this._sr = new System.Windows.Forms.Label();
+            this._sspp = new System.Windows.Forms.Label();
+            this._good = new System.Windows.Forms.Label();
+            this._ok = new System.Windows.Forms.Label();
+            this._miss = new System.Windows.Forms.Label();
+            this._avgoffset = new System.Windows.Forms.Label();
+            this._ur = new System.Windows.Forms.Label();
+            this._avgoffsethelp = new System.Windows.Forms.Label();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.modeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.realtimePPURToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,134 +56,135 @@ namespace RealtimePPUR
             this.ifFCHitsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.offsetHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.expectedManiaScoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.avgOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.progressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ifFCPPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.changePriorityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.inGameValue = new System.Windows.Forms.Label();
-            this.expectedManiaScoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // CurrentPP
+            // _currentPp
             // 
-            this.CurrentPP.BackColor = System.Drawing.Color.Transparent;
-            this.CurrentPP.ForeColor = System.Drawing.Color.White;
-            this.CurrentPP.Location = new System.Drawing.Point(181, 18);
-            this.CurrentPP.Name = "CurrentPP";
-            this.CurrentPP.Size = new System.Drawing.Size(100, 31);
-            this.CurrentPP.TabIndex = 0;
-            this.CurrentPP.Text = "0";
-            this.CurrentPP.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.CurrentPP.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
-            this.CurrentPP.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
+            this._currentPp.BackColor = System.Drawing.Color.Transparent;
+            this._currentPp.ForeColor = System.Drawing.Color.White;
+            this._currentPp.Location = new System.Drawing.Point(181, 18);
+            this._currentPp.Name = "_currentPp";
+            this._currentPp.Size = new System.Drawing.Size(100, 31);
+            this._currentPp.TabIndex = 0;
+            this._currentPp.Text = "0";
+            this._currentPp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this._currentPp.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
+            this._currentPp.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
             // 
-            // SR
+            // _sr
             // 
-            this.SR.BackColor = System.Drawing.Color.Transparent;
-            this.SR.ForeColor = System.Drawing.Color.White;
-            this.SR.Location = new System.Drawing.Point(40, -1);
-            this.SR.Name = "SR";
-            this.SR.Size = new System.Drawing.Size(100, 23);
-            this.SR.TabIndex = 0;
-            this.SR.Text = "0";
-            this.SR.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
-            this.SR.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
+            this._sr.BackColor = System.Drawing.Color.Transparent;
+            this._sr.ForeColor = System.Drawing.Color.White;
+            this._sr.Location = new System.Drawing.Point(40, -1);
+            this._sr.Name = "_sr";
+            this._sr.Size = new System.Drawing.Size(100, 23);
+            this._sr.TabIndex = 0;
+            this._sr.Text = "0";
+            this._sr.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
+            this._sr.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
             // 
-            // SSPP
+            // _sspp
             // 
-            this.SSPP.BackColor = System.Drawing.Color.Transparent;
-            this.SSPP.ForeColor = System.Drawing.Color.White;
-            this.SSPP.Location = new System.Drawing.Point(140, -1);
-            this.SSPP.Name = "SSPP";
-            this.SSPP.Size = new System.Drawing.Size(100, 23);
-            this.SSPP.TabIndex = 0;
-            this.SSPP.Text = "0";
-            this.SSPP.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
-            this.SSPP.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
+            this._sspp.BackColor = System.Drawing.Color.Transparent;
+            this._sspp.ForeColor = System.Drawing.Color.White;
+            this._sspp.Location = new System.Drawing.Point(140, -1);
+            this._sspp.Name = "_sspp";
+            this._sspp.Size = new System.Drawing.Size(100, 23);
+            this._sspp.TabIndex = 0;
+            this._sspp.Text = "0";
+            this._sspp.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
+            this._sspp.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
             // 
-            // GOOD
+            // _good
             // 
-            this.GOOD.BackColor = System.Drawing.Color.Transparent;
-            this.GOOD.ForeColor = System.Drawing.Color.White;
-            this.GOOD.Location = new System.Drawing.Point(-13, 27);
-            this.GOOD.Name = "GOOD";
-            this.GOOD.Size = new System.Drawing.Size(100, 23);
-            this.GOOD.TabIndex = 0;
-            this.GOOD.Text = "0";
-            this.GOOD.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.GOOD.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
-            this.GOOD.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
+            this._good.BackColor = System.Drawing.Color.Transparent;
+            this._good.ForeColor = System.Drawing.Color.White;
+            this._good.Location = new System.Drawing.Point(-13, 27);
+            this._good.Name = "_good";
+            this._good.Size = new System.Drawing.Size(100, 23);
+            this._good.TabIndex = 0;
+            this._good.Text = "0";
+            this._good.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this._good.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
+            this._good.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
             // 
-            // OK
+            // _ok
             // 
-            this.OK.BackColor = System.Drawing.Color.Transparent;
-            this.OK.ForeColor = System.Drawing.Color.White;
-            this.OK.Location = new System.Drawing.Point(47, 26);
-            this.OK.Name = "OK";
-            this.OK.Size = new System.Drawing.Size(100, 23);
-            this.OK.TabIndex = 0;
-            this.OK.Text = "0";
-            this.OK.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.OK.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
-            this.OK.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
+            this._ok.BackColor = System.Drawing.Color.Transparent;
+            this._ok.ForeColor = System.Drawing.Color.White;
+            this._ok.Location = new System.Drawing.Point(47, 26);
+            this._ok.Name = "_ok";
+            this._ok.Size = new System.Drawing.Size(100, 23);
+            this._ok.TabIndex = 0;
+            this._ok.Text = "0";
+            this._ok.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this._ok.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
+            this._ok.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
             // 
-            // MISS
+            // _miss
             // 
-            this.MISS.BackColor = System.Drawing.Color.Transparent;
-            this.MISS.ForeColor = System.Drawing.Color.White;
-            this.MISS.Location = new System.Drawing.Point(105, 26);
-            this.MISS.Name = "MISS";
-            this.MISS.Size = new System.Drawing.Size(100, 23);
-            this.MISS.TabIndex = 0;
-            this.MISS.Text = "0";
-            this.MISS.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.MISS.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
-            this.MISS.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
+            this._miss.BackColor = System.Drawing.Color.Transparent;
+            this._miss.ForeColor = System.Drawing.Color.White;
+            this._miss.Location = new System.Drawing.Point(105, 26);
+            this._miss.Name = "_miss";
+            this._miss.Size = new System.Drawing.Size(100, 23);
+            this._miss.TabIndex = 0;
+            this._miss.Text = "0";
+            this._miss.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this._miss.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
+            this._miss.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
             // 
-            // AVGOFFSET
+            // _avgoffset
             // 
-            this.AVGOFFSET.AutoSize = true;
-            this.AVGOFFSET.BackColor = System.Drawing.Color.Transparent;
-            this.AVGOFFSET.ForeColor = System.Drawing.Color.White;
-            this.AVGOFFSET.Location = new System.Drawing.Point(38, 106);
-            this.AVGOFFSET.Name = "AVGOFFSET";
-            this.AVGOFFSET.Size = new System.Drawing.Size(26, 12);
-            this.AVGOFFSET.TabIndex = 0;
-            this.AVGOFFSET.Text = "0ms";
-            this.AVGOFFSET.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
-            this.AVGOFFSET.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
+            this._avgoffset.AutoSize = true;
+            this._avgoffset.BackColor = System.Drawing.Color.Transparent;
+            this._avgoffset.ForeColor = System.Drawing.Color.White;
+            this._avgoffset.Location = new System.Drawing.Point(38, 106);
+            this._avgoffset.Name = "_avgoffset";
+            this._avgoffset.Size = new System.Drawing.Size(26, 12);
+            this._avgoffset.TabIndex = 0;
+            this._avgoffset.Text = "0ms";
+            this._avgoffset.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
+            this._avgoffset.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
             // 
-            // UR
+            // _ur
             // 
-            this.UR.AutoSize = true;
-            this.UR.BackColor = System.Drawing.Color.Transparent;
-            this.UR.ForeColor = System.Drawing.Color.White;
-            this.UR.Location = new System.Drawing.Point(219, 72);
-            this.UR.Name = "UR";
-            this.UR.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.UR.Size = new System.Drawing.Size(11, 12);
-            this.UR.TabIndex = 0;
-            this.UR.Text = "0";
-            this.UR.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
-            this.UR.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
+            this._ur.AutoSize = true;
+            this._ur.BackColor = System.Drawing.Color.Transparent;
+            this._ur.ForeColor = System.Drawing.Color.White;
+            this._ur.Location = new System.Drawing.Point(219, 72);
+            this._ur.Name = "_ur";
+            this._ur.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this._ur.Size = new System.Drawing.Size(11, 12);
+            this._ur.TabIndex = 0;
+            this._ur.Text = "0";
+            this._ur.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
+            this._ur.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
             // 
-            // AVGOFFSETHELP
+            // _avgoffsethelp
             // 
-            this.AVGOFFSETHELP.AutoSize = true;
-            this.AVGOFFSETHELP.BackColor = System.Drawing.Color.Transparent;
-            this.AVGOFFSETHELP.ForeColor = System.Drawing.Color.White;
-            this.AVGOFFSETHELP.Location = new System.Drawing.Point(82, 69);
-            this.AVGOFFSETHELP.Name = "AVGOFFSETHELP";
-            this.AVGOFFSETHELP.Size = new System.Drawing.Size(11, 12);
-            this.AVGOFFSETHELP.TabIndex = 0;
-            this.AVGOFFSETHELP.Text = "0";
-            this.AVGOFFSETHELP.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.AVGOFFSETHELP.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
-            this.AVGOFFSETHELP.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
+            this._avgoffsethelp.AutoSize = true;
+            this._avgoffsethelp.BackColor = System.Drawing.Color.Transparent;
+            this._avgoffsethelp.ForeColor = System.Drawing.Color.White;
+            this._avgoffsethelp.Location = new System.Drawing.Point(82, 69);
+            this._avgoffsethelp.Name = "_avgoffsethelp";
+            this._avgoffsethelp.Size = new System.Drawing.Size(11, 12);
+            this._avgoffsethelp.TabIndex = 0;
+            this._avgoffsethelp.Text = "0";
+            this._avgoffsethelp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this._avgoffsethelp.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseDown);
+            this._avgoffsethelp.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RealtimePPUR_MouseMove);
             // 
             // contextMenuStrip1
             // 
@@ -191,12 +192,13 @@ namespace RealtimePPUR
             this.modeToolStripMenuItem,
             this.osuModeToolStripMenuItem,
             this.inGameOverlayToolStripMenuItem,
+            this.changePriorityToolStripMenuItem,
             this.changeFontToolStripMenuItem,
             this.loadFontToolStripMenuItem,
             this.resetFontToolStripMenuItem,
             this.closeToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 180);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 202);
             // 
             // modeToolStripMenuItem
             // 
@@ -211,21 +213,21 @@ namespace RealtimePPUR
             // realtimePPURToolStripMenuItem
             // 
             this.realtimePPURToolStripMenuItem.Name = "realtimePPURToolStripMenuItem";
-            this.realtimePPURToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.realtimePPURToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.realtimePPURToolStripMenuItem.Text = "RealtimePPUR";
             this.realtimePPURToolStripMenuItem.Click += new System.EventHandler(this.realtimePPURToolStripMenuItem_Click);
             // 
             // offsetHelperToolStripMenuItem
             // 
             this.offsetHelperToolStripMenuItem.Name = "offsetHelperToolStripMenuItem";
-            this.offsetHelperToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.offsetHelperToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.offsetHelperToolStripMenuItem.Text = "Offset Helper";
             this.offsetHelperToolStripMenuItem.Click += new System.EventHandler(this.offsetHelperToolStripMenuItem_Click);
             // 
             // realtimePPToolStripMenuItem
             // 
             this.realtimePPToolStripMenuItem.Name = "realtimePPToolStripMenuItem";
-            this.realtimePPToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.realtimePPToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.realtimePPToolStripMenuItem.Text = "RealtimePP";
             this.realtimePPToolStripMenuItem.Click += new System.EventHandler(this.realtimePPToolStripMenuItem_Click);
             // 
@@ -240,8 +242,8 @@ namespace RealtimePPUR
             // 
             this.inGameOverlayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.sRToolStripMenuItem,
-            this.currentPPToolStripMenuItem,
             this.sSPPToolStripMenuItem,
+            this.currentPPToolStripMenuItem,
             this.currentACCToolStripMenuItem,
             this.hitsToolStripMenuItem,
             this.ifFCHitsToolStripMenuItem,
@@ -257,8 +259,6 @@ namespace RealtimePPUR
             // 
             // sRToolStripMenuItem
             // 
-            this.sRToolStripMenuItem.Checked = true;
-            this.sRToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.sRToolStripMenuItem.Name = "sRToolStripMenuItem";
             this.sRToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.sRToolStripMenuItem.Text = "SR";
@@ -266,8 +266,6 @@ namespace RealtimePPUR
             // 
             // currentPPToolStripMenuItem
             // 
-            this.currentPPToolStripMenuItem.Checked = true;
-            this.currentPPToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.currentPPToolStripMenuItem.Name = "currentPPToolStripMenuItem";
             this.currentPPToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.currentPPToolStripMenuItem.Text = "CurrentPP";
@@ -289,8 +287,6 @@ namespace RealtimePPUR
             // 
             // hitsToolStripMenuItem
             // 
-            this.hitsToolStripMenuItem.Checked = true;
-            this.hitsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.hitsToolStripMenuItem.Name = "hitsToolStripMenuItem";
             this.hitsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.hitsToolStripMenuItem.Text = "Hits";
@@ -305,8 +301,6 @@ namespace RealtimePPUR
             // 
             // uRToolStripMenuItem
             // 
-            this.uRToolStripMenuItem.Checked = true;
-            this.uRToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.uRToolStripMenuItem.Name = "uRToolStripMenuItem";
             this.uRToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.uRToolStripMenuItem.Text = "UR";
@@ -318,6 +312,13 @@ namespace RealtimePPUR
             this.offsetHelpToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.offsetHelpToolStripMenuItem.Text = "OffsetHelp";
             this.offsetHelpToolStripMenuItem.Click += new System.EventHandler(this.offsetHelpToolStripMenuItem_Click);
+            // 
+            // expectedManiaScoreToolStripMenuItem
+            // 
+            this.expectedManiaScoreToolStripMenuItem.Name = "expectedManiaScoreToolStripMenuItem";
+            this.expectedManiaScoreToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.expectedManiaScoreToolStripMenuItem.Text = "ExpectedManiaScore";
+            this.expectedManiaScoreToolStripMenuItem.Click += new System.EventHandler(this.expectedManiaScoreToolStripMenuItem_Click);
             // 
             // avgOffsetToolStripMenuItem
             // 
@@ -339,6 +340,13 @@ namespace RealtimePPUR
             this.ifFCPPToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.ifFCPPToolStripMenuItem.Text = "ifFCPP";
             this.ifFCPPToolStripMenuItem.Click += new System.EventHandler(this.ifFCPPToolStripMenuItem_Click);
+            // 
+            // changePriorityToolStripMenuItem
+            // 
+            this.changePriorityToolStripMenuItem.Name = "changePriorityToolStripMenuItem";
+            this.changePriorityToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.changePriorityToolStripMenuItem.Text = "Change Priority";
+            this.changePriorityToolStripMenuItem.Click += new System.EventHandler(this.changePriorityToolStripMenuItem_Click);
             // 
             // changeFontToolStripMenuItem
             // 
@@ -378,43 +386,36 @@ namespace RealtimePPUR
             this.inGameValue.TabIndex = 1;
             this.inGameValue.Visible = false;
             // 
-            // expectedManiaScoreToolStripMenuItem
+            // RealtimePpur
             // 
-            this.expectedManiaScoreToolStripMenuItem.Name = "expectedManiaScoreToolStripMenuItem";
-            this.expectedManiaScoreToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.expectedManiaScoreToolStripMenuItem.Text = "ExpectedManiaScore";
-            this.expectedManiaScoreToolStripMenuItem.Click += new System.EventHandler(this.expectedManiaScoreToolStripMenuItem_Click);
-            // 
-            // RealtimePPUR
-            // 
-            this.AVGOFFSETHELP.Font = new System.Drawing.Font(FontCollection.Families[1], 20F, System.Drawing.FontStyle.Bold);
-            this.UR.Font = new System.Drawing.Font(FontCollection.Families[1], 25F, System.Drawing.FontStyle.Bold);
-            this.AVGOFFSET.Font = new System.Drawing.Font(FontCollection.Families[1], 13F, System.Drawing.FontStyle.Bold);
-            this.MISS.Font = new System.Drawing.Font(FontCollection.Families[1], 15F, System.Drawing.FontStyle.Bold);
-            this.OK.Font = new System.Drawing.Font(FontCollection.Families[1], 15F, System.Drawing.FontStyle.Bold);
-            this.GOOD.Font = new System.Drawing.Font(FontCollection.Families[1], 15F, System.Drawing.FontStyle.Bold);
-            this.SSPP.Font = new System.Drawing.Font(FontCollection.Families[1], 13F, System.Drawing.FontStyle.Bold);
-            this.SR.Font = new System.Drawing.Font(FontCollection.Families[1], 13F, System.Drawing.FontStyle.Bold);
-            this.CurrentPP.Font = new System.Drawing.Font(FontCollection.Families[1], 20F, System.Drawing.FontStyle.Bold);
+            this._avgoffsethelp.Font = new System.Drawing.Font(_fontCollection.Families[1], 20F, System.Drawing.FontStyle.Bold);
+            this._ur.Font = new System.Drawing.Font(_fontCollection.Families[1], 25F, System.Drawing.FontStyle.Bold);
+            this._avgoffset.Font = new System.Drawing.Font(_fontCollection.Families[1], 13F, System.Drawing.FontStyle.Bold);
+            this._miss.Font = new System.Drawing.Font(_fontCollection.Families[1], 15F, System.Drawing.FontStyle.Bold);
+            this._ok.Font = new System.Drawing.Font(_fontCollection.Families[1], 15F, System.Drawing.FontStyle.Bold);
+            this._good.Font = new System.Drawing.Font(_fontCollection.Families[1], 15F, System.Drawing.FontStyle.Bold);
+            this._sspp.Font = new System.Drawing.Font(_fontCollection.Families[1], 13F, System.Drawing.FontStyle.Bold);
+            this._sr.Font = new System.Drawing.Font(_fontCollection.Families[1], 13F, System.Drawing.FontStyle.Bold);
+            this._currentPp.Font = new System.Drawing.Font(_fontCollection.Families[1], 20F, System.Drawing.FontStyle.Bold);
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::RealtimePPUR.Properties.Resources.PPUR;
             this.ClientSize = new System.Drawing.Size(316, 130);
             this.ContextMenuStrip = this.contextMenuStrip1;
             this.Controls.Add(this.inGameValue);
-            this.Controls.Add(this.CurrentPP);
-            this.Controls.Add(this.SR);
-            this.Controls.Add(this.SSPP);
-            this.Controls.Add(this.GOOD);
-            this.Controls.Add(this.OK);
-            this.Controls.Add(this.MISS);
-            this.Controls.Add(this.AVGOFFSET);
-            this.Controls.Add(this.UR);
-            this.Controls.Add(this.AVGOFFSETHELP);
+            this.Controls.Add(this._currentPp);
+            this.Controls.Add(this._sr);
+            this.Controls.Add(this._sspp);
+            this.Controls.Add(this._good);
+            this.Controls.Add(this._ok);
+            this.Controls.Add(this._miss);
+            this.Controls.Add(this._avgoffset);
+            this.Controls.Add(this._ur);
+            this.Controls.Add(this._avgoffsethelp);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "RealtimePPUR";
+            this.Name = "RealtimePpur";
             this.Text = "RealtimePPUR";
             this.TopMost = true;
             this.TransparencyKey = this.BackColor;
@@ -424,7 +425,7 @@ namespace RealtimePPUR
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
-            roundCorners();
+            RoundCorners();
         }
 
         #endregion
@@ -453,6 +454,7 @@ namespace RealtimePPUR
         private System.Windows.Forms.ToolStripMenuItem ifFCPPToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ifFCHitsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem expectedManiaScoreToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem changePriorityToolStripMenuItem;
     }
 }
 

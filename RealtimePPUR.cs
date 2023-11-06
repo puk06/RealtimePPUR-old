@@ -15,49 +15,49 @@ using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace RealtimePPUR
 {
-    public partial class RealtimePPUR : Form
+    public sealed partial class RealtimePpur : Form
     {
-        private System.Windows.Forms.Label CurrentPP, SR, SSPP, GOOD, OK, MISS, AVGOFFSET, UR, AVGOFFSETHELP;
-        private Point mousePoint;
-        private string displayFormat;
-        private int status;
-        private int mode;
-        private int x;
-        private int y;
-        private int prevCalculationSpeed;
-        private readonly int CalculationSpeedDetectedValue;
-        private bool isosumode;
-        private bool nowPlaying;
-        private readonly bool speedReduction;
-        private int currentBackgroundImage = 1;
-        private string ingameoverlayPriority;
-        readonly Dictionary<string, string> configDictionary = new Dictionary<string, string>();
-        private readonly HttpClient client = new HttpClient();
-        private readonly PrivateFontCollection FontCollection;
+        private System.Windows.Forms.Label _currentPp, _sr, _sspp, _good, _ok, _miss, _avgoffset, _ur, _avgoffsethelp;
+        private Point _mousePoint;
+        private string _displayFormat;
+        private int _status;
+        private int _mode;
+        private int _x;
+        private int _y;
+        private int _prevCalculationSpeed;
+        private readonly int _calculationSpeedDetectedValue;
+        private bool _isosumode;
+        private bool _nowPlaying;
+        private readonly bool _speedReduction;
+        private int _currentBackgroundImage = 1;
+        private readonly string _ingameoverlayPriority;
+        private readonly Dictionary<string, string> _configDictionary = new Dictionary<string, string>();
+        private readonly HttpClient _client = new HttpClient();
+        private readonly PrivateFontCollection _fontCollection;
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll")]
-        private static extern bool GetWindowRect(IntPtr hWnd, out RECT rect);
+        private static extern bool GetWindowRect(IntPtr hWnd, out Rect rect);
 
         [StructLayout(LayoutKind.Sequential)]
-        struct RECT
+        private struct Rect
         {
             public int Left, Top, Right, Bottom;
         }
 
-        public RealtimePPUR()
+        public RealtimePpur()
         {
-            FontCollection = new PrivateFontCollection();
-            FontCollection.AddFontFile("./src/Fonts/MPLUSRounded1c-ExtraBold.ttf");
-            FontCollection.AddFontFile("./src/Fonts/Nexa Light.otf");
+            _fontCollection = new PrivateFontCollection();
+            _fontCollection.AddFontFile("./src/Fonts/MPLUSRounded1c-ExtraBold.ttf");
+            _fontCollection.AddFontFile("./src/Fonts/Nexa Light.otf");
             InitializeComponent();
 
             if (!File.Exists("Config.txt"))
             {
                 MessageBox.Show("Config.txtがフォルダ内に存在しないため、すべての項目がOffとして設定されます。アップデートチェックのみ行われます。", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                githubUpdateChecker();
+                GithubUpdateChecker();
                 sRToolStripMenuItem.Checked = false;
                 sSPPToolStripMenuItem.Checked = false;
                 currentPPToolStripMenuItem.Checked = false;
@@ -70,11 +70,10 @@ namespace RealtimePPUR
                 ifFCPPToolStripMenuItem.Checked = false;
                 ifFCHitsToolStripMenuItem.Checked = false;
                 expectedManiaScoreToolStripMenuItem.Checked = false;
-                speedReduction = false;
-                CalculationSpeedDetectedValue = 100;
-                ingameoverlayPriority = "1/2/3/4/5/6/7/8/9/10/11";
-                inGameValue.Font = new Font(FontCollection.Families[0], 19F);
-                updateLoop();
+                _speedReduction = false;
+                _calculationSpeedDetectedValue = 100;
+                _ingameoverlayPriority = "1/2/3/4/5/6/7/8/9/10/11";
+                inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
             }
             else
             {
@@ -90,21 +89,21 @@ namespace RealtimePPUR
 
                     string name = parts[0].Trim();
                     string value = parts[1].Trim();
-                    configDictionary[name] = value;
+                    _configDictionary[name] = value;
                 }
 
-                if (configDictionary.TryGetValue("UPDATECHECK", out string test11) && test11 == "true")
+                if (_configDictionary.TryGetValue("UPDATECHECK", out string test11) && test11 == "true")
                 {
-                    githubUpdateChecker();
+                    GithubUpdateChecker();
                 }
 
-                var defaultmodeTest = configDictionary.TryGetValue("DEFAULTMODE", out string defaultmodestring);
+                var defaultmodeTest = _configDictionary.TryGetValue("DEFAULTMODE", out string defaultmodestring);
                 if (defaultmodeTest)
                 {
                     var defaultModeResult = int.TryParse(defaultmodestring, out int defaultmode);
                     if (!defaultModeResult || !(defaultmode == 0 || defaultmode == 1 || defaultmode == 2))
                     {
-                        MessageBox.Show("Config.txtのDEFAULTMODEの値が不正であったため、初期値の0が適用されます。0、1、2の3つのどれかを入力してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Config.txtのDEFAULTMODEの値が不正であったため、初期値の0が適用されます。0、1、2のどれかを入力してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     else
                     {
@@ -113,54 +112,43 @@ namespace RealtimePPUR
                             case 1:
                                 ClientSize = new Size(316, 65);
                                 BackgroundImage = Properties.Resources.PP;
-                                currentBackgroundImage = 2;
-                                roundCorners();
-                                if (mode == 2)
-                                {
-                                    foreach (Control control in Controls)
-                                    {
-                                        if (control.Name == "inGameValue") continue;
-                                        control.Location = new Point(control.Location.X, control.Location.Y + 65);
-                                    }
-                                }
-                                mode = 1;
+                                _currentBackgroundImage = 2;
+                                RoundCorners();
+                                _mode = 1;
                                 break;
 
                             case 2:
                                 ClientSize = new Size(316, 65);
                                 BackgroundImage = Properties.Resources.UR;
-                                currentBackgroundImage = 3;
-                                roundCorners();
-                                if (mode == 0 || mode == 1)
+                                _currentBackgroundImage = 3;
+                                RoundCorners();
+                                foreach (Control control in Controls)
                                 {
-                                    foreach (Control control in Controls)
-                                    {
-                                        if (control.Name == "inGameValue") continue;
-                                        control.Location = new Point(control.Location.X, control.Location.Y - 65);
-                                    }
+                                    if (control.Name == "inGameValue") continue;
+                                    control.Location = new Point(control.Location.X, control.Location.Y - 65);
                                 }
-                                mode = 2;
+                                _mode = 2;
                                 break;
                         }
                     }
                 }
 
-                sRToolStripMenuItem.Checked = configDictionary.TryGetValue("SR", out string test) && test == "true";
-                sSPPToolStripMenuItem.Checked = configDictionary.TryGetValue("SSPP", out string test2) && test2 == "true";
-                currentPPToolStripMenuItem.Checked = configDictionary.TryGetValue("CURRENTPP", out string test3) && test3 == "true";
-                currentACCToolStripMenuItem.Checked = configDictionary.TryGetValue("CURRENTACC", out string test4) && test4 == "true";
-                hitsToolStripMenuItem.Checked = configDictionary.TryGetValue("HITS", out string test5) && test5 == "true";
-                uRToolStripMenuItem.Checked = configDictionary.TryGetValue("UR", out string test6) && test6 == "true";
-                offsetHelpToolStripMenuItem.Checked = configDictionary.TryGetValue("OFFSETHELP", out string test7) && test7 == "true";
-                avgOffsetToolStripMenuItem.Checked = configDictionary.TryGetValue("AVGOFFSET", out string test8) && test8 == "true";
-                progressToolStripMenuItem.Checked = configDictionary.TryGetValue("PROGRESS", out string test9) && test9 == "true";
-                ifFCPPToolStripMenuItem.Checked = configDictionary.TryGetValue("IFFCPP", out string test13) && test13 == "true";
-                ifFCHitsToolStripMenuItem.Checked = configDictionary.TryGetValue("IFFCHITS", out string test14) && test14 == "true";
-                expectedManiaScoreToolStripMenuItem.Checked = configDictionary.TryGetValue("EXPECTEDMANIASCORE", out string test15) && test15 == "true";
-                speedReduction = configDictionary.TryGetValue("SPEEDREDUCTION", out string test10) && test10 == "true";
-                ingameoverlayPriority = configDictionary.TryGetValue("INGAMEOVERLAYPRIORITY", out string test16) ? test16 : "1/2/3/4/5/6/7/8/9/10/11";
+                sRToolStripMenuItem.Checked = _configDictionary.TryGetValue("SR", out string test) && test == "true";
+                sSPPToolStripMenuItem.Checked = _configDictionary.TryGetValue("SSPP", out string test2) && test2 == "true";
+                currentPPToolStripMenuItem.Checked = _configDictionary.TryGetValue("CURRENTPP", out string test3) && test3 == "true";
+                currentACCToolStripMenuItem.Checked = _configDictionary.TryGetValue("CURRENTACC", out string test4) && test4 == "true";
+                hitsToolStripMenuItem.Checked = _configDictionary.TryGetValue("HITS", out string test5) && test5 == "true";
+                uRToolStripMenuItem.Checked = _configDictionary.TryGetValue("UR", out string test6) && test6 == "true";
+                offsetHelpToolStripMenuItem.Checked = _configDictionary.TryGetValue("OFFSETHELP", out string test7) && test7 == "true";
+                avgOffsetToolStripMenuItem.Checked = _configDictionary.TryGetValue("AVGOFFSET", out string test8) && test8 == "true";
+                progressToolStripMenuItem.Checked = _configDictionary.TryGetValue("PROGRESS", out string test9) && test9 == "true";
+                ifFCPPToolStripMenuItem.Checked = _configDictionary.TryGetValue("IFFCPP", out string test13) && test13 == "true";
+                ifFCHitsToolStripMenuItem.Checked = _configDictionary.TryGetValue("IFFCHITS", out string test14) && test14 == "true";
+                expectedManiaScoreToolStripMenuItem.Checked = _configDictionary.TryGetValue("EXPECTEDMANIASCORE", out string test15) && test15 == "true";
+                _speedReduction = _configDictionary.TryGetValue("SPEEDREDUCTION", out string test10) && test10 == "true";
+                _ingameoverlayPriority = _configDictionary.TryGetValue("INGAMEOVERLAYPRIORITY", out string test16) ? test16 : "1/2/3/4/5/6/7/8/9/10/11";
 
-                if (configDictionary.TryGetValue("USECUSTOMFONT", out string test12) && test12 == "true")
+                if (_configDictionary.TryGetValue("USECUSTOMFONT", out string test12) && test12 == "true")
                 {
                     if (File.Exists("Font"))
                     {
@@ -194,11 +182,11 @@ namespace RealtimePPUR
                             catch
                             {
                                 MessageBox.Show("Fontファイルのフォント情報が不正であったため、デフォルトのフォントが適用されます。一度Fontファイルを削除してみることをお勧めします。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                var fontsizeResult = configDictionary.TryGetValue("FONTSIZE", out string fontsizeValue);
+                                var fontsizeResult = _configDictionary.TryGetValue("FONTSIZE", out string fontsizeValue);
                                 if (!fontsizeResult)
                                 {
                                     MessageBox.Show("Config.txtにFONTSIZEの値がなかったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    inGameValue.Font = new Font(FontCollection.Families[0], 19F);
+                                    inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                                 }
                                 else
                                 {
@@ -206,11 +194,11 @@ namespace RealtimePPUR
                                     if (!result)
                                     {
                                         MessageBox.Show("Config.txtのFONTSIZEの値が不正であったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        inGameValue.Font = new Font(FontCollection.Families[0], 19F);
+                                        inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                                     }
                                     else
                                     {
-                                        inGameValue.Font = new Font(FontCollection.Families[0], fontsize);
+                                        inGameValue.Font = new Font(_fontCollection.Families[0], fontsize);
                                     }
                                 }
                             }
@@ -218,11 +206,11 @@ namespace RealtimePPUR
                         else
                         {
                             MessageBox.Show("Fontファイルのフォント情報が不正であったため、デフォルトのフォントが適用されます。一度Fontファイルを削除してみることをお勧めします。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            var fontsizeResult = configDictionary.TryGetValue("FONTSIZE", out string fontsizeValue);
+                            var fontsizeResult = _configDictionary.TryGetValue("FONTSIZE", out string fontsizeValue);
                             if (!fontsizeResult)
                             {
                                 MessageBox.Show("Config.txtにFONTSIZEの値がなかったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                inGameValue.Font = new Font(FontCollection.Families[0], 19F);
+                                inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                             }
                             else
                             {
@@ -230,22 +218,22 @@ namespace RealtimePPUR
                                 if (!result)
                                 {
                                     MessageBox.Show("Config.txtのFONTSIZEの値が不正であったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    inGameValue.Font = new Font(FontCollection.Families[0], 19F);
+                                    inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                                 }
                                 else
                                 {
-                                    inGameValue.Font = new Font(FontCollection.Families[0], fontsize);
+                                    inGameValue.Font = new Font(_fontCollection.Families[0], fontsize);
                                 }
                             }
                         }
                     }
                     else
                     {
-                        var fontsizeResult = configDictionary.TryGetValue("FONTSIZE", out string fontsizeValue);
+                        var fontsizeResult = _configDictionary.TryGetValue("FONTSIZE", out string fontsizeValue);
                         if (!fontsizeResult)
                         {
                             MessageBox.Show("Config.txtにFONTSIZEの値がなかったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            inGameValue.Font = new Font(FontCollection.Families[0], 19F);
+                            inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                         }
                         else
                         {
@@ -253,22 +241,22 @@ namespace RealtimePPUR
                             if (!result)
                             {
                                 MessageBox.Show("Config.txtのFONTSIZEの値が不正であったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                inGameValue.Font = new Font(FontCollection.Families[0], 19F);
+                                inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                             }
                             else
                             {
-                                inGameValue.Font = new Font(FontCollection.Families[0], fontsize);
+                                inGameValue.Font = new Font(_fontCollection.Families[0], fontsize);
                             }
                         }
                     }
                 }
                 else
                 {
-                    var fontsizeResult = configDictionary.TryGetValue("FONTSIZE", out string fontsizeValue);
+                    var fontsizeResult = _configDictionary.TryGetValue("FONTSIZE", out string fontsizeValue);
                     if (!fontsizeResult)
                     {
                         MessageBox.Show("Config.txtにFONTSIZEの値がなかったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        inGameValue.Font = new Font(FontCollection.Families[0], 19F);
+                        inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                     }
                     else
                     {
@@ -276,41 +264,42 @@ namespace RealtimePPUR
                         if (!result)
                         {
                             MessageBox.Show("Config.txtのFONTSIZEの値が不正であったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            inGameValue.Font = new Font(FontCollection.Families[0], 19F);
+                            inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                         }
                         else
                         {
-                            inGameValue.Font = new Font(FontCollection.Families[0], fontsize);
+                            inGameValue.Font = new Font(_fontCollection.Families[0], fontsize);
                         }
                     }
                 }
 
-                var speedReductionValueResult = configDictionary.TryGetValue("SPEEDREDUCTIONVALUE", out string speedReductionValue);
-                if (!speedReductionValueResult)
+                var speedReductionValueResult = _configDictionary.TryGetValue("SPEEDREDUCTIONVALUE", out string speedReductionValue);
+                if (!speedReductionValueResult && _speedReduction)
                 {
-                    MessageBox.Show("Config.txtのSPEEDREDUCTIONVALUEの値が存在しないため、初期値の100が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    CalculationSpeedDetectedValue = 100;
+                    MessageBox.Show("Config.txtにSPEEDREDUCTIONVALUEの値が存在しないため、初期値の100が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    _calculationSpeedDetectedValue = 100;
                 }
-                else
+                else if (_speedReduction)
                 {
-                    var tryResult = int.TryParse(speedReductionValue, out CalculationSpeedDetectedValue);
+                    var tryResult = int.TryParse(speedReductionValue, out _calculationSpeedDetectedValue);
                     if (!tryResult)
                     {
                         MessageBox.Show("Config.txtのSPEEDREDUCTIONVALUEの値が不正であったため、初期値の100が設定されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        CalculationSpeedDetectedValue = 100;
+                        _calculationSpeedDetectedValue = 100;
                     }
                 }
-                updateLoop();
             }
+            UpdateLoop();
         }
 
         private void realtimePPURToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (_mode == 0) return;
             ClientSize = new Size(316, 130);
             BackgroundImage = Properties.Resources.PPUR;
-            currentBackgroundImage = 1;
-            roundCorners();
-            if (mode == 2)
+            _currentBackgroundImage = 1;
+            RoundCorners();
+            if (_mode == 2)
             {
                 foreach (Control control in Controls)
                 {
@@ -318,16 +307,17 @@ namespace RealtimePPUR
                     control.Location = new Point(control.Location.X, control.Location.Y + 65);
                 }
             }
-            mode = 0;
+            _mode = 0;
         }
 
         private void realtimePPToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (_mode == 1) return;
             ClientSize = new Size(316, 65);
             BackgroundImage = Properties.Resources.PP;
-            currentBackgroundImage = 2;
-            roundCorners();
-            if (mode == 2)
+            _currentBackgroundImage = 2;
+            RoundCorners();
+            if (_mode == 2)
             {
                 foreach (Control control in Controls)
                 {
@@ -335,16 +325,17 @@ namespace RealtimePPUR
                     control.Location = new Point(control.Location.X, control.Location.Y + 65);
                 }
             }
-            mode = 1;
+            _mode = 1;
         }
 
         private void offsetHelperToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (_mode == 2) return;
             ClientSize = new Size(316, 65);
             BackgroundImage = Properties.Resources.UR;
-            currentBackgroundImage = 3;
-            roundCorners();
-            if (mode == 0 || mode == 1)
+            _currentBackgroundImage = 3;
+            RoundCorners();
+            if (_mode == 0 || _mode == 1)
             {
                 foreach (Control control in Controls)
                 {
@@ -352,16 +343,12 @@ namespace RealtimePPUR
                     control.Location = new Point(control.Location.X, control.Location.Y - 65);
                 }
             }
-            mode = 2;
+            _mode = 2;
         }
 
         private void changeFontToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FontDialog font = new FontDialog
-            {
-                Font = inGameValue.Font
-            };
-
+            FontDialog font = new FontDialog();
             try
             {
                 if (font.ShowDialog() == DialogResult.Cancel)
@@ -388,7 +375,7 @@ namespace RealtimePPUR
                         sw.WriteLine(fontInfo);
                         sw.Close();
                         MessageBox.Show(
-                            "フォントの保存に成功しました。Config.txtのUSECUSTOMFONTをtrueにすることで起動時から保存されたフォントを使用できます。右クリック→Load Fontでも読み込むことが可能です！",
+                            "フォントの保存に成功しました。Config.txtのUSECUSTOMFONTをtrueにすることで起動時から保存されたフォントを使用できます。右クリック→Load Fontからでも読み込むことが可能です！",
                             "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
@@ -400,7 +387,7 @@ namespace RealtimePPUR
                         fs.Write(fontInfoByte, 0, fontInfoByte.Length);
                         fs.Close();
                         MessageBox.Show(
-                            "フォントの保存に成功しました。Config.txtのUSECUSTOMFONTをtrueにすることで起動時から保存されたフォントを使用できます。右クリック→Load Fontでも読み込むことが可能です！",
+                            "フォントの保存に成功しました。Config.txtのUSECUSTOMFONTをtrueにすることで起動時から保存されたフォントを使用できます。右クリック→Load Fontからでも読み込むことが可能です！",
                             "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
@@ -412,61 +399,62 @@ namespace RealtimePPUR
             }
             catch
             {
-                MessageBox.Show("フォントの変更に失敗しました。対応してないフォントです。(TrueTypeフォントのみ対応しています。このフォントはおそらくOpenTypeフォントです。)", "エラー",
+                MessageBox.Show("フォントの変更に失敗しました。対応していないフォントです。", "エラー",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        private async void updateLoop()
+        
+        // ReSharper disable once FunctionRecursiveOnAllPaths
+        private async void UpdateLoop()
         {
             try
             {
                 if (Process.GetProcessesByName("gosumemory").Length == 0)
                 {
-                    MessageBox.Show("gosumemoryがクラッシュした、もしくはgosumemoryを起動していたソフトが閉じられた可能性があります。ソフトを再起動してください。",
+                    MessageBox.Show("Gosumemoryがクラッシュした、もしくはGosumemoryを起動していたソフトが閉じられた可能性があります。ソフトを再起動してください。",
                         "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Close();
                 }
 
                 if (Program._ppurProcess.HasExited)
                 {
-                    MessageBox.Show("PPUR.jsがクラッシュした可能性があります。\n\n対処法: このソフトを閉じた後タスクマネージャーを開き、Node.js JavaScript Runtime、もしくはRealtimePPURを全て閉じ、ソフトを再起動してください。\nこのエラーはほとんどの場合、既に裏でPPUR.jsが起動しているときに起きます。", "エラー", MessageBoxButtons.OK,
+                    MessageBox.Show("PPUR.jsがクラッシュした可能性があります。\n\n対処法: このソフトを閉じた後にタスクマネージャーを開き、Node.js JavaScript Runtime、もしくはRealtimePPURを全て閉じ、ソフトを再起動してください。\n\nこのエラーはほとんどの場合、既に裏でPPUR.jsが起動しているときに起きます。", "エラー", MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                     Close();
                 }
 
-                HttpResponseMessage response = await client.GetAsync("http://127.0.0.1:3000/");
+                HttpResponseMessage response = await _client.GetAsync("http://127.0.0.1:3000/");
                 string json = await response.Content.ReadAsStringAsync();
                 JObject data = JsonConvert.DeserializeObject<JObject>(json);
 
                 double sr = (double)data["PP"]["SR"];
                 double sspp = (double)data["PP"]["SSPP"];
-                double currentPP = (double)data["PP"]["CurrentPP"];
-                double ifFCPP = (double)data["PP"]["ifFCPP"];
-                int Good = (int)data["PP"]["good"];
-                int Ok = (int)data["PP"]["ok"];
-                int Miss = (int)data["PP"]["miss"];
+                double currentPp = (double)data["PP"]["CurrentPP"];
+                double ifFcpp = (double)data["PP"]["ifFCPP"];
+                int good = (int)data["PP"]["good"];
+                int ok = (int)data["PP"]["ok"];
+                int miss = (int)data["PP"]["miss"];
                 int sliderbreaks = (int)data["PP"]["sliderBreaks"];
-                double AvgOffset = -(double)data["Hiterror"]["AvgOffset"];
+                double avgOffset = -(double)data["Hiterror"]["AvgOffset"];
                 double ur = (double)data["Hiterror"]["UR"];
-                double AvgOffsethelp = (double)data["Hiterror"]["AvgOffset"];
+                double avgOffsethelp = (double)data["Hiterror"]["AvgOffset"];
                 int bad = (int)data["PP"]["bad"];
                 int katu = (int)data["PP"]["katu"];
                 int geki = (int)data["PP"]["geki"];
                 int currentGamemode = (int)data["PP"]["mode"];
                 int currentCalculationSpeed = (int)data["calculatingTime"];
-                int ifFCGood = (int)data["PP"]["ifFCHits300"];
-                int ifFCOk = (int)data["PP"]["ifFCHits100"];
-                int ifFCBad = (int)data["PP"]["ifFCHits50"];
-                int ifFCMiss = (int)data["PP"]["ifFCHitsMiss"];
-                status = (int)data["PP"]["status"];
+                int ifFcGood = (int)data["PP"]["ifFCHits300"];
+                int ifFcOk = (int)data["PP"]["ifFCHits100"];
+                int ifFcBad = (int)data["PP"]["ifFCHits50"];
+                int ifFcMiss = (int)data["PP"]["ifFCHitsMiss"];
+                _status = (int)data["PP"]["status"];
 
-                if (prevCalculationSpeed == 0)
+                if (_prevCalculationSpeed == 0)
                 {
-                    prevCalculationSpeed = currentCalculationSpeed;
+                    _prevCalculationSpeed = currentCalculationSpeed;
                 }
-                else if (currentCalculationSpeed - prevCalculationSpeed > CalculationSpeedDetectedValue &&
-                         speedReduction)
+                else if (currentCalculationSpeed - _prevCalculationSpeed > _calculationSpeedDetectedValue &&
+                         _speedReduction)
                 {
                     new ToastContentBuilder()
                         .AddText("Calculation Speed Reduction Detected!")
@@ -475,78 +463,78 @@ namespace RealtimePPUR
                         .Show();
                 }
 
-                prevCalculationSpeed = currentCalculationSpeed;
+                _prevCalculationSpeed = currentCalculationSpeed;
 
-                AVGOFFSET.Text = AvgOffset.ToString(CultureInfo.CurrentCulture = new CultureInfo("en-us")) + "ms";
-                UR.Text = ur.ToString("F0");
-                AVGOFFSETHELP.Text = AvgOffsethelp.ToString("F0");
-                SR.Text = sr.ToString(CultureInfo.CurrentCulture = new CultureInfo("en-us"));
-                SSPP.Text = sspp.ToString("F0");
-                CurrentPP.Text = currentPP.ToString("F0");
-                CurrentPP.Width = TextRenderer.MeasureText(CurrentPP.Text, CurrentPP.Font).Width;
-                CurrentPP.Left = ClientSize.Width - CurrentPP.Width - 35;
+                _avgoffset.Text = avgOffset.ToString(CultureInfo.CurrentCulture = new CultureInfo("en-us")) + "ms";
+                _ur.Text = ur.ToString("F0");
+                _avgoffsethelp.Text = avgOffsethelp.ToString("F0");
+                _sr.Text = sr.ToString(CultureInfo.CurrentCulture = new CultureInfo("en-us"));
+                _sspp.Text = sspp.ToString("F0");
+                _currentPp.Text = currentPp.ToString("F0");
+                _currentPp.Width = TextRenderer.MeasureText(_currentPp.Text, _currentPp.Font).Width;
+                _currentPp.Left = ClientSize.Width - _currentPp.Width - 35;
 
                 switch (currentGamemode)
                 {
                     case 0:
-                        GOOD.Text = Good.ToString();
-                        GOOD.Width = TextRenderer.MeasureText(GOOD.Text, GOOD.Font).Width;
-                        GOOD.Left = ((ClientSize.Width - GOOD.Width) / 2) - 120;
+                        _good.Text = good.ToString();
+                        _good.Width = TextRenderer.MeasureText(_good.Text, _good.Font).Width;
+                        _good.Left = ((ClientSize.Width - _good.Width) / 2) - 120;
 
-                        OK.Text = (Ok + bad).ToString();
-                        OK.Width = TextRenderer.MeasureText(OK.Text, OK.Font).Width;
-                        OK.Left = ((ClientSize.Width - OK.Width) / 2) - 61;
+                        _ok.Text = (ok + bad).ToString();
+                        _ok.Width = TextRenderer.MeasureText(_ok.Text, _ok.Font).Width;
+                        _ok.Left = ((ClientSize.Width - _ok.Width) / 2) - 61;
 
-                        MISS.Text = Miss.ToString();
-                        MISS.Width = TextRenderer.MeasureText(MISS.Text, MISS.Font).Width;
-                        MISS.Left = ((ClientSize.Width - MISS.Width) / 2) - 3;
+                        _miss.Text = miss.ToString();
+                        _miss.Width = TextRenderer.MeasureText(_miss.Text, _miss.Font).Width;
+                        _miss.Left = ((ClientSize.Width - _miss.Width) / 2) - 3;
                         break;
 
                     case 1:
-                        GOOD.Text = Good.ToString();
-                        GOOD.Width = TextRenderer.MeasureText(GOOD.Text, GOOD.Font).Width;
-                        GOOD.Left = ((ClientSize.Width - GOOD.Width) / 2) - 120;
+                        _good.Text = good.ToString();
+                        _good.Width = TextRenderer.MeasureText(_good.Text, _good.Font).Width;
+                        _good.Left = ((ClientSize.Width - _good.Width) / 2) - 120;
 
-                        OK.Text = Ok.ToString();
-                        OK.Width = TextRenderer.MeasureText(OK.Text, OK.Font).Width;
-                        OK.Left = ((ClientSize.Width - OK.Width) / 2) - 61;
+                        _ok.Text = ok.ToString();
+                        _ok.Width = TextRenderer.MeasureText(_ok.Text, _ok.Font).Width;
+                        _ok.Left = ((ClientSize.Width - _ok.Width) / 2) - 61;
 
-                        MISS.Text = Miss.ToString();
-                        MISS.Width = TextRenderer.MeasureText(MISS.Text, MISS.Font).Width;
-                        MISS.Left = ((ClientSize.Width - MISS.Width) / 2) - 3;
+                        _miss.Text = miss.ToString();
+                        _miss.Width = TextRenderer.MeasureText(_miss.Text, _miss.Font).Width;
+                        _miss.Left = ((ClientSize.Width - _miss.Width) / 2) - 3;
                         break;
 
                     case 2:
-                        GOOD.Text = Good.ToString();
-                        GOOD.Width = TextRenderer.MeasureText(GOOD.Text, GOOD.Font).Width;
-                        GOOD.Left = ((ClientSize.Width - GOOD.Width) / 2) - 120;
+                        _good.Text = good.ToString();
+                        _good.Width = TextRenderer.MeasureText(_good.Text, _good.Font).Width;
+                        _good.Left = ((ClientSize.Width - _good.Width) / 2) - 120;
 
-                        OK.Text = (Ok + bad).ToString();
-                        OK.Width = TextRenderer.MeasureText(OK.Text, OK.Font).Width;
-                        OK.Left = ((ClientSize.Width - OK.Width) / 2) - 61;
+                        _ok.Text = (ok + bad).ToString();
+                        _ok.Width = TextRenderer.MeasureText(_ok.Text, _ok.Font).Width;
+                        _ok.Left = ((ClientSize.Width - _ok.Width) / 2) - 61;
 
-                        MISS.Text = Miss.ToString();
-                        MISS.Width = TextRenderer.MeasureText(MISS.Text, MISS.Font).Width;
-                        MISS.Left = ((ClientSize.Width - MISS.Width) / 2) - 3;
+                        _miss.Text = miss.ToString();
+                        _miss.Width = TextRenderer.MeasureText(_miss.Text, _miss.Font).Width;
+                        _miss.Left = ((ClientSize.Width - _miss.Width) / 2) - 3;
                         break;
 
                     case 3:
-                        GOOD.Text = (Good + geki).ToString();
-                        GOOD.Width = TextRenderer.MeasureText(GOOD.Text, GOOD.Font).Width;
-                        GOOD.Left = ((ClientSize.Width - GOOD.Width) / 2) - 120;
+                        _good.Text = (good + geki).ToString();
+                        _good.Width = TextRenderer.MeasureText(_good.Text, _good.Font).Width;
+                        _good.Left = ((ClientSize.Width - _good.Width) / 2) - 120;
 
-                        OK.Text = (katu + Ok + bad).ToString();
-                        OK.Width = TextRenderer.MeasureText(OK.Text, OK.Font).Width;
-                        OK.Left = ((ClientSize.Width - OK.Width) / 2) - 61;
+                        _ok.Text = (katu + ok + bad).ToString();
+                        _ok.Width = TextRenderer.MeasureText(_ok.Text, _ok.Font).Width;
+                        _ok.Left = ((ClientSize.Width - _ok.Width) / 2) - 61;
 
-                        MISS.Text = Miss.ToString();
-                        MISS.Width = TextRenderer.MeasureText(MISS.Text, MISS.Font).Width;
-                        MISS.Left = ((ClientSize.Width - MISS.Width) / 2) - 3;
+                        _miss.Text = miss.ToString();
+                        _miss.Width = TextRenderer.MeasureText(_miss.Text, _miss.Font).Width;
+                        _miss.Left = ((ClientSize.Width - _miss.Width) / 2) - 3;
                         break;
                 }
 
-                displayFormat = "";
-                var ingameoverlayPriorityArray = ingameoverlayPriority.Replace(" ", "").Split('/');
+                _displayFormat = "";
+                var ingameoverlayPriorityArray = _ingameoverlayPriority.Replace(" ", "").Split('/');
                 foreach (var priorityValue in ingameoverlayPriorityArray)
                 {
                     var priorityValueResult = int.TryParse(priorityValue, out int priorityValueInt);
@@ -556,7 +544,7 @@ namespace RealtimePPUR
                         case 1:
                             if (sRToolStripMenuItem.Checked)
                             {
-                                displayFormat += "SR: " +
+                                _displayFormat += "SR: " +
                                                  sr.ToString(CultureInfo.CurrentCulture = new CultureInfo("en-us")) +
                                                  "\n";
                             }
@@ -566,7 +554,7 @@ namespace RealtimePPUR
                         case 2:
                             if (sSPPToolStripMenuItem.Checked)
                             {
-                                displayFormat += "SSPP: " + sspp.ToString("F0") + "pp\n";
+                                _displayFormat += "SSPP: " + sspp.ToString("F0") + "pp\n";
                             }
 
                             break;
@@ -576,12 +564,12 @@ namespace RealtimePPUR
                             {
                                 if (ifFCPPToolStripMenuItem.Checked && currentGamemode != 3)
                                 {
-                                    displayFormat += "PP: " + currentPP.ToString("F0") + " / " + ifFCPP.ToString("F0") +
+                                    _displayFormat += "PP: " + currentPp.ToString("F0") + " / " + ifFcpp.ToString("F0") +
                                                      "pp\n";
                                 }
                                 else
                                 {
-                                    displayFormat += "PP: " + currentPP.ToString("F0") + "pp\n";
+                                    _displayFormat += "PP: " + currentPp.ToString("F0") + "pp\n";
                                 }
                             }
 
@@ -590,7 +578,7 @@ namespace RealtimePPUR
                         case 4:
                             if (currentACCToolStripMenuItem.Checked)
                             {
-                                displayFormat += "ACC: " + data["PP"]["CurrentACC"] + "%\n";
+                                _displayFormat += "ACC: " + data["PP"]["CurrentACC"] + "%\n";
                             }
 
                             break;
@@ -601,19 +589,19 @@ namespace RealtimePPUR
                                 switch (currentGamemode)
                                 {
                                     case 0:
-                                        displayFormat += $"Hits: {Good}/{Ok}/{bad}/{Miss} ({sliderbreaks})\n";
+                                        _displayFormat += $"Hits: {good}/{ok}/{bad}/{miss} ({sliderbreaks})\n";
                                         break;
 
                                     case 1:
-                                        displayFormat += $"Hits: {Good}/{Ok}/{Miss}\n";
+                                        _displayFormat += $"Hits: {good}/{ok}/{miss}\n";
                                         break;
 
                                     case 2:
-                                        displayFormat += $"Hits: {Good}/{Ok}/{bad}/{Miss}\n";
+                                        _displayFormat += $"Hits: {good}/{ok}/{bad}/{miss}\n";
                                         break;
 
                                     case 3:
-                                        displayFormat += $"Hits: {geki}/{Good}/{katu}/{Ok}/{bad}/{Miss}\n";
+                                        _displayFormat += $"Hits: {geki}/{good}/{katu}/{ok}/{bad}/{miss}\n";
                                         break;
                                 }
                             }
@@ -626,15 +614,15 @@ namespace RealtimePPUR
                                 switch (currentGamemode)
                                 {
                                     case 0:
-                                        displayFormat += $"ifFCHits: {ifFCGood}/{ifFCOk}/{ifFCBad}/{ifFCMiss}\n";
+                                        _displayFormat += $"ifFCHits: {ifFcGood}/{ifFcOk}/{ifFcBad}/{ifFcMiss}\n";
                                         break;
 
                                     case 1:
-                                        displayFormat += $"ifFCHits: {ifFCGood}/{ifFCOk}/{ifFCMiss}\n";
+                                        _displayFormat += $"ifFCHits: {ifFcGood}/{ifFcOk}/{ifFcMiss}\n";
                                         break;
 
                                     case 2:
-                                        displayFormat += $"ifFCHits: {ifFCGood}/{ifFCOk}/{ifFCBad}/{ifFCMiss}\n";
+                                        _displayFormat += $"ifFCHits: {ifFcGood}/{ifFcOk}/{ifFcBad}/{ifFcMiss}\n";
                                         break;
                                 }
                             }
@@ -644,7 +632,7 @@ namespace RealtimePPUR
                         case 7:
                             if (uRToolStripMenuItem.Checked)
                             {
-                                displayFormat += "UR: " + ur.ToString("F0") + "\n";
+                                _displayFormat += "UR: " + ur.ToString("F0") + "\n";
                             }
 
                             break;
@@ -652,7 +640,7 @@ namespace RealtimePPUR
                         case 8:
                             if (offsetHelpToolStripMenuItem.Checked)
                             {
-                                displayFormat += "OffsetHelp: " + AvgOffsethelp.ToString("F0") + "\n";
+                                _displayFormat += "OffsetHelp: " + avgOffsethelp.ToString("F0") + "\n";
                             }
 
                             break;
@@ -660,7 +648,7 @@ namespace RealtimePPUR
                         case 9:
                             if (expectedManiaScoreToolStripMenuItem.Checked && currentGamemode == 3)
                             {
-                                displayFormat += "ManiaScore: " + data["PP"]["expectedManiaScore"] + "\n";
+                                _displayFormat += "ManiaScore: " + data["PP"]["expectedManiaScore"] + "\n";
                             }
 
                             break;
@@ -668,23 +656,23 @@ namespace RealtimePPUR
                         case 10:
                             if (avgOffsetToolStripMenuItem.Checked)
                             {
-                                displayFormat += "AvgOffset: " +
-                                                 AvgOffset.ToString(CultureInfo.CurrentCulture = new CultureInfo("en-us")) + "\n";
+                                _displayFormat += "AvgOffset: " +
+                                                 avgOffset.ToString(CultureInfo.CurrentCulture = new CultureInfo("en-us")) + "\n";
                             }
-                            
+
                             break;
-                        
+
                         case 11:
                             if (progressToolStripMenuItem.Checked)
                             {
-                                displayFormat += "Progress: " + data["PP"]["progress"] + "%\n";
+                                _displayFormat += "Progress: " + data["PP"]["progress"] + "%\n";
                             }
 
                             break;
                     }
                 }
 
-                inGameValue.Text = displayFormat;
+                inGameValue.Text = _displayFormat;
 
                 response = null;
                 json = null;
@@ -692,20 +680,20 @@ namespace RealtimePPUR
             }
             catch
             {
-                displayFormat = "Error";
-                SR.Text = "0";
-                SSPP.Text = "0";
-                CurrentPP.Text = "0";
-                GOOD.Text = "0";
-                OK.Text = "0";
-                MISS.Text = "0";
-                AVGOFFSET.Text = "0ms";
-                UR.Text = "0";
-                AVGOFFSETHELP.Text = "0";
+                inGameValue.Text = "Error";
+                _sr.Text = "0";
+                _sspp.Text = "0";
+                _currentPp.Text = "0";
+                _good.Text = "0";
+                _ok.Text = "0";
+                _miss.Text = "0";
+                _avgoffset.Text = "0ms";
+                _ur.Text = "0";
+                _avgoffsethelp.Text = "0";
             }
             finally
             {
-                updateLoop();
+                UpdateLoop();
             }
         }
 
@@ -758,11 +746,11 @@ namespace RealtimePPUR
 
         private void resetFontToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            var fontsizeResult = configDictionary.TryGetValue("FONTSIZE", out string fontsizeValue);
+            var fontsizeResult = _configDictionary.TryGetValue("FONTSIZE", out string fontsizeValue);
             if (!fontsizeResult)
             {
                 MessageBox.Show("Config.txtにFONTSIZEの値がなかったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                inGameValue.Font = new Font(FontCollection.Families[0], 19F);
+                inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                 MessageBox.Show("フォントのリセットが完了しました！", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
@@ -771,12 +759,12 @@ namespace RealtimePPUR
                 if (!result)
                 {
                     MessageBox.Show("Config.txtのFONTSIZEの値が不正であったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    inGameValue.Font = new Font(FontCollection.Families[0], 19F);
+                    inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                     MessageBox.Show("フォントのリセットが完了しました！", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    inGameValue.Font = new Font(FontCollection.Families[0], fontsize);
+                    inGameValue.Font = new Font(_fontCollection.Families[0], fontsize);
                     MessageBox.Show("フォントのリセットが完了しました！", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
@@ -786,7 +774,7 @@ namespace RealtimePPUR
         {
             if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
             {
-                mousePoint = new Point(e.X, e.Y);
+                _mousePoint = new Point(e.X, e.Y);
             }
         }
 
@@ -797,16 +785,21 @@ namespace RealtimePPUR
                 return;
             }
 
-            Left += e.X - mousePoint.X;
-            Top += e.Y - mousePoint.Y;
+            Left += e.X - _mousePoint.X;
+            Top += e.Y - _mousePoint.Y;
 
         }
 
-        private async void githubUpdateChecker()
+        private static async void GithubUpdateChecker()
         {
             try
             {
                 const string softwareReleasesLatest = "https://github.com/puk06/RealtimePPUR/releases/latest";
+                if (!File.Exists("version"))
+                {
+                    MessageBox.Show("versionファイルが存在しないのでアップデートチェックは無視されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 StreamReader currentVersion = new StreamReader("version");
                 string currentVersionString = await currentVersion.ReadToEndAsync();
                 currentVersion.Close();
@@ -838,169 +831,169 @@ namespace RealtimePPUR
 
         private void osuModeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var lefttest = configDictionary.TryGetValue("LEFT", out string leftvalue);
-            var toptest = configDictionary.TryGetValue("TOP", out string topvalue);
+            var lefttest = _configDictionary.TryGetValue("LEFT", out string leftvalue);
+            var toptest = _configDictionary.TryGetValue("TOP", out string topvalue);
             if (!lefttest || !toptest)
             {
-                MessageBox.Show("Config.txtにLEFTまたはTOPの値が存在しません。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Config.txtにLEFTまたはTOPの値が存在しなかったため、osu! Modeの起動に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             var leftResult = int.TryParse(leftvalue, out int left);
             var topResult = int.TryParse(topvalue, out int top);
-            if ((!leftResult || !topResult) && !isosumode)
+            if ((!leftResult || !topResult) && !_isosumode)
             {
                 MessageBox.Show("Config.txtのLEFT、またはTOPの値が不正であったため、osu! Modeの起動に失敗しました。LEFT、TOPには数値以外入力しないでください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            isosumode = !isosumode;
-            osuModeToolStripMenuItem.Checked = isosumode;
+            _isosumode = !_isosumode;
+            osuModeToolStripMenuItem.Checked = _isosumode;
 
             Timer timer = new Timer
             {
                 Interval = 1
             };
 
-            if (isosumode)
+            if (_isosumode)
             {
                 timer.Start();
                 timer.Tick += (o, args) =>
                 {
-                    if (isosumode)
+                    if (_isosumode)
                     {
                         var processes = Process.GetProcessesByName("osu!");
                         if (processes.Length > 0)
                         {
                             Process osuProcess = processes[0];
                             IntPtr osuMainWindowHandle = osuProcess.MainWindowHandle;
-                            if (GetWindowRect(osuMainWindowHandle, out RECT rect) && status == 2 && GetForegroundWindow() == osuMainWindowHandle && osuMainWindowHandle != IntPtr.Zero)
+                            if (GetWindowRect(osuMainWindowHandle, out Rect rect) && _status == 2 && GetForegroundWindow() == osuMainWindowHandle && osuMainWindowHandle != IntPtr.Zero)
                             {
-                                if (!nowPlaying)
+                                if (!_nowPlaying)
                                 {
-                                    x = Location.X;
-                                    y = Location.Y;
-                                    nowPlaying = true;
+                                    _x = Location.X;
+                                    _y = Location.Y;
+                                    _nowPlaying = true;
                                 }
 
                                 BackgroundImage = null;
-                                currentBackgroundImage = 0;
+                                _currentBackgroundImage = 0;
                                 inGameValue.Visible = true;
-                                AVGOFFSETHELP.Visible = false;
-                                SR.Visible = false;
-                                SSPP.Visible = false;
-                                CurrentPP.Visible = false;
-                                GOOD.Visible = false;
-                                OK.Visible = false;
-                                MISS.Visible = false;
-                                AVGOFFSET.Visible = false;
-                                UR.Visible = false;
+                                _avgoffsethelp.Visible = false;
+                                _sr.Visible = false;
+                                _sspp.Visible = false;
+                                _currentPp.Visible = false;
+                                _good.Visible = false;
+                                _ok.Visible = false;
+                                _miss.Visible = false;
+                                _avgoffset.Visible = false;
+                                _ur.Visible = false;
                                 Region = null;
                                 Size = new Size(inGameValue.Width, inGameValue.Height);
                                 Location = new Point(rect.Left + left + 2, rect.Top + top);
                             }
                             else
                             {
-                                switch (mode)
+                                switch (_mode)
                                 {
                                     case 0:
-                                        if (currentBackgroundImage != 1)
+                                        if (_currentBackgroundImage != 1)
                                         {
                                             ClientSize = new Size(316, 130);
-                                            roundCorners();
+                                            RoundCorners();
                                             BackgroundImage = Properties.Resources.PPUR;
-                                            currentBackgroundImage = 1;
+                                            _currentBackgroundImage = 1;
                                         }
                                         break;
 
                                     case 1:
-                                        if (currentBackgroundImage != 2)
+                                        if (_currentBackgroundImage != 2)
                                         {
                                             ClientSize = new Size(316, 65);
-                                            roundCorners();
+                                            RoundCorners();
                                             BackgroundImage = Properties.Resources.PP;
-                                            currentBackgroundImage = 2;
+                                            _currentBackgroundImage = 2;
                                         }
                                         break;
 
                                     case 2:
-                                        if (currentBackgroundImage != 3)
+                                        if (_currentBackgroundImage != 3)
                                         {
                                             ClientSize = new Size(316, 65);
-                                            roundCorners();
+                                            RoundCorners();
                                             BackgroundImage = Properties.Resources.UR;
-                                            currentBackgroundImage = 3;
+                                            _currentBackgroundImage = 3;
                                         }
                                         break;
                                 }
 
-                                if (nowPlaying)
+                                if (_nowPlaying)
                                 {
-                                    Location = new Point(x, y);
-                                    nowPlaying = false;
+                                    Location = new Point(_x, _y);
+                                    _nowPlaying = false;
                                 }
 
                                 inGameValue.Visible = false;
-                                SR.Visible = true;
-                                SSPP.Visible = true;
-                                CurrentPP.Visible = true;
-                                GOOD.Visible = true;
-                                OK.Visible = true;
-                                MISS.Visible = true;
-                                AVGOFFSET.Visible = true;
-                                UR.Visible = true;
-                                AVGOFFSETHELP.Visible = true;
+                                _sr.Visible = true;
+                                _sspp.Visible = true;
+                                _currentPp.Visible = true;
+                                _good.Visible = true;
+                                _ok.Visible = true;
+                                _miss.Visible = true;
+                                _avgoffset.Visible = true;
+                                _ur.Visible = true;
+                                _avgoffsethelp.Visible = true;
                             }
                         }
                         else
                         {
-                            switch (mode)
+                            switch (_mode)
                             {
                                 case 0:
-                                    if (currentBackgroundImage != 1)
+                                    if (_currentBackgroundImage != 1)
                                     {
                                         ClientSize = new Size(316, 130);
-                                        roundCorners();
+                                        RoundCorners();
                                         BackgroundImage = Properties.Resources.PPUR;
-                                        currentBackgroundImage = 1;
+                                        _currentBackgroundImage = 1;
                                     }
                                     break;
 
                                 case 1:
-                                    if (currentBackgroundImage != 2)
+                                    if (_currentBackgroundImage != 2)
                                     {
                                         ClientSize = new Size(316, 65);
-                                        roundCorners();
+                                        RoundCorners();
                                         BackgroundImage = Properties.Resources.PP;
-                                        currentBackgroundImage = 2;
+                                        _currentBackgroundImage = 2;
                                     }
                                     break;
 
                                 case 2:
-                                    if (currentBackgroundImage != 3)
+                                    if (_currentBackgroundImage != 3)
                                     {
                                         ClientSize = new Size(316, 65);
-                                        roundCorners();
+                                        RoundCorners();
                                         BackgroundImage = Properties.Resources.UR;
-                                        currentBackgroundImage = 3;
+                                        _currentBackgroundImage = 3;
                                     }
                                     break;
                             }
 
-                            if (nowPlaying)
+                            if (_nowPlaying)
                             {
-                                Location = new Point(x, y);
-                                nowPlaying = false;
+                                Location = new Point(_x, _y);
+                                _nowPlaying = false;
                             }
 
                             inGameValue.Visible = false;
-                            SR.Visible = true;
-                            SSPP.Visible = true;
-                            CurrentPP.Visible = true;
-                            GOOD.Visible = true;
-                            OK.Visible = true;
-                            MISS.Visible = true;
-                            AVGOFFSET.Visible = true;
-                            UR.Visible = true;
-                            AVGOFFSETHELP.Visible = true;
+                            _sr.Visible = true;
+                            _sspp.Visible = true;
+                            _currentPp.Visible = true;
+                            _good.Visible = true;
+                            _ok.Visible = true;
+                            _miss.Visible = true;
+                            _avgoffset.Visible = true;
+                            _ur.Visible = true;
+                            _avgoffsethelp.Visible = true;
                         }
                     }
                     else
@@ -1011,59 +1004,59 @@ namespace RealtimePPUR
             }
             else
             {
-                switch (mode)
+                switch (_mode)
                 {
                     case 0:
-                        if (currentBackgroundImage != 1)
+                        if (_currentBackgroundImage != 1)
                         {
                             ClientSize = new Size(316, 130);
-                            roundCorners();
+                            RoundCorners();
                             BackgroundImage = Properties.Resources.PPUR;
-                            currentBackgroundImage = 1;
+                            _currentBackgroundImage = 1;
                         }
                         break;
 
                     case 1:
-                        if (currentBackgroundImage != 2)
+                        if (_currentBackgroundImage != 2)
                         {
                             ClientSize = new Size(316, 65);
-                            roundCorners();
+                            RoundCorners();
                             BackgroundImage = Properties.Resources.PP;
-                            currentBackgroundImage = 2;
+                            _currentBackgroundImage = 2;
                         }
                         break;
 
                     case 2:
-                        if (currentBackgroundImage != 3)
+                        if (_currentBackgroundImage != 3)
                         {
                             ClientSize = new Size(316, 65);
-                            roundCorners();
+                            RoundCorners();
                             BackgroundImage = Properties.Resources.UR;
-                            currentBackgroundImage = 3;
+                            _currentBackgroundImage = 3;
                         }
                         break;
                 }
 
-                if (nowPlaying)
+                if (_nowPlaying)
                 {
-                    Location = new Point(x, y);
-                    nowPlaying = false;
+                    Location = new Point(_x, _y);
+                    _nowPlaying = false;
                 }
 
                 inGameValue.Visible = false;
-                SR.Visible = true;
-                SSPP.Visible = true;
-                CurrentPP.Visible = true;
-                GOOD.Visible = true;
-                OK.Visible = true;
-                MISS.Visible = true;
-                AVGOFFSET.Visible = true;
-                UR.Visible = true;
-                AVGOFFSETHELP.Visible = true;
+                _sr.Visible = true;
+                _sspp.Visible = true;
+                _currentPp.Visible = true;
+                _good.Visible = true;
+                _ok.Visible = true;
+                _miss.Visible = true;
+                _avgoffset.Visible = true;
+                _ur.Visible = true;
+                _avgoffsethelp.Visible = true;
             }
         }
 
-        private void roundCorners()
+        private void RoundCorners()
         {
             const int radius = 11;
             const int diameter = radius * 2;
@@ -1081,6 +1074,13 @@ namespace RealtimePPUR
         private void RealtimePPUR_Closed(object sender, EventArgs e)
         {
             System.Windows.Forms.Application.Exit();
+        }
+
+
+        private void changePriorityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form priorityForm = new ChangePriorityForm();
+            priorityForm.Show();
         }
 
         private void sRToolStripMenuItem_Click(object sender, EventArgs e)
