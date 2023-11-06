@@ -69,7 +69,7 @@ const calcObjects = (mappath, mode) => {
     const map = new Beatmap({ path: mappath });
     const score = {
         mode: mode
-    }
+    };
     switch (mode) {
         case 0:
         case 2:
@@ -436,6 +436,8 @@ function Main() {
                     }
 
                     // ifFCの計算
+                    // These calculation method are from BathBot made by MaxOhn. (https://github.com/MaxOhn/Bathbot).
+                    // この計算方法はMaxOhn氏が作成したBathBotから引用しています。
                     let ifFCPP;
                     let ifFCHits;
                     switch (currentMode) {
@@ -464,7 +466,8 @@ function Main() {
                                 n100: n100Osu,
                                 n50: n50Osu,
                                 nMisses: 0
-                            }
+                            };
+
                             const calcOsu = new Calculator(scoreOsu);
                             ifFCPP = calcOsu.performance(map).pp;
                             if (isNaN(ifFCPP)) ifFCPP = 0;
@@ -491,7 +494,7 @@ function Main() {
                                 n100: n100Taiko,
                                 n50: 0,
                                 nMisses: 0
-                            }
+                            };
 
                             const calcTaiko = new Calculator(scoreTaiko);
                             ifFCPP = calcTaiko.performance(map).pp;
@@ -526,7 +529,8 @@ function Main() {
                                 n100: nDropletsCatch,
                                 n50: nTinyDropletsCatch,
                                 nMisses: 0
-                            }
+                            };
+
                             const calcCatch = new Calculator(scoreCatch);
                             ifFCPP = calcCatch.performance(map).pp;
                             if (isNaN(ifFCPP)) ifFCPP = 0;
@@ -539,7 +543,7 @@ function Main() {
                                 n100: 0,
                                 n50: 0,
                                 nMisses: 0
-                            }
+                            };
                             break;
                     }
     
