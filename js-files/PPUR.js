@@ -1,15 +1,15 @@
 const axios = require("./node_modules/axios");
 const { Beatmap, Calculator } = require("./node_modules/rosu-pp");
-const express = require('./node_modules/express');
 const path = require('path');
 const fs = require('fs');
-const app = express();
 
 let dataobjectForJson;
 let hiterror;
 let currentMode;
 let isZeroToOneHundred = true;
 let isplaying = false;
+let istesting = false;
+let isediting = false;
 let looptimeout = 0;
 let calculatingTime = 0;
 let trialCount = 0;
@@ -17,22 +17,19 @@ let trialCount = 0;
 const calculateUR = (Hitserrorarray) => {
     if (Hitserrorarray == null || Hitserrorarray.length == 0) return 0;
     const Offset = Hitserrorarray.reduce((acc, val) => acc + val, 0) / Hitserrorarray.length;
-    if (Math.abs(Offset) > 10000) {
-        return calculateUR(Hitserrorarray);
-    } else {
-        return Offset;
-    }
+    if (Math.abs(Offset) > 10000) return calculateUR(Hitserrorarray);
+    return Offset;
 }
 
 const searchMode = (filepath) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         try {
             let mode = 0;
             const file = fs.createReadStream(filepath, 'utf8')
-            .on('error', () => {
-                file.close();
-                resolve(0);
-            });
+                .on('error', () => {
+                    file.close();
+                    resolve(0);
+                });
 
             const lineReader = require('readline').createInterface({
                 input: file
@@ -55,7 +52,7 @@ const searchMode = (filepath) => {
                 resolve(mode);
             });
 
-            lineReader.on('error', () =>{
+            lineReader.on('error', () => {
                 file.close();
                 resolve(0);
             });
@@ -76,8 +73,6 @@ const calcObjects = (mappath, mode) => {
             return new Calculator(score).performance(map).difficulty;
 
         case 1:
-            return new Calculator(score).mapAttributes(map);
-
         case 3:
             return new Calculator(score).mapAttributes(map);
     }
@@ -99,39 +94,50 @@ const modMultiplierModDividerCalculator = (mod) => {
 }
 
 const maniaScoreCalculator = (notesList, mods, currentScore, objectcount) => {
-    const judgement = {
-        HitValue: 320,
-        HitBonusValue: 32,
-        HitBonus: 2,
-        HitPunishment: 0
-    }
+    return new Promise(resolve => {
+        const judgement = {
+            HitValue: 320,
+            HitBonusValue: 32,
+            HitBonus: 2,
+            HitPunishment: 0
+        };
 
-    let TotalNotes = 0;
-    for (const key in notesList) {
-        TotalNotes += notesList[key];
-    }
+        let TotalNotes = 0;
+        for (const key in notesList) {
+            TotalNotes += notesList[key];
+        }
 
-    let Bonus = 100;
-    const MaxScore = 1000000;
-    let BaseScore = 0;
-    let BonusScore = 0;
+        const MaxScore = 1000000;
+        let Bonus = 100;
+        let BaseScore = 0;
+        let BonusScore = 0;
+        const { modMultiplier, modDivider } = modMultiplierModDividerCalculator(mods);
 
-    const { modMultiplier, modDivider } = modMultiplierModDividerCalculator(mods);
-    for (let i = 0; i < TotalNotes; i++) {
-        Bonus = Math.max(0, Math.min(100, (Bonus + judgement.HitBonus - judgement.HitPunishment) / modDivider));
-        BaseScore += (MaxScore * modMultiplier * 0.5 / objectcount) * (judgement.HitValue / 320);
-        BonusScore += (MaxScore * modMultiplier * 0.5 / objectcount) * (judgement.HitBonusValue * Math.sqrt(Bonus) / 320);
-    }
-    return TotalNotes == notesList["nGeki"] ? MaxScore * modMultiplier : MaxScore * modMultiplier - (Math.round(BaseScore + BonusScore) - currentScore);
+        for (let i = 0; i < TotalNotes; i++) {
+            Bonus = Math.max(0, Math.min(100, (Bonus + judgement.HitBonus - judgement.HitPunishment) / modDivider));
+            BaseScore += (MaxScore * modMultiplier * 0.5 / objectcount) * (judgement.HitValue / 320);
+            BonusScore += (MaxScore * modMultiplier * 0.5 / objectcount) * (judgement.HitBonusValue * Math.sqrt(Bonus) / 320);
+        }
+
+        const ratio = TotalNotes / objectcount;
+        let score = 0;
+        if (TotalNotes == notesList["nGeki"]) {
+            score = MaxScore * modMultiplier;
+        } else if (TotalNotes != notesList["nMisses"]) {
+            score = Math.max(MaxScore * modMultiplier - Math.round((Math.round(BaseScore + BonusScore) - currentScore) / ratio), 0);
+        }
+        if (isNaN(score)) score = 0;
+
+        resolve(score);
+    });
 }
 
 function Main() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async resolve => {
         try {
-            let mapdata = await axios.get(`http://127.0.0.1:24050/json`);
-            let responsedata = mapdata.data;
+            let responsedata = await axios.get("http://127.0.0.1:24050/json").then(response => response.data);
             let dataobject = {
-                Hiterror : responsedata.gameplay.hits.hitErrorArray,
+                Hiterror: responsedata.gameplay.hits.hitErrorArray,
                 UR: responsedata.gameplay.hits.unstableRate,
                 beatmappath: path.join(responsedata.settings.folders.songs, responsedata.menu.bm.path.folder, responsedata.menu.bm.path.file),
                 mods: responsedata.menu.mods.num,
@@ -139,12 +145,12 @@ function Main() {
                 playingMode: responsedata.gameplay.gameMode,
                 menuMode: responsedata.menu.gameMode,
                 folder: responsedata.settings.folders.songs,
-                miss: responsedata.gameplay.hits["0"],
                 good: responsedata.gameplay.hits["300"],
                 ok: responsedata.gameplay.hits["100"],
                 bad: responsedata.gameplay.hits["50"],
                 geki: responsedata.gameplay.hits.geki,
                 katu: responsedata.gameplay.hits.katu,
+                miss: responsedata.gameplay.hits["0"],
                 combo: responsedata.gameplay.combo.max,
                 sliderBreaks: responsedata.gameplay.hits.sliderBreaks,
                 status: responsedata.menu.state,
@@ -159,8 +165,10 @@ function Main() {
                 currentTiming: responsedata.menu.bm.time.current,
                 totalTiming: responsedata.menu.bm.time.full,
                 currentAccuracy: responsedata.gameplay.accuracy,
-                currentScore: responsedata.gameplay.score
+                currentScore: responsedata.gameplay.score,
+                healthBar: responsedata.gameplay.hp.normal
             };
+            responsedata = null;
 
             switch (dataobject.status) {
                 case 0:
@@ -170,28 +178,38 @@ function Main() {
                 case 13:
                     currentMode = dataobject.menuMode;
                     isplaying = false;
+                    istesting = false;
                     break;
 
                 case 1:
                     isplaying = false;
+                    isediting = true;
+                    istesting = false;
                     break;
 
                 case 2:
                     currentMode = dataobject.playingMode;
                     isplaying = true;
+                    istesting = isediting;
                     break;
 
                 case 4:
                     isplaying = false;
+                    isediting = false;
+                    istesting = false;
                     break;
 
                 case 7:
                     currentMode = dataobject.playingMode;
+                    isediting = false;
+                    istesting = false;
                     break;
 
                 case 14:
                     currentMode = dataobject.playingMode;
                     isplaying = false;
+                    isediting = false;
+                    istesting = false;
                     break;
             }
 
@@ -217,36 +235,32 @@ function Main() {
                 ProcessingBeatmaps = 19,
                 Tourney = 22
             */
-
-            if (dataobject.status == 1 || dataobject.status == 4) { // マップ編集画面 = 1, 編集マップ選択画面 = 4
-
+            
+            if (dataobject.status == 1 || dataobject.status == 4) { // マップ編集画面 = 1, 編集マップ選択画面 = 4(テストプレイはelse内で処理)
                 // Modeを譜面ファイルから取得
                 let mode = await searchMode(dataobject.beatmappath);
 
-                // PP、SRの計算(calculatePPSR関数) 他のcalculatePPSRとは計算式が違う
-                const calculatePPSR = () => {
+                // PP、SRを計算し、PP変数に代入(即時関数を使用)
+                let PP = (() => {
                     const map = new Beatmap({ path: dataobject.beatmappath });
-    
+
                     const score = {
                         mode: mode,
                         mods: 0
                     };
-    
+
                     const calc = new Calculator(score);
                     let sr = calc.performance(map).difficulty.stars;
                     if (isNaN(sr)) sr = 0;
 
-                    let sspp = calc.acc(100).performance(map).pp;
+                    let sspp = calc.performance(map).pp;
                     if (isNaN(sspp)) sspp = 0;
-                    
+
                     return {
                         sr: sr,
                         sspp: sspp
-                    }
-                }
-
-                // calculatePPSR関数を使って計算されたものをPP変数に代入
-                let PP = calculatePPSR();
+                    };
+                })();
 
                 // 送信用データの作成
                 dataobjectForJson = {
@@ -255,6 +269,7 @@ function Main() {
                         UR: 0
                     },
                     PP: {
+                        fullSR: Math.round(Number(PP.sr) * 100) / 100,
                         SR: Math.round(Number(PP.sr) * 100) / 100,
                         SSPP: Math.round(Number(PP.sspp) * 100) / 100,
                         CurrentPP: Math.round(Number(PP.sspp) * 100) / 100,
@@ -274,7 +289,9 @@ function Main() {
                         ifFCHits100: 0,
                         ifFCHits50: 0,
                         ifFCHitsMiss: 0,
-                        expectedManiaScore: 0
+                        expectedManiaScore: 0,
+                        healthBar: 0,
+                        istesting: istesting
                     },
                     Error: {
                         Error: "None"
@@ -284,12 +301,9 @@ function Main() {
 
                 // メモリ解放
                 mode = null;
-                dataobject = null;
-                mapdata = null;
-                responsedata = null;
                 PP = null;
-            } else if (dataobject.status == 7 && !isplaying) { // リザルト画面 = 7、プレイ直後のリザルトではなく、他人のリザルトを見ているときにフラグが立つ(isplaying)
-
+                dataobject = null;
+            } else if (dataobject.status == 7 && !isplaying) { // リザルト画面 = 7、プレイ直後のリザルトではなく、他人のリザルトを見ているときにフラグが立つ(isplayingは自分がプレイ中かどうかのフラグ)
                 // Modeを譜面ファイルから取得
                 let mode = await searchMode(dataobject.beatmappath);
 
@@ -298,8 +312,8 @@ function Main() {
                 if (dataobject.menuMode == 2 && mode == 0) mode = 2;
                 if (dataobject.menuMode == 3 && mode == 0) mode = 3;
 
-                // PP、SRの計算(calculatePPSR関数)
-                const calculatePPSR = () => {
+                // PP、SRを計算し、PP変数に代入(即時関数を使用)
+                let PP = (() => {
                     const map = new Beatmap({ path: dataobject.beatmappath });
 
                     const score = {
@@ -313,33 +327,30 @@ function Main() {
                         nGeki: dataobject.resultGeki,
                         combo: dataobject.resultCombo
                     };
-    
+
                     const scoreforsspp = {
                         mode: mode,
                         mods: dataobject.resultMods
                     };
-    
+
                     const calc = new Calculator(score);
                     const calcforsspp = new Calculator(scoreforsspp);
 
-                    let sspp = calcforsspp.acc(100).performance(map).pp;
+                    let sr = calc.performance(map).difficulty.stars;
+                    if (isNaN(sr)) sr = 0;
+
+                    let sspp = calcforsspp.performance(map).pp;
                     if (isNaN(sspp)) sspp = 0;
 
                     let pp = calc.performance(map).pp;
                     if (isNaN(pp)) pp = 0;
 
-                    let sr = calc.performance(map).difficulty.stars;
-                    if (isNaN(sr)) sr = 0;
-
                     return {
                         sr: sr,
                         sspp: sspp,
                         pp: pp
-                    }
-                }
-                
-                // calculatePPSR関数を使って計算されたものをPP変数に代入
-                let PP = calculatePPSR();
+                    };
+                })();
 
                 // Hiterrorが計算されていない場合は計算する
                 if (hiterror == undefined || hiterror == null) {
@@ -348,7 +359,7 @@ function Main() {
                         UR: dataobject.UR
                     };
                 }
-                
+
                 // 送信用データの作成
                 dataobjectForJson = {
                     Hiterror: {
@@ -356,6 +367,7 @@ function Main() {
                         UR: Math.round(Number(hiterror.UR) * 100) / 100
                     },
                     PP: {
+                        fullSR: Math.round(Number(PP.sr) * 100) / 100,
                         SR: Math.round(Number(PP.sr) * 100) / 100,
                         SSPP: Math.round(Number(PP.sspp) * 100) / 100,
                         CurrentPP: Math.round(Number(PP.pp) * 100) / 100,
@@ -375,7 +387,9 @@ function Main() {
                         ifFCHits100: 0,
                         ifFCHits50: 0,
                         ifFCHitsMiss: 0,
-                        expectedManiaScore: 0
+                        expectedManiaScore: 0,
+                        healthBar: 0,
+                        istesting: istesting
                     },
                     Error: {
                         Error: "None"
@@ -385,14 +399,11 @@ function Main() {
 
                 // メモリ解放
                 mode = null;
-                dataobject = null;
-                mapdata = null;
-                responsedata = null;
                 PP = null;
+                dataobject = null;
             } else { // 上記以外の場合(プレイ中、プレイ直後のリザルト、マルチプレイなどが当てはまる。)
-
-                // PP、SRの計算(calculatePPSR関数)
-                const calculatePPSR = () => {
+                // PP、SRを計算し、PP変数に代入(即時関数を使用)
+                let PP = (() => {
                     const map = new Beatmap({ path: dataobject.beatmappath });
 
                     const score = {
@@ -406,12 +417,12 @@ function Main() {
                         nGeki: dataobject.geki,
                         combo: dataobject.combo
                     };
-    
+
                     const scoreforsspp = {
                         mode: currentMode,
                         mods: dataobject.mods
                     };
-    
+
                     let passedObjects;
                     switch (currentMode) {
                         case 0:
@@ -423,133 +434,28 @@ function Main() {
                             break;
 
                         case 2:
-                            passedObjects = dataobject.good + dataobject.ok + dataobject.bad + dataobject.miss;
+                            passedObjects = dataobject.good + dataobject.ok + dataobject.miss;
                             break;
 
                         case 3:
                             passedObjects = dataobject.geki + dataobject.good + dataobject.katu + dataobject.ok + dataobject.bad + dataobject.miss;
                             break;
-                            
+
                         default:
                             passedObjects = dataobject.good + dataobject.ok + dataobject.bad + dataobject.miss;
                             break;
                     }
 
-                    // ifFCの計算
-                    // These calculation method are from BathBot made by MaxOhn. (https://github.com/MaxOhn/Bathbot).
-                    // この計算方法はMaxOhn氏が作成したBathBotから引用しています。
-                    let ifFCPP;
-                    let ifFCHits;
-                    switch (currentMode) {
-                        case 0:
-                            const objectdataOsu = calcObjects(dataobject.beatmappath, currentMode);
-                            const objectsOsu = objectdataOsu.nCircles + objectdataOsu.nSliders + objectdataOsu.nSpinners;
-                            let n300Osu = dataobject.good + Math.max(0, objectsOsu - passedObjects);
-                            const countHitsOsu = objectsOsu - dataobject.miss;
-                            const ratioOsu = 1.0 - (n300Osu / countHitsOsu);
-                            const new100sOsu = Math.ceil(ratioOsu * dataobject.miss);
-                            n300Osu += Math.max(0, dataobject.miss - new100sOsu);
-                            const n100Osu = dataobject.ok + new100sOsu;
-                            const n50Osu = dataobject.bad;
-                            const scoreOsu = {
-                                mode: currentMode,
-                                mods: dataobject.mods,
-                                n300: n300Osu,
-                                n100: n100Osu,
-                                n50: n50Osu,
-                                nMisses: 0,
-                                combo: objectdataOsu.maxCombo
-                            };
-
-                            ifFCHits = {
-                                n300: n300Osu,
-                                n100: n100Osu,
-                                n50: n50Osu,
-                                nMisses: 0
-                            };
-
-                            const calcOsu = new Calculator(scoreOsu);
-                            ifFCPP = calcOsu.performance(map).pp;
-                            if (isNaN(ifFCPP)) ifFCPP = 0;
-                            break;
-                        
-                        case 1:
-                            const objectdataTaiko = calcObjects(dataobject.beatmappath, currentMode);
-                            const objectsTaiko = objectdataTaiko.nCircles;
-                            let n300Taiko = dataobject.good + Math.max(0, objectsTaiko - passedObjects);
-                            const countHitsTaiko = objectsTaiko - dataobject.miss;
-                            const ratioTaiko = 1.0 - (n300Taiko / countHitsTaiko);
-                            const new100sTaiko = Math.ceil(ratioTaiko * dataobject.miss);
-                            n300Taiko += Math.max(0, dataobject.miss - new100sTaiko);
-                            const n100Taiko = dataobject.ok + new100sTaiko;
-                            const acc = (100.0 * (2 * n300Taiko + n100Taiko)) / (2 * objectsTaiko);
-                            const scoreTaiko = {
-                                mode: currentMode,
-                                mods: dataobject.mods,
-                                acc: acc
-                            };
-
-                            ifFCHits = {
-                                n300: n300Taiko,
-                                n100: n100Taiko,
-                                n50: 0,
-                                nMisses: 0
-                            };
-
-                            const calcTaiko = new Calculator(scoreTaiko);
-                            ifFCPP = calcTaiko.performance(map).pp;
-                            if (isNaN(ifFCPP)) ifFCPP = 0;
-                            break;
-                            
-                        case 2:
-                            const objectdataCatch = calcObjects(dataobject.beatmappath, currentMode);
-                            const objectsCatch = objectdataCatch.maxCombo;
-                            const passedObjectsforCatch = dataobject.good + dataobject.ok + dataobject.miss;
-                            const missingCatch = objectsCatch - passedObjectsforCatch;
-                            const missingFruitsCatch = Math.max(0, missingCatch - Math.max(0, objectdataCatch.nDroplets - dataobject.ok));
-                            const missingDropletsCatch = missingCatch - missingFruitsCatch;
-                            const nFruitsCatch = dataobject.good + missingFruitsCatch;
-                            const nDropletsCatch = dataobject.ok + missingDropletsCatch;
-                            const nTinyDropletMissesCatch = dataobject.katu;
-                            const nTinyDropletsCatch = Math.max(0, objectdataCatch.nTinyDroplets - nTinyDropletMissesCatch);
-                            const scoreCatch = {
-                                mode: currentMode,
-                                mods: dataobject.mods,
-                                n300: nFruitsCatch,
-                                n100: nDropletsCatch,
-                                n50: nTinyDropletsCatch,
-                                nGeki: dataobject.geki,
-                                nKatu: dataobject.katu,
-                                nMisses: 0,
-                                combo: objectdataCatch.maxCombo
-                            };
-
-                            ifFCHits = {
-                                n300: nFruitsCatch,
-                                n100: nDropletsCatch,
-                                n50: nTinyDropletsCatch,
-                                nMisses: 0
-                            };
-
-                            const calcCatch = new Calculator(scoreCatch);
-                            ifFCPP = calcCatch.performance(map).pp;
-                            if (isNaN(ifFCPP)) ifFCPP = 0;
-                            break;
-                            
-                        case 3:
-                            ifFCPP = 0;
-                            ifFCHits = {
-                                n300: 0,
-                                n100: 0,
-                                n50: 0,
-                                nMisses: 0
-                            };
-                            break;
-                    }
-    
                     const calc = new Calculator(score);
                     const calcforsspp = new Calculator(scoreforsspp);
-                    let sspp = calcforsspp.acc(100).performance(map).pp;
+
+                    let fullSR = calcforsspp.performance(map).difficulty.stars;
+                    if (isNaN(fullSR)) fullSR = 0;
+
+                    let sr = dataobject.status == 0 || dataobject.status == 5 || dataobject.status == 11 || dataobject.status == 12 || dataobject.status == 13 || dataobject.status == 14 || istesting ? fullSR : calc.passedObjects(passedObjects).performance(map).difficulty.stars;
+                    if (isNaN(sr) || (dataobject.status == 2 && passedObjects == 0 && !istesting)) sr = 0;
+
+                    let sspp = calcforsspp.performance(map).pp;
                     if (isNaN(sspp)) sspp = 0;
 
                     let pp;
@@ -560,22 +466,128 @@ function Main() {
                     }
                     if (isNaN(pp)) pp = 0;
 
-                    let sr = dataobject.status == 0 || dataobject.status == 5 || dataobject.status == 11 || dataobject.status == 12 || dataobject.status == 13 || dataobject.status == 14 ? calc.performance(map).difficulty.stars : calc.passedObjects(passedObjects).performance(map).difficulty.stars;
-                    if (isNaN(sr)) sr = 0;
+                    // ifFCの計算
+                    // These calculation method are from BathBot made by MaxOhn. (https://github.com/MaxOhn/Bathbot).
+                    // この計算方法はMaxOhn氏が作成したBathBotから引用しています。
+                    let ifFCPP = 0;
+                    let ifFCHits = {
+                        n300: 0,
+                        n100: 0,
+                        n50: 0,
+                        nMisses: 0
+                    };
+
+                    switch (currentMode) {
+                        case 0: {
+                            const objectdata = calcObjects(dataobject.beatmappath, currentMode);
+                            const objects = objectdata.nCircles + objectdata.nSliders + objectdata.nSpinners;
+                            let n300 = dataobject.good + Math.max(0, objects - passedObjects);
+                            const countHits = objects - dataobject.miss;
+                            const ratio = 1.0 - (n300 / countHits);
+                            const new100s = Math.ceil(ratio * dataobject.miss);
+                            n300 += Math.max(0, dataobject.miss - new100s);
+                            const n100 = dataobject.ok + new100s;
+                            const n50 = dataobject.bad;
+                            const score = {
+                                mode: currentMode,
+                                mods: dataobject.mods,
+                                n300: n300,
+                                n100: n100,
+                                n50: n50,
+                                nMisses: 0,
+                                combo: objectdata.maxCombo
+                            };
+
+                            ifFCHits = {
+                                n300: n300,
+                                n100: n100,
+                                n50: n50,
+                                nMisses: 0
+                            };
+
+                            const calculator = new Calculator(score);
+                            ifFCPP = calculator.performance(map).pp;
+                            if (isNaN(ifFCPP)) ifFCPP = 0;
+                            break;
+                        }
+
+                        case 1: {
+                            const objectdata = calcObjects(dataobject.beatmappath, currentMode);
+                            const objects = objectdata.nCircles;
+                            let n300 = dataobject.good + Math.max(0, objects - passedObjects);
+                            const countHits = objects - dataobject.miss;
+                            const ratio = 1.0 - (n300 / countHits);
+                            const new100s = Math.ceil(ratio * dataobject.miss);
+                            n300 += Math.max(0, dataobject.miss - new100s);
+                            const n100 = dataobject.ok + new100s;
+                            const score = {
+                                mode: currentMode,
+                                mods: dataobject.mods,
+                                n300: n300,
+                                n100: n100,
+                                nMisses: 0
+                            };
+
+                            ifFCHits = {
+                                n300: n300,
+                                n100: n100,
+                                n50: 0,
+                                nMisses: 0
+                            };
+
+                            const calculator = new Calculator(score);
+                            ifFCPP = calculator.performance(map).pp;
+                            if (isNaN(ifFCPP)) ifFCPP = 0;
+                            break;
+                        }
+
+                        case 2: {
+                            const objectdata = calcObjects(dataobject.beatmappath, currentMode);
+                            const objects = objectdata.maxCombo;
+                            const missing = objects - passedObjects;
+                            const missingFruits = Math.max(0, missing - Math.max(0, objectdata.nDroplets - dataobject.ok));
+                            const missingDroplets = missing - missingFruits;
+                            const nFruits = dataobject.good + missingFruits;
+                            const nDroplets = dataobject.ok + missingDroplets;
+                            const nTinyDropletMisses = dataobject.katu;
+                            const nTinyDroplets = Math.max(0, objectdata.nTinyDroplets - nTinyDropletMisses);
+                            const score = {
+                                mode: currentMode,
+                                mods: dataobject.mods,
+                                n300: nFruits,
+                                n100: nDroplets,
+                                n50: nTinyDroplets,
+                                nGeki: dataobject.geki,
+                                nKatu: dataobject.katu,
+                                nMisses: 0,
+                                combo: objectdata.maxCombo
+                            };
+
+                            ifFCHits = {
+                                n300: nFruits,
+                                n100: nDroplets,
+                                n50: nTinyDroplets,
+                                nMisses: 0
+                            };
+
+                            const calculator = new Calculator(score);
+                            ifFCPP = calculator.performance(map).pp;
+                            if (isNaN(ifFCPP)) ifFCPP = 0;
+                            break;
+                        }
+                    }
 
                     return {
+                        fullSR: fullSR,
                         sr: sr,
                         sspp: sspp,
                         pp: pp,
                         ifFCPP: ifFCPP,
                         ifFCHits: ifFCHits
-                    }
-                }
+                    };
+                })();
 
-                // calculatePPSR関数を使って計算されたものをPP変数に代入
-                let PP = calculatePPSR();
-
-                // Hiterrorが計算されていない場合は計算する
+                // Hiterrorが計算されていない、もしくはプレイ中の場合は計算する
                 if (hiterror == undefined || hiterror == null || dataobject.status == 2) {
                     hiterror = {
                         AvgOffset: calculateUR(dataobject.Hiterror),
@@ -583,9 +595,11 @@ function Main() {
                     };
                 }
 
-                // 送信用データの作成
-                const currentProgress = Math.max(0, Math.min(100, Math.round((dataobject.currentTiming / dataobject.totalTiming) * 100)));
+                // 進捗率の計算
+                let currentProgress = Math.max(0, Math.min(100, Math.round((dataobject.currentTiming / dataobject.totalTiming) * 100)));
+                if (isNaN(currentProgress) || dataobject.status != 2) currentProgress = 0;
 
+                // ExpectedManiaScoreの計算
                 let expectedManiaScore = 0;
                 if (currentMode == 3 && dataobject.status == 2) {
                     let maniaScore = {
@@ -598,18 +612,20 @@ function Main() {
                     };
                     let totalObject = calcObjects(dataobject.beatmappath, 3);
                     let objectcount = totalObject.nCircles + totalObject.nSliders + totalObject.nSpinners;
-                    expectedManiaScore = maniaScoreCalculator(maniaScore, dataobject.modsarray, dataobject.currentScore, objectcount);
+                    expectedManiaScore = await maniaScoreCalculator(maniaScore, dataobject.modsarray, dataobject.currentScore, objectcount);
                     maniaScore = null;
                     totalObject = null;
                     objectcount = null;
                 }
 
+                // 送信用データの作成
                 dataobjectForJson = {
                     Hiterror: {
                         AvgOffset: Math.round(Number(hiterror.AvgOffset) * 100) / 100,
                         UR: Math.round(Number(hiterror.UR) * 100) / 100
                     },
                     PP: {
+                        fullSR: Math.round(Number(PP.fullSR) * 100) / 100,
                         SR: Math.round(Number(PP.sr) * 100) / 100,
                         SSPP: Math.round(Number(PP.sspp) * 100) / 100,
                         CurrentPP: Math.round(Number(PP.pp) * 100) / 100,
@@ -625,11 +641,13 @@ function Main() {
                         progress: currentProgress,
                         status: dataobject.status,
                         mode: currentMode,
-                        ifFCHits300: isNaN(PP.ifFCHits.n300) || PP.ifFCHits.n300 == null ? 0 : PP.ifFCHits.n300,
-                        ifFCHits100: isNaN(PP.ifFCHits.n100) || PP.ifFCHits.n100 == null ? 0 : PP.ifFCHits.n100,
-                        ifFCHits50: isNaN(PP.ifFCHits.n50) || PP.ifFCHits.n50 == null ? 0 : PP.ifFCHits.n50,
-                        ifFCHitsMiss: isNaN(PP.ifFCHits.nMisses) || PP.ifFCHits.nMisses == null ? 0 : PP.ifFCHits.nMisses,
-                        expectedManiaScore: expectedManiaScore
+                        ifFCHits300: isNaN(PP.ifFCHits.n300) ? 0 : PP.ifFCHits.n300,
+                        ifFCHits100: isNaN(PP.ifFCHits.n100) ? 0 : PP.ifFCHits.n100,
+                        ifFCHits50: isNaN(PP.ifFCHits.n50) ? 0 : PP.ifFCHits.n50,
+                        ifFCHitsMiss: isNaN(PP.ifFCHits.nMisses) ? 0 : PP.ifFCHits.nMisses,
+                        expectedManiaScore: expectedManiaScore,
+                        healthBar: Math.round(dataobject.healthBar / 200 * 1000) / 10,
+                        istesting: istesting
                     },
                     Error: {
                         Error: "None"
@@ -638,16 +656,13 @@ function Main() {
                 };
 
                 // メモリ解放
-                mapdata = null;
-                responsedata = null;
-                dataobject = null;
                 PP = null;
+                dataobject = null;
             }
 
             // 解決
             resolve();
         } catch (error) { // エラー時の処理。主にgosumemoryにアクセスできない(起動してない)時に発生する。
-            
             // エラー時の送信用データの作成
             dataobjectForJson = {
                 Hiterror: {
@@ -655,6 +670,7 @@ function Main() {
                     UR: 0
                 },
                 PP: {
+                    fullSR: 0,
                     SR: 0,
                     SSPP: 0,
                     CurrentPP: 0,
@@ -674,7 +690,9 @@ function Main() {
                     ifFCHits100: 0,
                     ifFCHits50: 0,
                     ifFCHitsMiss: 0,
-                    expectedManiaScore: 0
+                    expectedManiaScore: 0,
+                    healthBar: 0,
+                    istesting: false
                 },
                 Error: {
                     Error: error.toString()
@@ -688,17 +706,12 @@ function Main() {
     })
 }
 
-app.get("/", (req, res, next) =>
-    {
-        res.json(JSON.parse(JSON.stringify(dataobjectForJson)));
-    }
-)
-
-app.listen(3000, () =>
-    {
-        console.log(`Please close this software now! It is not designed to run by itself!\nこのソフトを今すぐ閉じてください！これ単体で動作することを想定されていません！`);
-    }
-)
+require('http').createServer((req, res) => {
+    res.end(JSON.stringify(dataobjectForJson));
+}).listen(3000, () => {
+    console.log("Please close this software now! It is not designed to run by itself!\nこのソフトを今すぐ閉じてください！これ単体で動作することを想定されていません！");
+    console.log("※ローカルAPIとして使用したい場合は、http://localhost:3000 にアクセスしてください。\n※If you want to use this as an local API, please access to http://localhost:3000");
+});
 
 async function loop() {
     let start = new Date().getTime();
@@ -719,8 +732,7 @@ function checkConfig() {
         if (trialCount >= 5) {
             isZeroToOneHundred = true;
         } else {
-            let config = fs.readFileSync("./Config.txt", "utf8");
-            config = config.split("\n");
+            let config = fs.readFileSync("./Config.txt", "utf8").split("\n");
             for (const line of config) {
                 if (line.startsWith("STARTFROMZERO=")) {
                     isZeroToOneHundred = line.split("=")[1] == "true\r";
@@ -741,9 +753,7 @@ function checkConfig() {
     }
 }
 
-function Program() {
+(() => {
     checkConfig();
     loop();
-}
-
-Program();
+})();
