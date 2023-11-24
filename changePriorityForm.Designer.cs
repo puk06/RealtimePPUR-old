@@ -55,21 +55,10 @@ namespace RealtimePPUR
             this.sortPriorityList.Font = new System.Drawing.Font("メイリオ", 15F);
             this.sortPriorityList.FormattingEnabled = true;
             this.sortPriorityList.ItemHeight = 30;
-            this.sortPriorityList.Items.AddRange(new object[] {
-            "1: SR: 1.23",
-            "2: SSPP: 300pp",
-            "3: PP: 100 / 200pp",
-            "4: ACC: 100%",
-            "5: Hits: 1/2/3/4",
-            "6: ifFCHits: 5/2/3/0",
-            "7: UR: 100",
-            "8: OffsetHelp: -2",
-            "9: ManiaScore: 995000",
-            "10: AvgOffset: 1.86",
-            "11: Progress: 50%"});
+            this.sortPriorityList.Items.AddRange(new object[] { "1: SR: 1.23", "2: SSPP: 300pp", "3: PP: 100 / 200pp", "4: ACC: 100%", "5: Hits: 1/2/3/4", "6: ifFCHits: 5/2/3/0", "7: UR: 100", "8: OffsetHelp: -2", "9: ManiaScore: 995000", "10: AvgOffset: 1.86", "11: Progress: 50%", "12: HP: 65.7%" });
             this.sortPriorityList.Location = new System.Drawing.Point(12, 65);
             this.sortPriorityList.Name = "sortPriorityList";
-            this.sortPriorityList.Size = new System.Drawing.Size(361, 334);
+            this.sortPriorityList.Size = new System.Drawing.Size(361, 364);
             this.sortPriorityList.TabIndex = 1;
             this.sortPriorityList.DragDrop += new System.Windows.Forms.DragEventHandler(this.sortPriorityList_DragDrop);
             this.sortPriorityList.DragEnter += new System.Windows.Forms.DragEventHandler(this.sortPriorityList_DragEnter);
@@ -78,7 +67,7 @@ namespace RealtimePPUR
             // okButton
             // 
             this.okButton.Font = new System.Drawing.Font("メイリオ", 12F);
-            this.okButton.Location = new System.Drawing.Point(255, 406);
+            this.okButton.Location = new System.Drawing.Point(255, 441);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(118, 32);
             this.okButton.TabIndex = 2;
@@ -89,7 +78,7 @@ namespace RealtimePPUR
             // cancelButton
             // 
             this.cancelButton.Font = new System.Drawing.Font("メイリオ", 12F);
-            this.cancelButton.Location = new System.Drawing.Point(12, 407);
+            this.cancelButton.Location = new System.Drawing.Point(12, 442);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(118, 31);
             this.cancelButton.TabIndex = 3;
@@ -97,11 +86,11 @@ namespace RealtimePPUR
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
-            // changePriorityForm
+            // ChangePriorityForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(385, 450);
+            this.ClientSize = new System.Drawing.Size(385, 485);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.sortPriorityList);
@@ -114,14 +103,13 @@ namespace RealtimePPUR
             this.Text = "Change InGameOverlay Priority";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
 
         private System.Windows.Forms.ListBox sortPriorityList;
         private Label LabelText;
-        private Button okButton;
-        private Button cancelButton;
+        private System.Windows.Forms.Button okButton;
+        private System.Windows.Forms.Button cancelButton;
     }
 }

@@ -70,9 +70,10 @@ namespace RealtimePPUR
                 ifFCPPToolStripMenuItem.Checked = false;
                 ifFCHitsToolStripMenuItem.Checked = false;
                 expectedManiaScoreToolStripMenuItem.Checked = false;
+                healthPercentageToolStripMenuItem.Checked = false;
                 _speedReduction = false;
                 _calculationSpeedDetectedValue = 100;
-                _ingameoverlayPriority = "1/2/3/4/5/6/7/8/9/10/11";
+                _ingameoverlayPriority = "1/2/3/4/5/6/7/8/9/10/11/12";
                 inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
             }
             else
@@ -145,8 +146,9 @@ namespace RealtimePPUR
                 ifFCPPToolStripMenuItem.Checked = _configDictionary.TryGetValue("IFFCPP", out string test13) && test13 == "true";
                 ifFCHitsToolStripMenuItem.Checked = _configDictionary.TryGetValue("IFFCHITS", out string test14) && test14 == "true";
                 expectedManiaScoreToolStripMenuItem.Checked = _configDictionary.TryGetValue("EXPECTEDMANIASCORE", out string test15) && test15 == "true";
+                healthPercentageToolStripMenuItem.Checked = _configDictionary.TryGetValue("HEALTHPERCENTAGE", out string test17) && test17 == "true";
                 _speedReduction = _configDictionary.TryGetValue("SPEEDREDUCTION", out string test10) && test10 == "true";
-                _ingameoverlayPriority = _configDictionary.TryGetValue("INGAMEOVERLAYPRIORITY", out string test16) ? test16 : "1/2/3/4/5/6/7/8/9/10/11";
+                _ingameoverlayPriority = _configDictionary.TryGetValue("INGAMEOVERLAYPRIORITY", out string test16) ? test16 : "1/2/3/4/5/6/7/8/9/10/11/12";
 
                 if (_configDictionary.TryGetValue("USECUSTOMFONT", out string test12) && test12 == "true")
                 {
@@ -428,6 +430,7 @@ namespace RealtimePPUR
                 JObject data = JsonConvert.DeserializeObject<JObject>(json);
 
                 double sr = (double)data["PP"]["SR"];
+                double fullSr = (double)data["PP"]["fullSR"];
                 double sspp = (double)data["PP"]["SSPP"];
                 double currentPp = (double)data["PP"]["CurrentPP"];
                 double ifFcpp = (double)data["PP"]["ifFCPP"];
@@ -447,6 +450,7 @@ namespace RealtimePPUR
                 int ifFcOk = (int)data["PP"]["ifFCHits100"];
                 int ifFcBad = (int)data["PP"]["ifFCHits50"];
                 int ifFcMiss = (int)data["PP"]["ifFCHitsMiss"];
+                double healthPercentage = (double)data["PP"]["healthBar"];
                 _status = (int)data["PP"]["status"];
 
                 if (_prevCalculationSpeed == 0)
@@ -546,7 +550,7 @@ namespace RealtimePPUR
                             {
                                 _displayFormat += "SR: " +
                                                  sr.ToString(CultureInfo.CurrentCulture = new CultureInfo("en-us")) +
-                                                 "\n";
+                                                 " / " + fullSr.ToString(CultureInfo.CurrentCulture = new CultureInfo("en-us")) + "\n";
                             }
 
                             break;
@@ -668,6 +672,14 @@ namespace RealtimePPUR
                                 _displayFormat += "Progress: " + data["PP"]["progress"] + "%\n";
                             }
 
+                            break;
+                        
+                        case 12:
+                            if (healthPercentageToolStripMenuItem.Checked)
+                            {
+                                _displayFormat += "HP: " + healthPercentage + "%\n";
+                            }
+                            
                             break;
                     }
                 }
@@ -1141,6 +1153,11 @@ namespace RealtimePPUR
         private void avgOffsetToolStripMenuItem_Click(object sender, EventArgs e)
         {
             avgOffsetToolStripMenuItem.Checked = !avgOffsetToolStripMenuItem.Checked;
+        }
+
+        private void healthPercentageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            healthPercentageToolStripMenuItem.Checked = !healthPercentageToolStripMenuItem.Checked;
         }
     }
 }
