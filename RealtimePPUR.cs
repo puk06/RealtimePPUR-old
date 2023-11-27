@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using Octokit;
 using Microsoft.Toolkit.Uwp.Notifications;
+using System.Drawing.Drawing2D;
 
 namespace RealtimePPUR
 {
@@ -83,11 +84,7 @@ namespace RealtimePPUR
                 {
                     string[] parts = line.Split('=');
 
-                    if (parts.Length != 2)
-                    {
-                        continue;
-                    }
-
+                    if (parts.Length != 2) continue;
                     string name = parts[0].Trim();
                     string value = parts[1].Trim();
                     _configDictionary[name] = value;
@@ -159,12 +156,7 @@ namespace RealtimePPUR
                         foreach (string line in fontInfo)
                         {
                             string[] parts = line.Split('=');
-
-                            if (parts.Length != 2)
-                            {
-                                continue;
-                            }
-
+                            if (parts.Length != 2) continue;
                             string name = parts[0].Trim();
                             string value = parts[1].Trim();
                             fontDictionary[name] = value;
@@ -405,7 +397,7 @@ namespace RealtimePPUR
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        
+
         // ReSharper disable once FunctionRecursiveOnAllPaths
         private async void UpdateLoop()
         {
@@ -466,7 +458,6 @@ namespace RealtimePPUR
                                  currentCalculationSpeed + "ms")
                         .Show();
                 }
-
                 _prevCalculationSpeed = currentCalculationSpeed;
 
                 _avgoffset.Text = avgOffset.ToString(CultureInfo.CurrentCulture = new CultureInfo("en-us")) + "ms";
@@ -483,57 +474,57 @@ namespace RealtimePPUR
                     case 0:
                         _good.Text = good.ToString();
                         _good.Width = TextRenderer.MeasureText(_good.Text, _good.Font).Width;
-                        _good.Left = ((ClientSize.Width - _good.Width) / 2) - 120;
+                        _good.Left = (ClientSize.Width - _good.Width) / 2 - 120;
 
                         _ok.Text = (ok + bad).ToString();
                         _ok.Width = TextRenderer.MeasureText(_ok.Text, _ok.Font).Width;
-                        _ok.Left = ((ClientSize.Width - _ok.Width) / 2) - 61;
+                        _ok.Left = (ClientSize.Width - _ok.Width) / 2 - 61;
 
                         _miss.Text = miss.ToString();
                         _miss.Width = TextRenderer.MeasureText(_miss.Text, _miss.Font).Width;
-                        _miss.Left = ((ClientSize.Width - _miss.Width) / 2) - 3;
+                        _miss.Left = (ClientSize.Width - _miss.Width) / 2 - 3;
                         break;
 
                     case 1:
                         _good.Text = good.ToString();
                         _good.Width = TextRenderer.MeasureText(_good.Text, _good.Font).Width;
-                        _good.Left = ((ClientSize.Width - _good.Width) / 2) - 120;
+                        _good.Left = (ClientSize.Width - _good.Width) / 2 - 120;
 
                         _ok.Text = ok.ToString();
                         _ok.Width = TextRenderer.MeasureText(_ok.Text, _ok.Font).Width;
-                        _ok.Left = ((ClientSize.Width - _ok.Width) / 2) - 61;
+                        _ok.Left = (ClientSize.Width - _ok.Width) / 2 - 61;
 
                         _miss.Text = miss.ToString();
                         _miss.Width = TextRenderer.MeasureText(_miss.Text, _miss.Font).Width;
-                        _miss.Left = ((ClientSize.Width - _miss.Width) / 2) - 3;
+                        _miss.Left = (ClientSize.Width - _miss.Width) / 2 - 3;
                         break;
 
                     case 2:
                         _good.Text = good.ToString();
                         _good.Width = TextRenderer.MeasureText(_good.Text, _good.Font).Width;
-                        _good.Left = ((ClientSize.Width - _good.Width) / 2) - 120;
+                        _good.Left = (ClientSize.Width - _good.Width) / 2 - 120;
 
                         _ok.Text = (ok + bad).ToString();
                         _ok.Width = TextRenderer.MeasureText(_ok.Text, _ok.Font).Width;
-                        _ok.Left = ((ClientSize.Width - _ok.Width) / 2) - 61;
+                        _ok.Left = (ClientSize.Width - _ok.Width) / 2 - 61;
 
                         _miss.Text = miss.ToString();
                         _miss.Width = TextRenderer.MeasureText(_miss.Text, _miss.Font).Width;
-                        _miss.Left = ((ClientSize.Width - _miss.Width) / 2) - 3;
+                        _miss.Left = (ClientSize.Width - _miss.Width) / 2 - 3;
                         break;
 
                     case 3:
                         _good.Text = (good + geki).ToString();
                         _good.Width = TextRenderer.MeasureText(_good.Text, _good.Font).Width;
-                        _good.Left = ((ClientSize.Width - _good.Width) / 2) - 120;
+                        _good.Left = (ClientSize.Width - _good.Width) / 2 - 120;
 
                         _ok.Text = (katu + ok + bad).ToString();
                         _ok.Width = TextRenderer.MeasureText(_ok.Text, _ok.Font).Width;
-                        _ok.Left = ((ClientSize.Width - _ok.Width) / 2) - 61;
+                        _ok.Left = (ClientSize.Width - _ok.Width) / 2 - 61;
 
                         _miss.Text = miss.ToString();
                         _miss.Width = TextRenderer.MeasureText(_miss.Text, _miss.Font).Width;
-                        _miss.Left = ((ClientSize.Width - _miss.Width) / 2) - 3;
+                        _miss.Left = (ClientSize.Width - _miss.Width) / 2 - 3;
                         break;
                 }
 
@@ -673,13 +664,13 @@ namespace RealtimePPUR
                             }
 
                             break;
-                        
+
                         case 12:
                             if (healthPercentageToolStripMenuItem.Checked)
                             {
                                 _displayFormat += "HP: " + healthPercentage + "%\n";
                             }
-                            
+
                             break;
                     }
                 }
@@ -718,12 +709,7 @@ namespace RealtimePPUR
                 foreach (string line in fontInfo)
                 {
                     string[] parts = line.Split('=');
-
-                    if (parts.Length != 2)
-                    {
-                        continue;
-                    }
-
+                    if (parts.Length != 2) continue;
                     string name = parts[0].Trim();
                     string value = parts[1].Trim();
                     fontDictionaryLoad[name] = value;
@@ -784,22 +770,14 @@ namespace RealtimePPUR
 
         private void RealtimePPUR_MouseDown(object sender, MouseEventArgs e)
         {
-            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
-            {
-                _mousePoint = new Point(e.X, e.Y);
-            }
+            if ((e.Button & MouseButtons.Left) == MouseButtons.Left) _mousePoint = new Point(e.X, e.Y);
         }
 
         private void RealtimePPUR_MouseMove(object sender, MouseEventArgs e)
         {
-            if ((e.Button & MouseButtons.Left) != MouseButtons.Left)
-            {
-                return;
-            }
-
+            if ((e.Button & MouseButtons.Left) != MouseButtons.Left) return;
             Left += e.X - _mousePoint.X;
             Top += e.Y - _mousePoint.Y;
-
         }
 
         private static async void GithubUpdateChecker()
@@ -817,18 +795,9 @@ namespace RealtimePPUR
                 currentVersion.Close();
                 var githubClient = new GitHubClient(new ProductHeaderValue("RealtimePPUR"));
                 var latestRelease = await githubClient.Repository.Release.GetLatest("puk06", "RealtimePPUR");
-
-                if (latestRelease.Name == currentVersionString)
-                {
-                    return;
-                }
-
+                if (latestRelease.Name == currentVersionString) return;
                 DialogResult result = MessageBox.Show($"最新バージョンがあります！\n\n現在: {currentVersionString} \n更新後: {latestRelease.Name}\n\nダウンロードページを開きますか？", "アップデートのお知らせ", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-                if (result == DialogResult.Yes)
-                {
-                    Process.Start(softwareReleasesLatest);
-                }
-
+                if (result == DialogResult.Yes) Process.Start(softwareReleasesLatest);
             }
             catch
             {
@@ -836,10 +805,7 @@ namespace RealtimePPUR
             }
         }
 
-        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e) => Close();
 
         private void osuModeToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1072,7 +1038,7 @@ namespace RealtimePPUR
         {
             const int radius = 11;
             const int diameter = radius * 2;
-            System.Drawing.Drawing2D.GraphicsPath gp = new System.Drawing.Drawing2D.GraphicsPath();
+            GraphicsPath gp = new GraphicsPath();
             gp.AddPie(0, 0, diameter, diameter, 180, 90);
             gp.AddPie(Width - diameter, 0, diameter, diameter, 270, 90);
             gp.AddPie(0, Height - diameter, diameter, diameter, 90, 90);
@@ -1083,11 +1049,7 @@ namespace RealtimePPUR
             Region = new Region(gp);
         }
 
-        private void RealtimePPUR_Closed(object sender, EventArgs e)
-        {
-            System.Windows.Forms.Application.Exit();
-        }
-
+        private void RealtimePPUR_Closed(object sender, EventArgs e) => System.Windows.Forms.Application.Exit();
 
         private void changePriorityToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1095,69 +1057,30 @@ namespace RealtimePPUR
             priorityForm.Show();
         }
 
-        private void sRToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            sRToolStripMenuItem.Checked = !sRToolStripMenuItem.Checked;
-        }
+        private void sRToolStripMenuItem_Click(object sender, EventArgs e) => sRToolStripMenuItem.Checked = !sRToolStripMenuItem.Checked;
 
-        private void ifFCPPToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ifFCPPToolStripMenuItem.Checked = !ifFCPPToolStripMenuItem.Checked;
-        }
+        private void ifFCPPToolStripMenuItem_Click(object sender, EventArgs e) => ifFCPPToolStripMenuItem.Checked = !ifFCPPToolStripMenuItem.Checked;
 
-        private void ifFCHitsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ifFCHitsToolStripMenuItem.Checked = !ifFCHitsToolStripMenuItem.Checked;
-        }
+        private void ifFCHitsToolStripMenuItem_Click(object sender, EventArgs e) => ifFCHitsToolStripMenuItem.Checked = !ifFCHitsToolStripMenuItem.Checked;
 
-        private void expectedManiaScoreToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            expectedManiaScoreToolStripMenuItem.Checked = !expectedManiaScoreToolStripMenuItem.Checked;
-        }
+        private void expectedManiaScoreToolStripMenuItem_Click(object sender, EventArgs e) => expectedManiaScoreToolStripMenuItem.Checked = !expectedManiaScoreToolStripMenuItem.Checked;
 
-        private void currentPPToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            currentPPToolStripMenuItem.Checked = !currentPPToolStripMenuItem.Checked;
-        }
+        private void currentPPToolStripMenuItem_Click(object sender, EventArgs e) => currentPPToolStripMenuItem.Checked = !currentPPToolStripMenuItem.Checked;
 
-        private void sSPPToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            sSPPToolStripMenuItem.Checked = !sSPPToolStripMenuItem.Checked;
-        }
+        private void sSPPToolStripMenuItem_Click(object sender, EventArgs e) => sSPPToolStripMenuItem.Checked = !sSPPToolStripMenuItem.Checked;
 
-        private void hitsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            hitsToolStripMenuItem.Checked = !hitsToolStripMenuItem.Checked;
-        }
+        private void hitsToolStripMenuItem_Click(object sender, EventArgs e) => hitsToolStripMenuItem.Checked = !hitsToolStripMenuItem.Checked;
 
-        private void uRToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            uRToolStripMenuItem.Checked = !uRToolStripMenuItem.Checked;
-        }
+        private void uRToolStripMenuItem_Click(object sender, EventArgs e) => uRToolStripMenuItem.Checked = !uRToolStripMenuItem.Checked;
 
-        private void offsetHelpToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            offsetHelpToolStripMenuItem.Checked = !offsetHelpToolStripMenuItem.Checked;
-        }
+        private void offsetHelpToolStripMenuItem_Click(object sender, EventArgs e) => offsetHelpToolStripMenuItem.Checked = !offsetHelpToolStripMenuItem.Checked;
 
-        private void currentACCToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            currentACCToolStripMenuItem.Checked = !currentACCToolStripMenuItem.Checked;
-        }
+        private void currentACCToolStripMenuItem_Click(object sender, EventArgs e) => currentACCToolStripMenuItem.Checked = !currentACCToolStripMenuItem.Checked;
 
-        private void progressToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            progressToolStripMenuItem.Checked = !progressToolStripMenuItem.Checked;
-        }
+        private void progressToolStripMenuItem_Click(object sender, EventArgs e) => progressToolStripMenuItem.Checked = !progressToolStripMenuItem.Checked;
 
-        private void avgOffsetToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            avgOffsetToolStripMenuItem.Checked = !avgOffsetToolStripMenuItem.Checked;
-        }
+        private void avgOffsetToolStripMenuItem_Click(object sender, EventArgs e) => avgOffsetToolStripMenuItem.Checked = !avgOffsetToolStripMenuItem.Checked;
 
-        private void healthPercentageToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            healthPercentageToolStripMenuItem.Checked = !healthPercentageToolStripMenuItem.Checked;
-        }
+        private void healthPercentageToolStripMenuItem_Click(object sender, EventArgs e) => healthPercentageToolStripMenuItem.Checked = !healthPercentageToolStripMenuItem.Checked;
     }
 }

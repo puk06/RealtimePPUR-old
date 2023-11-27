@@ -39,11 +39,7 @@ namespace RealtimePPUR
                     if (!File.Exists("./src/gosumemory/gosumemory.exe"))
                     {
                         DialogResult result = MessageBox.Show("Gosumemoryがフォルダ内から見つかりませんでした。\nGithubからダウンロードしますか？", "エラー", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-                        if (result != DialogResult.Yes)
-                        {
-                            return;
-                        }
-
+                        if (result != DialogResult.Yes) return;
                         MessageBox.Show("ダウンロードページをwebブラウザで開きます。\nインストール方法: ダウンロードしたフォルダを開き、\"src/gosumemory/gosumemory.exe\"となるように配置する。config.iniもgosumemory.exeと同じフォルダに入れてください。", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         Process.Start("https://github.com/l3lackShark/gosumemory/releases/");
                         return;
@@ -91,22 +87,18 @@ namespace RealtimePPUR
 
             try
             {
-                
                 CultureInfo.CurrentCulture = new CultureInfo("en-us");
                 CultureInfo.CurrentUICulture = new CultureInfo("en-us");
                 Application.ApplicationExit += Application_ApplicationExit;
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new RealtimePpur());    
+                Application.Run(new RealtimePpur());
             }
             catch
             {
                 try
                 {
-                    if (_gosumemoryProcess != null && !_gosumemoryProcess.HasExited)
-                    {
-                        _gosumemoryProcess.Kill();
-                    }
+                    if (_gosumemoryProcess != null && !_gosumemoryProcess.HasExited) _gosumemoryProcess.Kill();
                 }
                 catch (Exception error)
                 {
@@ -115,10 +107,7 @@ namespace RealtimePPUR
 
                 try
                 {
-                    if (_ppurProcess != null && !_ppurProcess.HasExited)
-                    {
-                        _ppurProcess.Kill();
-                    }
+                    if (_ppurProcess != null && !_ppurProcess.HasExited) _ppurProcess.Kill();
                 }
                 catch (Exception error)
                 {
@@ -126,17 +115,13 @@ namespace RealtimePPUR
                 }
                 MessageBox.Show($"ソフトの起動に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            
         }
 
         private static void Application_ApplicationExit(object sender, EventArgs e)
         {
             try
             {
-                if (_gosumemoryProcess != null && !_gosumemoryProcess.HasExited)
-                {
-                    _gosumemoryProcess.Kill();
-                }
+                if (_gosumemoryProcess != null && !_gosumemoryProcess.HasExited) _gosumemoryProcess.Kill();
             }
             catch (Exception error)
             {
@@ -145,10 +130,7 @@ namespace RealtimePPUR
 
             try
             {
-                if (_ppurProcess != null && !_ppurProcess.HasExited)
-                {
-                    _ppurProcess.Kill();
-                }
+                if (_ppurProcess != null && !_ppurProcess.HasExited) _ppurProcess.Kill();
             }
             catch (Exception error)
             {
