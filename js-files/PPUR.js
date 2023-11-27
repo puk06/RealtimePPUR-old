@@ -743,7 +743,7 @@ function checkConfig() {
     }
 }
 
-(() =>  {
+(() => {
     checkConfig();
     loop();
 })();
