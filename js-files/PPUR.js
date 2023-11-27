@@ -497,13 +497,10 @@ function Main() {
                                 nMisses: 0,
                                 combo: objectdata.maxCombo
                             };
-
-                            ifFCHits = {
-                                n300: n300,
-                                n100: n100,
-                                n50: n50,
-                                nMisses: 0
-                            };
+                            
+                            ifFCHits.n300 = n300;
+                            ifFCHits.n100 = n100;
+                            ifFCHits.n50 = n50;
 
                             const calculator = new Calculator(score);
                             ifFCPP = calculator.performance(map).pp;
@@ -528,12 +525,8 @@ function Main() {
                                 nMisses: 0
                             };
 
-                            ifFCHits = {
-                                n300: n300,
-                                n100: n100,
-                                n50: 0,
-                                nMisses: 0
-                            };
+                            ifFCHits.n300 = n300;
+                            ifFCHits.n100 = n100;
 
                             const calculator = new Calculator(score);
                             ifFCPP = calculator.performance(map).pp;
@@ -563,12 +556,9 @@ function Main() {
                                 combo: objectdata.maxCombo
                             };
 
-                            ifFCHits = {
-                                n300: nFruits,
-                                n100: nDroplets,
-                                n50: nTinyDroplets,
-                                nMisses: 0
-                            };
+                            ifFCHits.n300 = nFruits;
+                            ifFCHits.n100 = nDroplets;
+                            ifFCHits.n50 = nTinyDroplets;
 
                             const calculator = new Calculator(score);
                             ifFCPP = calculator.performance(map).pp;
@@ -596,7 +586,7 @@ function Main() {
                 }
 
                 // 進捗率の計算
-                let currentProgress = Math.max(0, Math.min(100, Math.round((dataobject.currentTiming / dataobject.totalTiming) * 100)));
+                let currentProgress = Math.max(0, Math.min(100, Math.round(dataobject.currentTiming / dataobject.totalTiming * 100)));
                 if (isNaN(currentProgress) || dataobject.status != 2) currentProgress = 0;
 
                 // ExpectedManiaScoreの計算
@@ -753,7 +743,7 @@ function checkConfig() {
     }
 }
 
-(() => {
+(() =>  {
     checkConfig();
     loop();
 })();
