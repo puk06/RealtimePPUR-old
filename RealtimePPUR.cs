@@ -35,6 +35,11 @@ namespace RealtimePPUR
         private readonly Dictionary<string, string> _configDictionary = new Dictionary<string, string>();
         private readonly HttpClient _client = new HttpClient();
         private readonly PrivateFontCollection _fontCollection;
+        private readonly Dictionary<string, int> _osuModeValue = new Dictionary<string, int>
+        {
+            {"left", 0},
+            {"top", 0}
+        };
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
@@ -48,12 +53,6 @@ namespace RealtimePPUR
             public int Left, Top, Right, Bottom;
         }
 
-        private readonly Dictionary<string, int> _osuModeValue = new Dictionary<string, int>
-        {
-            {"left", 0},
-            {"top", 0}
-        };
-
         public RealtimePpur()
         {
             _fontCollection = new PrivateFontCollection();
@@ -61,9 +60,9 @@ namespace RealtimePPUR
             _fontCollection.AddFontFile("./src/Fonts/Nexa Light.otf");
             InitializeComponent();
 
-            if (!File.Exists("Config.txt"))
+            if (!File.Exists("Config.cfg"))
             {
-                MessageBox.Show("Config.txtがフォルダ内に存在しないため、すべての項目がOffとして設定されます。アップデートチェックのみ行われます。", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Config.cfgがフォルダ内に存在しないため、すべての項目がOffとして設定されます。アップデートチェックのみ行われます。", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 GithubUpdateChecker();
                 sRToolStripMenuItem.Checked = false;
                 sSPPToolStripMenuItem.Checked = false;
@@ -85,7 +84,7 @@ namespace RealtimePPUR
             }
             else
             {
-                string[] lines = File.ReadAllLines("Config.txt");
+                string[] lines = File.ReadAllLines("Config.cfg");
                 foreach (string line in lines)
                 {
                     string[] parts = line.Split('=');
@@ -107,7 +106,7 @@ namespace RealtimePPUR
                     var defaultModeResult = int.TryParse(defaultmodestring, out int defaultmode);
                     if (!defaultModeResult || !(defaultmode == 0 || defaultmode == 1 || defaultmode == 2))
                     {
-                        MessageBox.Show("Config.txtのDEFAULTMODEの値が不正であったため、初期値の0が適用されます。0、1、2のどれかを入力してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Config.cfgのDEFAULTMODEの値が不正であったため、初期値の0が適用されます。0、1、2のどれかを入力してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     else
                     {
@@ -185,7 +184,7 @@ namespace RealtimePPUR
                                 var fontsizeResult = _configDictionary.TryGetValue("FONTSIZE", out string fontsizeValue);
                                 if (!fontsizeResult)
                                 {
-                                    MessageBox.Show("Config.txtにFONTSIZEの値がなかったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    MessageBox.Show("Config.cfgにFONTSIZEの値がなかったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                                 }
                                 else
@@ -193,7 +192,7 @@ namespace RealtimePPUR
                                     var result = float.TryParse(fontsizeValue, out float fontsize);
                                     if (!result)
                                     {
-                                        MessageBox.Show("Config.txtのFONTSIZEの値が不正であったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        MessageBox.Show("Config.cfgのFONTSIZEの値が不正であったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                         inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                                     }
                                     else
@@ -209,7 +208,7 @@ namespace RealtimePPUR
                             var fontsizeResult = _configDictionary.TryGetValue("FONTSIZE", out string fontsizeValue);
                             if (!fontsizeResult)
                             {
-                                MessageBox.Show("Config.txtにFONTSIZEの値がなかったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show("Config.cfgにFONTSIZEの値がなかったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                             }
                             else
@@ -217,7 +216,7 @@ namespace RealtimePPUR
                                 var result = float.TryParse(fontsizeValue, out float fontsize);
                                 if (!result)
                                 {
-                                    MessageBox.Show("Config.txtのFONTSIZEの値が不正であったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    MessageBox.Show("Config.cfgのFONTSIZEの値が不正であったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                                 }
                                 else
@@ -232,7 +231,7 @@ namespace RealtimePPUR
                         var fontsizeResult = _configDictionary.TryGetValue("FONTSIZE", out string fontsizeValue);
                         if (!fontsizeResult)
                         {
-                            MessageBox.Show("Config.txtにFONTSIZEの値がなかったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Config.cfgにFONTSIZEの値がなかったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                         }
                         else
@@ -240,7 +239,7 @@ namespace RealtimePPUR
                             var result = float.TryParse(fontsizeValue, out float fontsize);
                             if (!result)
                             {
-                                MessageBox.Show("Config.txtのFONTSIZEの値が不正であったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show("Config.cfgのFONTSIZEの値が不正であったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                             }
                             else
@@ -255,7 +254,7 @@ namespace RealtimePPUR
                     var fontsizeResult = _configDictionary.TryGetValue("FONTSIZE", out string fontsizeValue);
                     if (!fontsizeResult)
                     {
-                        MessageBox.Show("Config.txtにFONTSIZEの値がなかったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Config.cfgにFONTSIZEの値がなかったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                     }
                     else
@@ -263,7 +262,7 @@ namespace RealtimePPUR
                         var result = float.TryParse(fontsizeValue, out float fontsize);
                         if (!result)
                         {
-                            MessageBox.Show("Config.txtのFONTSIZEの値が不正であったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Config.cfgのFONTSIZEの値が不正であったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                         }
                         else
@@ -276,7 +275,7 @@ namespace RealtimePPUR
                 var speedReductionValueResult = _configDictionary.TryGetValue("SPEEDREDUCTIONVALUE", out string speedReductionValue);
                 if (!speedReductionValueResult && _speedReduction)
                 {
-                    MessageBox.Show("Config.txtにSPEEDREDUCTIONVALUEの値が存在しないため、初期値の100が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Config.cfgにSPEEDREDUCTIONVALUEの値が存在しないため、初期値の100が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     _calculationSpeedDetectedValue = 100;
                 }
                 else if (_speedReduction)
@@ -284,7 +283,7 @@ namespace RealtimePPUR
                     var tryResult = int.TryParse(speedReductionValue, out _calculationSpeedDetectedValue);
                     if (!tryResult)
                     {
-                        MessageBox.Show("Config.txtのSPEEDREDUCTIONVALUEの値が不正であったため、初期値の100が設定されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Config.cfgのSPEEDREDUCTIONVALUEの値が不正であったため、初期値の100が設定されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         _calculationSpeedDetectedValue = 100;
                     }
                 }
@@ -375,7 +374,7 @@ namespace RealtimePPUR
                         sw.WriteLine(fontInfo);
                         sw.Close();
                         MessageBox.Show(
-                            "フォントの保存に成功しました。Config.txtのUSECUSTOMFONTをtrueにすることで起動時から保存されたフォントを使用できます。右クリック→Load Fontからでも読み込むことが可能です！",
+                            "フォントの保存に成功しました。Config.cfgのUSECUSTOMFONTをtrueにすることで起動時から保存されたフォントを使用できます。右クリック→Load Fontからでも読み込むことが可能です！",
                             "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
@@ -387,7 +386,7 @@ namespace RealtimePPUR
                         fs.Write(fontInfoByte, 0, fontInfoByte.Length);
                         fs.Close();
                         MessageBox.Show(
-                            "フォントの保存に成功しました。Config.txtのUSECUSTOMFONTをtrueにすることで起動時から保存されたフォントを使用できます。右クリック→Load Fontからでも読み込むことが可能です！",
+                            "フォントの保存に成功しました。Config.cfgのUSECUSTOMFONTをtrueにすることで起動時から保存されたフォントを使用できます。右クリック→Load Fontからでも読み込むことが可能です！",
                             "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
@@ -682,7 +681,7 @@ namespace RealtimePPUR
                 }
 
                 inGameValue.Text = _displayFormat;
-                
+
                 if (_isosumode)
                 {
                     var processes = Process.GetProcessesByName("osu!");
@@ -883,7 +882,7 @@ namespace RealtimePPUR
                     _ur.Visible = true;
                     _avgoffsethelp.Visible = true;
                 }
-                
+
                 response = null;
                 json = null;
                 data = null;
@@ -954,7 +953,7 @@ namespace RealtimePPUR
             var fontsizeResult = _configDictionary.TryGetValue("FONTSIZE", out string fontsizeValue);
             if (!fontsizeResult)
             {
-                MessageBox.Show("Config.txtにFONTSIZEの値がなかったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Config.cfgにFONTSIZEの値がなかったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                 MessageBox.Show("フォントのリセットが完了しました！", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -963,7 +962,7 @@ namespace RealtimePPUR
                 var result = float.TryParse(fontsizeValue, out float fontsize);
                 if (!result)
                 {
-                    MessageBox.Show("Config.txtのFONTSIZEの値が不正であったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Config.cfgのFONTSIZEの値が不正であったため、初期値の19が適用されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
                     MessageBox.Show("フォントのリセットが完了しました！", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -992,12 +991,12 @@ namespace RealtimePPUR
             try
             {
                 const string softwareReleasesLatest = "https://github.com/puk06/RealtimePPUR/releases/latest";
-                if (!File.Exists("version"))
+                if (!File.Exists("./src/version"))
                 {
                     MessageBox.Show("versionファイルが存在しないのでアップデートチェックは無視されます。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                StreamReader currentVersion = new StreamReader("version");
+                StreamReader currentVersion = new StreamReader("./src/version");
                 string currentVersionString = await currentVersion.ReadToEndAsync();
                 currentVersion.Close();
                 var githubClient = new GitHubClient(new ProductHeaderValue("RealtimePPUR"));
@@ -1020,14 +1019,14 @@ namespace RealtimePPUR
             var toptest = _configDictionary.TryGetValue("TOP", out string topvalue);
             if (!lefttest || !toptest)
             {
-                MessageBox.Show("Config.txtにLEFTまたはTOPの値が存在しなかったため、osu! Modeの起動に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Config.cfgにLEFTまたはTOPの値が存在しなかったため、osu! Modeの起動に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             var leftResult = int.TryParse(leftvalue, out int left);
             var topResult = int.TryParse(topvalue, out int top);
             if ((!leftResult || !topResult) && !_isosumode)
             {
-                MessageBox.Show("Config.txtのLEFT、またはTOPの値が不正であったため、osu! Modeの起動に失敗しました。LEFT、TOPには数値以外入力しないでください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Config.cfgのLEFT、またはTOPの値が不正であったため、osu! Modeの起動に失敗しました。LEFT、TOPには数値以外入力しないでください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
