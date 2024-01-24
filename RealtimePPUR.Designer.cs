@@ -60,13 +60,17 @@ namespace RealtimePPUR
             this.avgOffsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.progressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ifFCPPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.healthPercentageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.currentPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.higherScoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.highestScoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.userScoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changePriorityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.inGameValue = new System.Windows.Forms.Label();
-            this.healthPercentageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -189,168 +193,231 @@ namespace RealtimePPUR
             // 
             // contextMenuStrip1
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.modeToolStripMenuItem, this.osuModeToolStripMenuItem, this.inGameOverlayToolStripMenuItem, this.changePriorityToolStripMenuItem, this.changeFontToolStripMenuItem, this.loadFontToolStripMenuItem, this.resetFontToolStripMenuItem, this.closeToolStripMenuItem });
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.modeToolStripMenuItem,
+            this.osuModeToolStripMenuItem,
+            this.inGameOverlayToolStripMenuItem,
+            this.changePriorityToolStripMenuItem,
+            this.changeFontToolStripMenuItem,
+            this.loadFontToolStripMenuItem,
+            this.resetFontToolStripMenuItem,
+            this.closeToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(161, 202);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(156, 180);
             // 
             // modeToolStripMenuItem
             // 
-            this.modeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.realtimePPURToolStripMenuItem, this.offsetHelperToolStripMenuItem, this.realtimePPToolStripMenuItem });
+            this.modeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.realtimePPURToolStripMenuItem,
+            this.offsetHelperToolStripMenuItem,
+            this.realtimePPToolStripMenuItem});
             this.modeToolStripMenuItem.Name = "modeToolStripMenuItem";
-            this.modeToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.modeToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.modeToolStripMenuItem.Text = "Mode";
             // 
             // realtimePPURToolStripMenuItem
             // 
             this.realtimePPURToolStripMenuItem.Name = "realtimePPURToolStripMenuItem";
-            this.realtimePPURToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.realtimePPURToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.realtimePPURToolStripMenuItem.Text = "RealtimePPUR";
             this.realtimePPURToolStripMenuItem.Click += new System.EventHandler(this.realtimePPURToolStripMenuItem_Click);
             // 
             // offsetHelperToolStripMenuItem
             // 
             this.offsetHelperToolStripMenuItem.Name = "offsetHelperToolStripMenuItem";
-            this.offsetHelperToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.offsetHelperToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.offsetHelperToolStripMenuItem.Text = "Offset Helper";
             this.offsetHelperToolStripMenuItem.Click += new System.EventHandler(this.offsetHelperToolStripMenuItem_Click);
             // 
             // realtimePPToolStripMenuItem
             // 
             this.realtimePPToolStripMenuItem.Name = "realtimePPToolStripMenuItem";
-            this.realtimePPToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.realtimePPToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.realtimePPToolStripMenuItem.Text = "RealtimePP";
             this.realtimePPToolStripMenuItem.Click += new System.EventHandler(this.realtimePPToolStripMenuItem_Click);
             // 
             // osuModeToolStripMenuItem
             // 
             this.osuModeToolStripMenuItem.Name = "osuModeToolStripMenuItem";
-            this.osuModeToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.osuModeToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.osuModeToolStripMenuItem.Text = "osu! mode";
             this.osuModeToolStripMenuItem.Click += new System.EventHandler(this.osuModeToolStripMenuItem_Click);
             // 
             // inGameOverlayToolStripMenuItem
             // 
-            this.inGameOverlayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.sRToolStripMenuItem, this.sSPPToolStripMenuItem, this.currentPPToolStripMenuItem, this.currentACCToolStripMenuItem, this.hitsToolStripMenuItem, this.ifFCHitsToolStripMenuItem, this.uRToolStripMenuItem, this.offsetHelpToolStripMenuItem, this.expectedManiaScoreToolStripMenuItem, this.avgOffsetToolStripMenuItem, this.progressToolStripMenuItem, this.ifFCPPToolStripMenuItem, this.healthPercentageToolStripMenuItem });
+            this.inGameOverlayToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sRToolStripMenuItem,
+            this.sSPPToolStripMenuItem,
+            this.currentPPToolStripMenuItem,
+            this.currentACCToolStripMenuItem,
+            this.hitsToolStripMenuItem,
+            this.ifFCHitsToolStripMenuItem,
+            this.uRToolStripMenuItem,
+            this.offsetHelpToolStripMenuItem,
+            this.expectedManiaScoreToolStripMenuItem,
+            this.avgOffsetToolStripMenuItem,
+            this.progressToolStripMenuItem,
+            this.ifFCPPToolStripMenuItem,
+            this.healthPercentageToolStripMenuItem,
+            this.currentPositionToolStripMenuItem,
+            this.higherScoreToolStripMenuItem,
+            this.highestScoreToolStripMenuItem,
+            this.userScoreToolStripMenuItem});
             this.inGameOverlayToolStripMenuItem.Name = "inGameOverlayToolStripMenuItem";
-            this.inGameOverlayToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.inGameOverlayToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.inGameOverlayToolStripMenuItem.Text = "InGameOverlay";
             // 
             // sRToolStripMenuItem
             // 
             this.sRToolStripMenuItem.Name = "sRToolStripMenuItem";
-            this.sRToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.sRToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.sRToolStripMenuItem.Text = "SR";
             this.sRToolStripMenuItem.Click += new System.EventHandler(this.sRToolStripMenuItem_Click);
             // 
             // sSPPToolStripMenuItem
             // 
             this.sSPPToolStripMenuItem.Name = "sSPPToolStripMenuItem";
-            this.sSPPToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.sSPPToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.sSPPToolStripMenuItem.Text = "SSPP";
             this.sSPPToolStripMenuItem.Click += new System.EventHandler(this.sSPPToolStripMenuItem_Click);
             // 
             // currentPPToolStripMenuItem
             // 
             this.currentPPToolStripMenuItem.Name = "currentPPToolStripMenuItem";
-            this.currentPPToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.currentPPToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.currentPPToolStripMenuItem.Text = "CurrentPP";
             this.currentPPToolStripMenuItem.Click += new System.EventHandler(this.currentPPToolStripMenuItem_Click);
             // 
             // currentACCToolStripMenuItem
             // 
             this.currentACCToolStripMenuItem.Name = "currentACCToolStripMenuItem";
-            this.currentACCToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.currentACCToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.currentACCToolStripMenuItem.Text = "CurrentACC";
             this.currentACCToolStripMenuItem.Click += new System.EventHandler(this.currentACCToolStripMenuItem_Click);
             // 
             // hitsToolStripMenuItem
             // 
             this.hitsToolStripMenuItem.Name = "hitsToolStripMenuItem";
-            this.hitsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.hitsToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.hitsToolStripMenuItem.Text = "Hits";
             this.hitsToolStripMenuItem.Click += new System.EventHandler(this.hitsToolStripMenuItem_Click);
             // 
             // ifFCHitsToolStripMenuItem
             // 
             this.ifFCHitsToolStripMenuItem.Name = "ifFCHitsToolStripMenuItem";
-            this.ifFCHitsToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.ifFCHitsToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.ifFCHitsToolStripMenuItem.Text = "ifFCHits";
             this.ifFCHitsToolStripMenuItem.Click += new System.EventHandler(this.ifFCHitsToolStripMenuItem_Click);
             // 
             // uRToolStripMenuItem
             // 
             this.uRToolStripMenuItem.Name = "uRToolStripMenuItem";
-            this.uRToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.uRToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.uRToolStripMenuItem.Text = "UR";
             this.uRToolStripMenuItem.Click += new System.EventHandler(this.uRToolStripMenuItem_Click);
             // 
             // offsetHelpToolStripMenuItem
             // 
             this.offsetHelpToolStripMenuItem.Name = "offsetHelpToolStripMenuItem";
-            this.offsetHelpToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.offsetHelpToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.offsetHelpToolStripMenuItem.Text = "OffsetHelp";
             this.offsetHelpToolStripMenuItem.Click += new System.EventHandler(this.offsetHelpToolStripMenuItem_Click);
             // 
             // expectedManiaScoreToolStripMenuItem
             // 
             this.expectedManiaScoreToolStripMenuItem.Name = "expectedManiaScoreToolStripMenuItem";
-            this.expectedManiaScoreToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.expectedManiaScoreToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.expectedManiaScoreToolStripMenuItem.Text = "ExpectedManiaScore";
             this.expectedManiaScoreToolStripMenuItem.Click += new System.EventHandler(this.expectedManiaScoreToolStripMenuItem_Click);
             // 
             // avgOffsetToolStripMenuItem
             // 
             this.avgOffsetToolStripMenuItem.Name = "avgOffsetToolStripMenuItem";
-            this.avgOffsetToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.avgOffsetToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.avgOffsetToolStripMenuItem.Text = "AvgOffset";
             this.avgOffsetToolStripMenuItem.Click += new System.EventHandler(this.avgOffsetToolStripMenuItem_Click);
             // 
             // progressToolStripMenuItem
             // 
             this.progressToolStripMenuItem.Name = "progressToolStripMenuItem";
-            this.progressToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.progressToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.progressToolStripMenuItem.Text = "Progress";
             this.progressToolStripMenuItem.Click += new System.EventHandler(this.progressToolStripMenuItem_Click);
             // 
             // ifFCPPToolStripMenuItem
             // 
             this.ifFCPPToolStripMenuItem.Name = "ifFCPPToolStripMenuItem";
-            this.ifFCPPToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.ifFCPPToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.ifFCPPToolStripMenuItem.Text = "ifFCPP";
             this.ifFCPPToolStripMenuItem.Click += new System.EventHandler(this.ifFCPPToolStripMenuItem_Click);
+            // 
+            // healthPercentageToolStripMenuItem
+            // 
+            this.healthPercentageToolStripMenuItem.Name = "healthPercentageToolStripMenuItem";
+            this.healthPercentageToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.healthPercentageToolStripMenuItem.Text = "Health Percentage";
+            this.healthPercentageToolStripMenuItem.Click += new System.EventHandler(this.healthPercentageToolStripMenuItem_Click);
+            // 
+            // currentPositionToolStripMenuItem
+            // 
+            this.currentPositionToolStripMenuItem.Name = "currentPositionToolStripMenuItem";
+            this.currentPositionToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.currentPositionToolStripMenuItem.Text = "CurrentPosition";
+            this.currentPositionToolStripMenuItem.Click += new System.EventHandler(this.currentPositionToolStripMenuItem_Click);
+            // 
+            // higherScoreToolStripMenuItem
+            // 
+            this.higherScoreToolStripMenuItem.Name = "higherScoreToolStripMenuItem";
+            this.higherScoreToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.higherScoreToolStripMenuItem.Text = "HigherScoreDiff";
+            this.higherScoreToolStripMenuItem.Click += new System.EventHandler(this.higherScoreToolStripMenuItem_Click);
+            // 
+            // highestScoreToolStripMenuItem
+            // 
+            this.highestScoreToolStripMenuItem.Name = "highestScoreToolStripMenuItem";
+            this.highestScoreToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.highestScoreToolStripMenuItem.Text = "HighestScoreDiff";
+            this.highestScoreToolStripMenuItem.Click += new System.EventHandler(this.highestScoreToolStripMenuItem_Click);
+            // 
+            // userScoreToolStripMenuItem
+            // 
+            this.userScoreToolStripMenuItem.Name = "userScoreToolStripMenuItem";
+            this.userScoreToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.userScoreToolStripMenuItem.Text = "UserScore";
+            this.userScoreToolStripMenuItem.Click += new System.EventHandler(this.userScoreToolStripMenuItem_Click);
             // 
             // changePriorityToolStripMenuItem
             // 
             this.changePriorityToolStripMenuItem.Name = "changePriorityToolStripMenuItem";
-            this.changePriorityToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.changePriorityToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.changePriorityToolStripMenuItem.Text = "Change Priority";
             this.changePriorityToolStripMenuItem.Click += new System.EventHandler(this.changePriorityToolStripMenuItem_Click);
             // 
             // changeFontToolStripMenuItem
             // 
             this.changeFontToolStripMenuItem.Name = "changeFontToolStripMenuItem";
-            this.changeFontToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.changeFontToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.changeFontToolStripMenuItem.Text = "Change Font";
             this.changeFontToolStripMenuItem.Click += new System.EventHandler(this.changeFontToolStripMenuItem_Click);
             // 
             // loadFontToolStripMenuItem
             // 
             this.loadFontToolStripMenuItem.Name = "loadFontToolStripMenuItem";
-            this.loadFontToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.loadFontToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.loadFontToolStripMenuItem.Text = "Load Font";
             this.loadFontToolStripMenuItem.Click += new System.EventHandler(this.loadFontToolStripMenuItem_Click);
             // 
             // resetFontToolStripMenuItem
             // 
             this.resetFontToolStripMenuItem.Name = "resetFontToolStripMenuItem";
-            this.resetFontToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.resetFontToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.resetFontToolStripMenuItem.Text = "Reset Font";
             this.resetFontToolStripMenuItem.Click += new System.EventHandler(this.resetFontToolStripMenuItem_Click_1);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
@@ -363,13 +430,6 @@ namespace RealtimePPUR
             this.inGameValue.Size = new System.Drawing.Size(0, 12);
             this.inGameValue.TabIndex = 1;
             this.inGameValue.Visible = false;
-            // 
-            // healthPercentageToolStripMenuItem
-            // 
-            this.healthPercentageToolStripMenuItem.Name = "healthPercentageToolStripMenuItem";
-            this.healthPercentageToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.healthPercentageToolStripMenuItem.Text = "Health Percentage";
-            this.healthPercentageToolStripMenuItem.Click += new System.EventHandler(this.healthPercentageToolStripMenuItem_Click);
             // 
             // RealtimePpur
             // 
@@ -442,6 +502,10 @@ namespace RealtimePPUR
         private System.Windows.Forms.ToolStripMenuItem ifFCHitsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem expectedManiaScoreToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem changePriorityToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem currentPositionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem higherScoreToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem highestScoreToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem userScoreToolStripMenuItem;
     }
 }
 

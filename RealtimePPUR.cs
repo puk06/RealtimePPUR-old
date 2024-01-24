@@ -77,9 +77,13 @@ namespace RealtimePPUR
                 ifFCHitsToolStripMenuItem.Checked = false;
                 expectedManiaScoreToolStripMenuItem.Checked = false;
                 healthPercentageToolStripMenuItem.Checked = false;
+                currentPositionToolStripMenuItem.Checked = false;
+                higherScoreToolStripMenuItem.Checked = false;
+                highestScoreToolStripMenuItem.Checked = false;
+                userScoreToolStripMenuItem.Checked = false;
                 _speedReduction = false;
                 _calculationSpeedDetectedValue = 100;
-                _ingameoverlayPriority = "1/2/3/4/5/6/7/8/9/10/11/12";
+                _ingameoverlayPriority = "1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16";
                 inGameValue.Font = new Font(_fontCollection.Families[0], 19F);
             }
             else
@@ -149,8 +153,12 @@ namespace RealtimePPUR
                 ifFCHitsToolStripMenuItem.Checked = _configDictionary.TryGetValue("IFFCHITS", out string test14) && test14 == "true";
                 expectedManiaScoreToolStripMenuItem.Checked = _configDictionary.TryGetValue("EXPECTEDMANIASCORE", out string test15) && test15 == "true";
                 healthPercentageToolStripMenuItem.Checked = _configDictionary.TryGetValue("HEALTHPERCENTAGE", out string test17) && test17 == "true";
+                currentPositionToolStripMenuItem.Checked = _configDictionary.TryGetValue("CURRENTPOSITION", out string test18) && test18 == "true";
+                higherScoreToolStripMenuItem.Checked = _configDictionary.TryGetValue("HIGHERSCOREDIFF", out string test19) && test19 == "true";
+                highestScoreToolStripMenuItem.Checked = _configDictionary.TryGetValue("HIGHESTSCOREDIFF", out string test20) && test20 == "true";
+                userScoreToolStripMenuItem.Checked = _configDictionary.TryGetValue("USERSCORE", out string test21) && test21 == "true";
                 _speedReduction = _configDictionary.TryGetValue("SPEEDREDUCTION", out string test10) && test10 == "true";
-                _ingameoverlayPriority = _configDictionary.TryGetValue("INGAMEOVERLAYPRIORITY", out string test16) ? test16 : "1/2/3/4/5/6/7/8/9/10/11/12";
+                _ingameoverlayPriority = _configDictionary.TryGetValue("INGAMEOVERLAYPRIORITY", out string test16) ? test16 : "1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16";
 
                 if (_configDictionary.TryGetValue("USECUSTOMFONT", out string test12) && test12 == "true")
                 {
@@ -448,6 +456,10 @@ namespace RealtimePPUR
                 int ifFcBad = (int)data["PP"]["ifFCHits50"];
                 int ifFcMiss = (int)data["PP"]["ifFCHitsMiss"];
                 double healthPercentage = (double)data["PP"]["healthBar"];
+                int userScore = (int)data["PP"]["score"];
+                int currentPosition = (int)data["PP"]["currentPosition"];
+                int higherScore = (int)data["PP"]["higherPlayerScore"];
+                int highestScore = (int)data["PP"]["highestPlayerScore"];
                 _status = (int)data["PP"]["status"];
 
                 if (_prevCalculationSpeed == 0)
@@ -674,6 +686,50 @@ namespace RealtimePPUR
                             if (healthPercentageToolStripMenuItem.Checked)
                             {
                                 _displayFormat += "HP: " + healthPercentage + "%\n";
+                            }
+
+                            break;
+
+                        case 13:
+                            if (currentPositionToolStripMenuItem.Checked && currentPosition != 0)
+                            {
+                                if (currentPosition > 50)
+                                {
+                                    _displayFormat += "Position: >#50" + "\n";
+                                }
+                                else
+                                {
+                                    _displayFormat += "Position: #" + currentPosition + "\n";
+                                }
+                            }
+
+                            break;
+
+                        case 14:
+                            if (higherScoreToolStripMenuItem.Checked && higherScore != 0)
+                            {
+                                _displayFormat += "HigherDiff: " + (higherScore - userScore) + "\n";
+                            }
+
+                            break;
+
+                        case 15:
+                            switch (highestScoreToolStripMenuItem.Checked)
+                            {
+                                case true when highestScore != 0 && currentPosition == 1:
+                                    _displayFormat += "HighestDiff: You're Top!!" + "\n";
+                                    break;
+                                case true when highestScore != 0:
+                                    _displayFormat += "HighestDiff: " + (highestScore - userScore) + "\n";
+                                    break;
+                            }
+
+                            break;
+
+                        case 16:
+                            if (userScoreToolStripMenuItem.Checked)
+                            {
+                                _displayFormat += "Score: " + userScore + "\n";
                             }
 
                             break;
@@ -1068,6 +1124,14 @@ namespace RealtimePPUR
         private void expectedManiaScoreToolStripMenuItem_Click(object sender, EventArgs e) => expectedManiaScoreToolStripMenuItem.Checked = !expectedManiaScoreToolStripMenuItem.Checked;
 
         private void currentPPToolStripMenuItem_Click(object sender, EventArgs e) => currentPPToolStripMenuItem.Checked = !currentPPToolStripMenuItem.Checked;
+
+        private void currentPositionToolStripMenuItem_Click(object sender, EventArgs e) => currentPositionToolStripMenuItem.Checked = !currentPositionToolStripMenuItem.Checked;
+
+        private void higherScoreToolStripMenuItem_Click(object sender, EventArgs e) => higherScoreToolStripMenuItem.Checked = !higherScoreToolStripMenuItem.Checked;
+
+        private void highestScoreToolStripMenuItem_Click(object sender, EventArgs e) => highestScoreToolStripMenuItem.Checked = !highestScoreToolStripMenuItem.Checked;
+
+        private void userScoreToolStripMenuItem_Click(object sender, EventArgs e) => userScoreToolStripMenuItem.Checked = !userScoreToolStripMenuItem.Checked;
 
         private void sSPPToolStripMenuItem_Click(object sender, EventArgs e) => sSPPToolStripMenuItem.Checked = !sSPPToolStripMenuItem.Checked;
 
