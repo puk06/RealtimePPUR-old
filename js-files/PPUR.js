@@ -1,7 +1,7 @@
 const axios = require("./node_modules/axios");
 const { Beatmap, Calculator } = require("./node_modules/rosu-pp");
-const path = require('path');
-const fs = require('fs');
+const path = require("node:path");
+const fs = require("node:fs");
 
 let dataobjectForJson;
 let hiterror;
@@ -127,7 +127,7 @@ const maniaScoreCalculator = (notesList, mods, currentScore, objectcount) => {
             score = Math.max(MaxScore * modMultiplier - Math.round((Math.round(BaseScore + BonusScore) - currentScore) / ratio), 0);
         }
         if (isNaN(score)) score = 0;
-
+        
         resolve(score);
     });
 }
@@ -145,6 +145,7 @@ function Main() {
                 playingMode: responsedata.gameplay.gameMode,
                 menuMode: responsedata.menu.gameMode,
                 folder: responsedata.settings.folders.songs,
+                score: responsedata.gameplay.score,
                 good: responsedata.gameplay.hits["300"],
                 ok: responsedata.gameplay.hits["100"],
                 bad: responsedata.gameplay.hits["50"],
@@ -166,7 +167,8 @@ function Main() {
                 totalTiming: responsedata.menu.bm.time.full,
                 currentAccuracy: responsedata.gameplay.accuracy,
                 currentScore: responsedata.gameplay.score,
-                healthBar: responsedata.gameplay.hp.normal
+                healthBar: responsedata.gameplay.hp.normal,
+                leaderboardData: responsedata.gameplay.leaderboard
             };
             responsedata = null;
 
@@ -275,6 +277,7 @@ function Main() {
                         CurrentPP: Math.round(Number(PP.sspp) * 100) / 100,
                         ifFCPP: 0,
                         CurrentACC: 0,
+                        score: 0,
                         good: 0,
                         ok: 0,
                         bad: 0,
@@ -291,6 +294,9 @@ function Main() {
                         ifFCHitsMiss: 0,
                         expectedManiaScore: 0,
                         healthBar: 0,
+                        higherPlayerScore: 0,
+                        highestPlayerScore: 0,
+                        currentPosition: 0,
                         istesting: istesting
                     },
                     Error: {
@@ -300,8 +306,8 @@ function Main() {
                 };
 
                 // メモリ解放
-                mode = null;
                 PP = null;
+                mode = null;
                 dataobject = null;
             } else if (dataobject.status == 7 && !isplaying) { // リザルト画面 = 7、プレイ直後のリザルトではなく、他人のリザルトを見ているときにフラグが立つ(isplayingは自分がプレイ中かどうかのフラグ)
                 // Modeを譜面ファイルから取得
@@ -360,6 +366,17 @@ function Main() {
                     };
                 }
 
+                //リーダーボードの処理
+                let higherPlayerScore = 0;
+                let highestPlayerScore = 0;
+                let currentPosition = 0;
+                if (dataobject.leaderboardData.hasLeaderboard && dataobject.leaderboardData.slots) {
+                    currentPosition = dataobject.leaderboardData.ourplayer.position;
+                    if (currentPosition == 0) currentPosition = dataobject.leaderboardData.slots.length;
+                    higherPlayerScore = dataobject.leaderboardData.slots[currentPosition - 2] ? dataobject.leaderboardData.slots[currentPosition - 2].score : dataobject.leaderboardData.slots[1].score;
+                    highestPlayerScore = dataobject.leaderboardData.slots[0].score;
+                }
+
                 // 送信用データの作成
                 dataobjectForJson = {
                     Hiterror: {
@@ -373,6 +390,7 @@ function Main() {
                         CurrentPP: Math.round(Number(PP.pp) * 100) / 100,
                         ifFCPP: 0,
                         CurrentACC: 0,
+                        score: dataobject.score,
                         good: dataobject.resultGood,
                         ok: dataobject.resultOk,
                         bad: dataobject.resultBad,
@@ -389,6 +407,9 @@ function Main() {
                         ifFCHitsMiss: 0,
                         expectedManiaScore: 0,
                         healthBar: 0,
+                        higherPlayerScore: higherPlayerScore,
+                        highestPlayerScore: highestPlayerScore,
+                        currentPosition: currentPosition,
                         istesting: istesting
                     },
                     Error: {
@@ -398,9 +419,12 @@ function Main() {
                 };
 
                 // メモリ解放
-                mode = null;
                 PP = null;
+                mode = null;
                 dataobject = null;
+                currentPosition = null;
+                higherPlayerScore = null;
+                highestPlayerScore = null;
             } else { // 上記以外の場合(プレイ中、プレイ直後のリザルト、マルチプレイなどが当てはまる。)
                 // PP、SRを計算し、PP変数に代入(即時関数を使用)
                 let PP = (() => {
@@ -452,9 +476,6 @@ function Main() {
                     let fullSR = calcforsspp.performance(map).difficulty.stars;
                     if (isNaN(fullSR)) fullSR = 0;
 
-                    let sr = dataobject.status == 0 || dataobject.status == 5 || dataobject.status == 11 || dataobject.status == 12 || dataobject.status == 13 || dataobject.status == 14 || istesting ? fullSR : calc.passedObjects(passedObjects).performance(map).difficulty.stars;
-                    if (isNaN(sr) || (dataobject.status == 2 && passedObjects == 0 && !istesting)) sr = 0;
-
                     let sspp = calcforsspp.performance(map).pp;
                     if (isNaN(sspp)) sspp = 0;
 
@@ -465,6 +486,9 @@ function Main() {
                         pp = dataobject.status == 0 || dataobject.status == 5 || dataobject.status == 11 || dataobject.status == 12 || dataobject.status == 13 || dataobject.status == 14 ? sspp : calc.performance(map).pp;
                     }
                     if (isNaN(pp)) pp = 0;
+                    
+                    let sr = dataobject.status == 0 || dataobject.status == 5 || dataobject.status == 11 || dataobject.status == 12 || dataobject.status == 13 || dataobject.status == 14 || istesting ? fullSR : calc.passedObjects(passedObjects).performance(map).difficulty.stars;
+                    if (isNaN(sr) || (dataobject.status == 2 && passedObjects == 0 && !istesting)) sr = 0;
 
                     // ifFCの計算
                     // These calculation method are from BathBot made by MaxOhn. (https://github.com/MaxOhn/Bathbot).
@@ -608,6 +632,17 @@ function Main() {
                     objectcount = null;
                 }
 
+                //リーダーボードの処理
+                let higherPlayerScore = 0;
+                let highestPlayerScore = 0;
+                let currentPosition = 0;
+                if (dataobject.leaderboardData.hasLeaderboard && dataobject.leaderboardData.slots) {
+                    currentPosition = dataobject.leaderboardData.ourplayer.position;
+                    if (currentPosition == 0) currentPosition = dataobject.leaderboardData.slots.length;
+                    higherPlayerScore = dataobject.leaderboardData.slots[currentPosition - 2] ? dataobject.leaderboardData.slots[currentPosition - 2].score : dataobject.leaderboardData.slots[1].score;
+                    highestPlayerScore = dataobject.leaderboardData.slots[0].score;
+                }
+
                 // 送信用データの作成
                 dataobjectForJson = {
                     Hiterror: {
@@ -621,6 +656,7 @@ function Main() {
                         CurrentPP: Math.round(Number(PP.pp) * 100) / 100,
                         ifFCPP: Math.round(Number(PP.ifFCPP) * 100) / 100,
                         CurrentACC: dataobject.currentAccuracy,
+                        score: dataobject.score,
                         good: dataobject.good,
                         ok: dataobject.ok,
                         bad: dataobject.bad,
@@ -637,6 +673,9 @@ function Main() {
                         ifFCHitsMiss: isNaN(PP.ifFCHits.nMisses) ? 0 : PP.ifFCHits.nMisses,
                         expectedManiaScore: expectedManiaScore,
                         healthBar: Math.round(dataobject.healthBar / 200 * 1000) / 10,
+                        higherPlayerScore: higherPlayerScore,
+                        highestPlayerScore: highestPlayerScore,
+                        currentPosition: currentPosition,
                         istesting: istesting
                     },
                     Error: {
@@ -648,6 +687,9 @@ function Main() {
                 // メモリ解放
                 PP = null;
                 dataobject = null;
+                higherPlayerScore = null;
+                highestPlayerScore = null;
+                currentPosition = null;
             }
 
             // 解決
@@ -666,6 +708,7 @@ function Main() {
                     CurrentPP: 0,
                     ifFCPP: 0,
                     CurrentACC: 0,
+                    score: 0,
                     good: 0,
                     ok: 0,
                     bad: 0,
@@ -682,12 +725,15 @@ function Main() {
                     ifFCHitsMiss: 0,
                     expectedManiaScore: 0,
                     healthBar: 0,
+                    higherPlayerScore: 0,
+                    highestPlayerScore: 0,
+                    currentPosition: 0,
                     istesting: false
                 },
                 Error: {
                     Error: error.toString()
                 },
-                calculatingTime: calculatingTime
+                calculatingTime: 0
             };
 
             // 解決
@@ -696,11 +742,10 @@ function Main() {
     })
 }
 
-require('http').createServer((req, res) => {
+require("node:http").createServer((req, res) => {
     res.end(JSON.stringify(dataobjectForJson));
 }).listen(3000, () => {
     console.log("Please close this software now! It is not designed to run by itself!\nこのソフトを今すぐ閉じてください！これ単体で動作することを想定されていません！");
-    console.log("※ローカルAPIとして使用したい場合は、http://localhost:3000 にアクセスしてください。\n※If you want to use this as an local API, please access to http://localhost:3000");
 });
 
 async function loop() {
@@ -722,14 +767,14 @@ function checkConfig() {
         if (trialCount >= 5) {
             isZeroToOneHundred = true;
         } else {
-            let config = fs.readFileSync("./Config.txt", "utf8").split("\n");
+            let config = fs.readFileSync("Config.cfg", "utf8").split("\r\n");
             for (const line of config) {
                 if (line.startsWith("STARTFROMZERO=")) {
-                    isZeroToOneHundred = line.split("=")[1] == "true\r";
+                    isZeroToOneHundred = line.split("=")[1] == "true";
                 }
     
                 if (line.startsWith("LOOPTIMEOUT=")) {
-                    looptimeout = parseInt(line.split("=")[1]);
+                    looptimeout = Number(line.split("=")[1]);
                     if (looptimeout < 0) looptimeout = 0;
                     if (isNaN(looptimeout)) looptimeout = 0;
                     break;
