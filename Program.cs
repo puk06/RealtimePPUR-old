@@ -8,7 +8,7 @@ namespace RealtimePPUR
 {
     internal static class Program
     {
-        public static Process _ppurProcess;
+        public static Process PpurProcess;
         private static Process _gosumemoryProcess;
 
         [STAThread]
@@ -53,7 +53,7 @@ namespace RealtimePPUR
                 }
                 catch (Exception error)
                 {
-                    MessageBox.Show($"gosumemoryの起動に失敗しました。\nエラー内容: {error}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"gosumemoryの起動に失敗しました。\nエラー内容: {error.Message}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
@@ -72,16 +72,16 @@ namespace RealtimePPUR
                     return;
                 }
 
-                _ppurProcess = new Process();
-                _ppurProcess.StartInfo.FileName = "./src/nodejs/node.exe";
-                _ppurProcess.StartInfo.Arguments = "./src/PPUR.js";
-                _ppurProcess.StartInfo.CreateNoWindow = true;
-                _ppurProcess.StartInfo.UseShellExecute = false;
-                _ppurProcess.Start();
+                PpurProcess = new Process();
+                PpurProcess.StartInfo.FileName = "./src/nodejs/node.exe";
+                PpurProcess.StartInfo.Arguments = "./src/PPUR.js";
+                PpurProcess.StartInfo.CreateNoWindow = true;
+                PpurProcess.StartInfo.UseShellExecute = false;
+                PpurProcess.Start();
             }
             catch (Exception error)
             {
-                MessageBox.Show($"PPUR.jsの起動に失敗しました。\nエラー内容: {error}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"PPUR.jsの起動に失敗しました。\nエラー内容: {error.Message}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -94,7 +94,7 @@ namespace RealtimePPUR
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new RealtimePpur());
             }
-            catch
+            catch (Exception softwareError)
             {
                 try
                 {
@@ -102,18 +102,18 @@ namespace RealtimePPUR
                 }
                 catch (Exception error)
                 {
-                    MessageBox.Show($"gosumemoryの終了に失敗しました。\nエラー内容: {error}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"gosumemoryの終了に失敗しました。\nエラー内容: {error.Message}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
                 try
                 {
-                    if (_ppurProcess != null && !_ppurProcess.HasExited) _ppurProcess.Kill();
+                    if (PpurProcess != null && !PpurProcess.HasExited) PpurProcess.Kill();
                 }
                 catch (Exception error)
                 {
-                    MessageBox.Show($"PPUR.jsの終了に失敗しました。\nエラー内容: {error}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"PPUR.jsの終了に失敗しました。\nエラー内容: {error.Message}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                MessageBox.Show($"ソフトの起動に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"ソフトの起動に失敗しました。\nエラー内容: {softwareError.Message}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -125,16 +125,16 @@ namespace RealtimePPUR
             }
             catch (Exception error)
             {
-                MessageBox.Show($"gosumemoryの終了に失敗しました。\nエラー内容: {error}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"gosumemoryの終了に失敗しました。\nエラー内容: {error.Message}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             try
             {
-                if (_ppurProcess != null && !_ppurProcess.HasExited) _ppurProcess.Kill();
+                if (PpurProcess != null && !PpurProcess.HasExited) PpurProcess.Kill();
             }
             catch (Exception error)
             {
-                MessageBox.Show($"PPUR.jsの終了に失敗しました。\nエラー内容: {error}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"PPUR.jsの終了に失敗しました。\nエラー内容: {error.Message}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

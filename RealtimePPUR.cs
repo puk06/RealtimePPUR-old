@@ -48,6 +48,12 @@ namespace RealtimePPUR
             public int Left, Top, Right, Bottom;
         }
 
+        private readonly Dictionary<string, int> _osuModeValue = new Dictionary<string, int>
+        {
+            {"left", 0},
+            {"top", 0}
+        };
+
         public RealtimePpur()
         {
             _fontCollection = new PrivateFontCollection();
@@ -410,7 +416,7 @@ namespace RealtimePPUR
                     Close();
                 }
 
-                if (Program._ppurProcess.HasExited)
+                if (Program.PpurProcess.HasExited)
                 {
                     MessageBox.Show("PPUR.jsがクラッシュした可能性があります。\n\n対処法: このソフトを閉じた後にタスクマネージャーを開き、Node.js JavaScript Runtime、もしくはRealtimePPURを全て閉じ、ソフトを再起動してください。\n\nこのエラーはほとんどの場合、既に裏でPPUR.jsが起動しているときに起きます。", "エラー", MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
@@ -676,7 +682,208 @@ namespace RealtimePPUR
                 }
 
                 inGameValue.Text = _displayFormat;
+                
+                if (_isosumode)
+                {
+                    var processes = Process.GetProcessesByName("osu!");
+                    if (processes.Length > 0)
+                    {
+                        Process osuProcess = processes[0];
+                        IntPtr osuMainWindowHandle = osuProcess.MainWindowHandle;
+                        if (GetWindowRect(osuMainWindowHandle, out Rect rect) && _status == 2 &&
+                            GetForegroundWindow() == osuMainWindowHandle && osuMainWindowHandle != IntPtr.Zero)
+                        {
+                            if (!_nowPlaying)
+                            {
+                                _x = Location.X;
+                                _y = Location.Y;
+                                _nowPlaying = true;
+                            }
 
+                            BackgroundImage = null;
+                            _currentBackgroundImage = 0;
+                            inGameValue.Visible = true;
+                            _avgoffsethelp.Visible = false;
+                            _sr.Visible = false;
+                            _sspp.Visible = false;
+                            _currentPp.Visible = false;
+                            _good.Visible = false;
+                            _ok.Visible = false;
+                            _miss.Visible = false;
+                            _avgoffset.Visible = false;
+                            _ur.Visible = false;
+                            Region = null;
+                            Size = new Size(inGameValue.Width, inGameValue.Height);
+                            Location = new Point(rect.Left + _osuModeValue["left"] + 2, rect.Top + _osuModeValue["top"]);
+                        }
+                        else if (_nowPlaying)
+                        {
+                            switch (_mode)
+                            {
+                                case 0:
+                                    if (_currentBackgroundImage != 1)
+                                    {
+                                        ClientSize = new Size(316, 130);
+                                        RoundCorners();
+                                        BackgroundImage = Properties.Resources.PPUR;
+                                        _currentBackgroundImage = 1;
+                                    }
+
+                                    break;
+
+                                case 1:
+                                    if (_currentBackgroundImage != 2)
+                                    {
+                                        ClientSize = new Size(316, 65);
+                                        RoundCorners();
+                                        BackgroundImage = Properties.Resources.PP;
+                                        _currentBackgroundImage = 2;
+                                    }
+
+                                    break;
+
+                                case 2:
+                                    if (_currentBackgroundImage != 3)
+                                    {
+                                        ClientSize = new Size(316, 65);
+                                        RoundCorners();
+                                        BackgroundImage = Properties.Resources.UR;
+                                        _currentBackgroundImage = 3;
+                                    }
+
+                                    break;
+                            }
+
+                            if (_nowPlaying)
+                            {
+                                Location = new Point(_x, _y);
+                                _nowPlaying = false;
+                            }
+
+                            inGameValue.Visible = false;
+                            _sr.Visible = true;
+                            _sspp.Visible = true;
+                            _currentPp.Visible = true;
+                            _good.Visible = true;
+                            _ok.Visible = true;
+                            _miss.Visible = true;
+                            _avgoffset.Visible = true;
+                            _ur.Visible = true;
+                            _avgoffsethelp.Visible = true;
+                        }
+                    }
+                    else if (_nowPlaying)
+                    {
+                        switch (_mode)
+                        {
+                            case 0:
+                                if (_currentBackgroundImage != 1)
+                                {
+                                    ClientSize = new Size(316, 130);
+                                    RoundCorners();
+                                    BackgroundImage = Properties.Resources.PPUR;
+                                    _currentBackgroundImage = 1;
+                                }
+
+                                break;
+
+                            case 1:
+                                if (_currentBackgroundImage != 2)
+                                {
+                                    ClientSize = new Size(316, 65);
+                                    RoundCorners();
+                                    BackgroundImage = Properties.Resources.PP;
+                                    _currentBackgroundImage = 2;
+                                }
+
+                                break;
+
+                            case 2:
+                                if (_currentBackgroundImage != 3)
+                                {
+                                    ClientSize = new Size(316, 65);
+                                    RoundCorners();
+                                    BackgroundImage = Properties.Resources.UR;
+                                    _currentBackgroundImage = 3;
+                                }
+
+                                break;
+                        }
+
+                        if (_nowPlaying)
+                        {
+                            Location = new Point(_x, _y);
+                            _nowPlaying = false;
+                        }
+
+                        inGameValue.Visible = false;
+                        _sr.Visible = true;
+                        _sspp.Visible = true;
+                        _currentPp.Visible = true;
+                        _good.Visible = true;
+                        _ok.Visible = true;
+                        _miss.Visible = true;
+                        _avgoffset.Visible = true;
+                        _ur.Visible = true;
+                        _avgoffsethelp.Visible = true;
+                    }
+                }
+                else if (_nowPlaying)
+                {
+                    switch (_mode)
+                    {
+                        case 0:
+                            if (_currentBackgroundImage != 1)
+                            {
+                                ClientSize = new Size(316, 130);
+                                RoundCorners();
+                                BackgroundImage = Properties.Resources.PPUR;
+                                _currentBackgroundImage = 1;
+                            }
+
+                            break;
+
+                        case 1:
+                            if (_currentBackgroundImage != 2)
+                            {
+                                ClientSize = new Size(316, 65);
+                                RoundCorners();
+                                BackgroundImage = Properties.Resources.PP;
+                                _currentBackgroundImage = 2;
+                            }
+
+                            break;
+
+                        case 2:
+                            if (_currentBackgroundImage != 3)
+                            {
+                                ClientSize = new Size(316, 65);
+                                RoundCorners();
+                                BackgroundImage = Properties.Resources.UR;
+                                _currentBackgroundImage = 3;
+                            }
+
+                            break;
+                    }
+
+                    if (_nowPlaying)
+                    {
+                        Location = new Point(_x, _y);
+                        _nowPlaying = false;
+                    }
+
+                    inGameValue.Visible = false;
+                    _sr.Visible = true;
+                    _sspp.Visible = true;
+                    _currentPp.Visible = true;
+                    _good.Visible = true;
+                    _ok.Visible = true;
+                    _miss.Visible = true;
+                    _avgoffset.Visible = true;
+                    _ur.Visible = true;
+                    _avgoffsethelp.Visible = true;
+                }
+                
                 response = null;
                 json = null;
                 data = null;
@@ -823,215 +1030,11 @@ namespace RealtimePPUR
                 MessageBox.Show("Config.txtのLEFT、またはTOPの値が不正であったため、osu! Modeの起動に失敗しました。LEFT、TOPには数値以外入力しないでください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            _osuModeValue["left"] = left;
+            _osuModeValue["top"] = top;
             _isosumode = !_isosumode;
             osuModeToolStripMenuItem.Checked = _isosumode;
-
-            Timer timer = new Timer
-            {
-                Interval = 1
-            };
-
-            if (_isosumode)
-            {
-                timer.Start();
-                timer.Tick += (o, args) =>
-                {
-                    if (_isosumode)
-                    {
-                        var processes = Process.GetProcessesByName("osu!");
-                        if (processes.Length > 0)
-                        {
-                            Process osuProcess = processes[0];
-                            IntPtr osuMainWindowHandle = osuProcess.MainWindowHandle;
-                            if (GetWindowRect(osuMainWindowHandle, out Rect rect) && _status == 2 && GetForegroundWindow() == osuMainWindowHandle && osuMainWindowHandle != IntPtr.Zero)
-                            {
-                                if (!_nowPlaying)
-                                {
-                                    _x = Location.X;
-                                    _y = Location.Y;
-                                    _nowPlaying = true;
-                                }
-
-                                BackgroundImage = null;
-                                _currentBackgroundImage = 0;
-                                inGameValue.Visible = true;
-                                _avgoffsethelp.Visible = false;
-                                _sr.Visible = false;
-                                _sspp.Visible = false;
-                                _currentPp.Visible = false;
-                                _good.Visible = false;
-                                _ok.Visible = false;
-                                _miss.Visible = false;
-                                _avgoffset.Visible = false;
-                                _ur.Visible = false;
-                                Region = null;
-                                Size = new Size(inGameValue.Width, inGameValue.Height);
-                                Location = new Point(rect.Left + left + 2, rect.Top + top);
-                            }
-                            else
-                            {
-                                switch (_mode)
-                                {
-                                    case 0:
-                                        if (_currentBackgroundImage != 1)
-                                        {
-                                            ClientSize = new Size(316, 130);
-                                            RoundCorners();
-                                            BackgroundImage = Properties.Resources.PPUR;
-                                            _currentBackgroundImage = 1;
-                                        }
-                                        break;
-
-                                    case 1:
-                                        if (_currentBackgroundImage != 2)
-                                        {
-                                            ClientSize = new Size(316, 65);
-                                            RoundCorners();
-                                            BackgroundImage = Properties.Resources.PP;
-                                            _currentBackgroundImage = 2;
-                                        }
-                                        break;
-
-                                    case 2:
-                                        if (_currentBackgroundImage != 3)
-                                        {
-                                            ClientSize = new Size(316, 65);
-                                            RoundCorners();
-                                            BackgroundImage = Properties.Resources.UR;
-                                            _currentBackgroundImage = 3;
-                                        }
-                                        break;
-                                }
-
-                                if (_nowPlaying)
-                                {
-                                    Location = new Point(_x, _y);
-                                    _nowPlaying = false;
-                                }
-
-                                inGameValue.Visible = false;
-                                _sr.Visible = true;
-                                _sspp.Visible = true;
-                                _currentPp.Visible = true;
-                                _good.Visible = true;
-                                _ok.Visible = true;
-                                _miss.Visible = true;
-                                _avgoffset.Visible = true;
-                                _ur.Visible = true;
-                                _avgoffsethelp.Visible = true;
-                            }
-                        }
-                        else
-                        {
-                            switch (_mode)
-                            {
-                                case 0:
-                                    if (_currentBackgroundImage != 1)
-                                    {
-                                        ClientSize = new Size(316, 130);
-                                        RoundCorners();
-                                        BackgroundImage = Properties.Resources.PPUR;
-                                        _currentBackgroundImage = 1;
-                                    }
-                                    break;
-
-                                case 1:
-                                    if (_currentBackgroundImage != 2)
-                                    {
-                                        ClientSize = new Size(316, 65);
-                                        RoundCorners();
-                                        BackgroundImage = Properties.Resources.PP;
-                                        _currentBackgroundImage = 2;
-                                    }
-                                    break;
-
-                                case 2:
-                                    if (_currentBackgroundImage != 3)
-                                    {
-                                        ClientSize = new Size(316, 65);
-                                        RoundCorners();
-                                        BackgroundImage = Properties.Resources.UR;
-                                        _currentBackgroundImage = 3;
-                                    }
-                                    break;
-                            }
-
-                            if (_nowPlaying)
-                            {
-                                Location = new Point(_x, _y);
-                                _nowPlaying = false;
-                            }
-
-                            inGameValue.Visible = false;
-                            _sr.Visible = true;
-                            _sspp.Visible = true;
-                            _currentPp.Visible = true;
-                            _good.Visible = true;
-                            _ok.Visible = true;
-                            _miss.Visible = true;
-                            _avgoffset.Visible = true;
-                            _ur.Visible = true;
-                            _avgoffsethelp.Visible = true;
-                        }
-                    }
-                    else
-                    {
-                        timer.Stop();
-                    }
-                };
-            }
-            else
-            {
-                switch (_mode)
-                {
-                    case 0:
-                        if (_currentBackgroundImage != 1)
-                        {
-                            ClientSize = new Size(316, 130);
-                            RoundCorners();
-                            BackgroundImage = Properties.Resources.PPUR;
-                            _currentBackgroundImage = 1;
-                        }
-                        break;
-
-                    case 1:
-                        if (_currentBackgroundImage != 2)
-                        {
-                            ClientSize = new Size(316, 65);
-                            RoundCorners();
-                            BackgroundImage = Properties.Resources.PP;
-                            _currentBackgroundImage = 2;
-                        }
-                        break;
-
-                    case 2:
-                        if (_currentBackgroundImage != 3)
-                        {
-                            ClientSize = new Size(316, 65);
-                            RoundCorners();
-                            BackgroundImage = Properties.Resources.UR;
-                            _currentBackgroundImage = 3;
-                        }
-                        break;
-                }
-
-                if (_nowPlaying)
-                {
-                    Location = new Point(_x, _y);
-                    _nowPlaying = false;
-                }
-
-                inGameValue.Visible = false;
-                _sr.Visible = true;
-                _sspp.Visible = true;
-                _currentPp.Visible = true;
-                _good.Visible = true;
-                _ok.Visible = true;
-                _miss.Visible = true;
-                _avgoffset.Visible = true;
-                _ur.Visible = true;
-                _avgoffsethelp.Visible = true;
-            }
         }
 
         private void RoundCorners()
