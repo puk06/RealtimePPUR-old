@@ -45,7 +45,7 @@ InGameOverlayに表示するものは右クリックメニューのInGameOverlay
 その他細かい設定(デフォルトでオンにしておく物や位置、フォントサイズなど)はフォルダ内のConfig.txtを編集することで設定を変更できます。
 
 # Special Thanks
-
+- **[Vanilla](https://twitter.com/Van1IIa) For Saggesting IngameOverlay Font!!!**
 
 # Dependencies software
 
