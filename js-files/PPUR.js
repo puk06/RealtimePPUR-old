@@ -25,7 +25,7 @@ const searchMode = (filepath) => {
     return new Promise(resolve => {
         try {
             let mode = 0;
-            const file = fs.createReadStream(filepath, 'utf8')
+            const file = fs.createReadStream(filepath, "utf8")
                 .on('error', () => {
                     file.close();
                     resolve(0);
@@ -63,10 +63,14 @@ const searchMode = (filepath) => {
 }
 
 const calcObjects = (mappath, mode) => {
-    const map = new Beatmap({ path: mappath });
+    const map = new Beatmap({
+        path: mappath
+    });
+
     const score = {
         mode: mode
     };
+
     switch (mode) {
         case 0:
         case 2:
@@ -103,10 +107,8 @@ const maniaScoreCalculator = (notesList, mods, currentScore, objectcount) => {
         };
 
         let TotalNotes = 0;
-        for (const key in notesList) {
-            TotalNotes += notesList[key];
-        }
-
+        for (const key in notesList) TotalNotes += notesList[key];
+        
         const MaxScore = 1000000;
         let Bonus = 100;
         let BaseScore = 0;
@@ -121,9 +123,9 @@ const maniaScoreCalculator = (notesList, mods, currentScore, objectcount) => {
 
         const ratio = TotalNotes / objectcount;
         let score = 0;
-        if (TotalNotes == notesList["nGeki"]) {
+        if (TotalNotes == notesList.nGeki) {
             score = MaxScore * modMultiplier;
-        } else if (TotalNotes != notesList["nMisses"]) {
+        } else if (TotalNotes != notesList.nMisses) {
             score = Math.max(MaxScore * modMultiplier - Math.round((Math.round(BaseScore + BonusScore) - currentScore) / ratio), 0);
         }
         if (isNaN(score)) score = 0;
@@ -135,7 +137,8 @@ const maniaScoreCalculator = (notesList, mods, currentScore, objectcount) => {
 function Main() {
     return new Promise(async resolve => {
         try {
-            let responsedata = await axios.get("http://127.0.0.1:24050/json").then(response => response.data);
+            let responsedata = await axios.get("http://127.0.0.1:24050/json")
+                .then(response => response.data);
             let dataobject = {
                 Hiterror: responsedata.gameplay.hits.hitErrorArray,
                 UR: responsedata.gameplay.hits.unstableRate,
@@ -244,11 +247,12 @@ function Main() {
 
                 // PP、SRを計算し、PP変数に代入(即時関数を使用)
                 let PP = (() => {
-                    const map = new Beatmap({ path: dataobject.beatmappath });
+                    const map = new Beatmap({
+                        path: dataobject.beatmappath
+                    });
 
                     const score = {
-                        mode: mode,
-                        mods: 0
+                        mode: mode
                     };
 
                     const calc = new Calculator(score);
@@ -314,13 +318,13 @@ function Main() {
                 let mode = await searchMode(dataobject.beatmappath);
 
                 // コンバートへの対応
-                if (dataobject.menuMode == 1 && mode == 0) mode = 1;
-                if (dataobject.menuMode == 2 && mode == 0) mode = 2;
-                if (dataobject.menuMode == 3 && mode == 0) mode = 3;
+                if (mode == 0 && dataobject.menuMode != mode) mode = dataobject.menuMode;
 
                 // PP、SRを計算し、PP変数に代入(即時関数を使用)
                 let PP = (() => {
-                    const map = new Beatmap({ path: dataobject.beatmappath });
+                    const map = new Beatmap({
+                        path: dataobject.beatmappath
+                    });
 
                     const score = {
                         mode: mode,
@@ -428,7 +432,9 @@ function Main() {
             } else { // 上記以外の場合(プレイ中、プレイ直後のリザルト、マルチプレイなどが当てはまる。)
                 // PP、SRを計算し、PP変数に代入(即時関数を使用)
                 let PP = (() => {
-                    const map = new Beatmap({ path: dataobject.beatmappath });
+                    const map = new Beatmap({
+                        path: dataobject.beatmappath
+                    });
 
                     const score = {
                         mode: currentMode,
@@ -767,20 +773,20 @@ function checkConfig() {
         if (trialCount >= 5) {
             isZeroToOneHundred = true;
         } else {
-            let config = fs.readFileSync("Config.cfg", "utf8").split("\r\n");
-            for (const line of config) {
-                if (line.startsWith("STARTFROMZERO=")) {
-                    isZeroToOneHundred = line.split("=")[1] == "true";
-                }
-    
-                if (line.startsWith("LOOPTIMEOUT=")) {
-                    looptimeout = Number(line.split("=")[1]);
-                    if (looptimeout < 0) looptimeout = 0;
-                    if (isNaN(looptimeout)) looptimeout = 0;
-                    break;
-                }
+            let config = fs.readFileSync("Config.cfg", "utf8")
+                .match(/^.+=.+\r?\n$/gm)
+                .map(line => line.replace(/\r?\n/g, ""));
+            let configObject = {};
+            for (const configValue of config) {
+                const [key, value] = configValue.split("=");
+                configObject[key] = value;
             }
+            isZeroToOneHundred = configObject?.STARTFROMZERO == "true";
+            looptimeout = Number(configObject?.LOOPTIMEOUT);
+            if (looptimeout < 0) looptimeout = 0;
+            if (isNaN(looptimeout)) looptimeout = 0;
             config = null;
+            configObject = null;
         }
     } catch {
         trialCount++;
