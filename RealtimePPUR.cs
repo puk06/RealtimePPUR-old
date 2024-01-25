@@ -433,7 +433,7 @@ namespace RealtimePPUR
                 HttpResponseMessage response = await _client.GetAsync("http://127.0.0.1:3000/");
                 string json = await response.Content.ReadAsStringAsync();
                 JObject data = JsonConvert.DeserializeObject<JObject>(json);
-
+                if ((string)data["Error"]["Error"] != "None") throw new Exception();
                 double sr = (double)data["PP"]["SR"];
                 double fullSr = (double)data["PP"]["fullSR"];
                 double sspp = (double)data["PP"]["SSPP"];
@@ -945,7 +945,7 @@ namespace RealtimePPUR
             }
             catch
             {
-                inGameValue.Text = "Error";
+                if (!_nowPlaying) inGameValue.Text = "";
                 _sr.Text = "0";
                 _sspp.Text = "0";
                 _currentPp.Text = "0";
