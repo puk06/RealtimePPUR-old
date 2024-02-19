@@ -376,17 +376,6 @@ function Main() {
                     };
                 }
 
-                //リーダーボードの処理
-                let higherPlayerScore = 0;
-                let highestPlayerScore = 0;
-                let currentPosition = 0;
-                if (dataobject.leaderboardData.hasLeaderboard && dataobject.leaderboardData.slots) {
-                    currentPosition = dataobject.leaderboardData.ourplayer.position;
-                    if (currentPosition == 0) currentPosition = dataobject.leaderboardData.slots.length;
-                    higherPlayerScore = dataobject.leaderboardData.slots[currentPosition - 2] ? dataobject.leaderboardData.slots[currentPosition - 2].score : dataobject.leaderboardData.slots[1].score;
-                    highestPlayerScore = dataobject.leaderboardData.slots[0].score;
-                }
-
                 // 送信用データの作成
                 dataobjectForJson = {
                     Hiterror: {
@@ -400,7 +389,7 @@ function Main() {
                         CurrentPP: Math.round(Number(PP.pp) * 100) / 100,
                         ifFCPP: 0,
                         CurrentACC: 0,
-                        score: dataobject.score,
+                        score: 0,
                         good: dataobject.resultGood,
                         ok: dataobject.resultOk,
                         bad: dataobject.resultBad,
@@ -417,9 +406,9 @@ function Main() {
                         ifFCHitsMiss: 0,
                         expectedManiaScore: 0,
                         healthBar: 0,
-                        higherPlayerScore: higherPlayerScore,
-                        highestPlayerScore: highestPlayerScore,
-                        currentPosition: currentPosition,
+                        higherPlayerScore: 0,
+                        highestPlayerScore: 0,
+                        currentPosition: 0,
                         istesting: istesting
                     },
                     Error: {
@@ -432,9 +421,6 @@ function Main() {
                 PP = null;
                 mode = null;
                 dataobject = null;
-                currentPosition = null;
-                higherPlayerScore = null;
-                highestPlayerScore = null;
             } else {
                 // 上記以外の場合(プレイ中、プレイ直後のリザルト、マルチプレイなどが当てはまる。)
 
