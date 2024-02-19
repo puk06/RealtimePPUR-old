@@ -2,6 +2,8 @@ const axios = require("./node_modules/axios");
 const { Beatmap, Calculator } = require("./node_modules/rosu-pp");
 const path = require("node:path");
 const fs = require("node:fs");
+const readline = require("node:readline");
+const dataUrl = "http://127.0.0.1:24050/json";
 
 let dataobjectForJson;
 let hiterror;
@@ -26,16 +28,16 @@ const searchMode = (filepath) => {
         try {
             let mode = 0;
             const file = fs.createReadStream(filepath, "utf8")
-                .on('error', () => {
+                .on("error", () => {
                     file.close();
                     resolve(0);
                 });
 
-            const lineReader = require('readline').createInterface({
+            const lineReader = readline.createInterface({
                 input: file
             });
 
-            lineReader.on('line', (line) => {
+            lineReader.on("line", (line) => {
                 if (line.startsWith("Mode:")) {
                     mode = Number(line.split(" ")[1]);
                     lineReader.close();
@@ -46,13 +48,13 @@ const searchMode = (filepath) => {
                 }
             });
 
-            lineReader.on('close', () => {
+            lineReader.on("close", () => {
                 file.close();
                 if (isNaN(mode)) mode = 0;
                 resolve(mode);
             });
 
-            lineReader.on('error', () => {
+            lineReader.on("error", () => {
                 file.close();
                 resolve(0);
             });
@@ -85,15 +87,15 @@ const calcObjects = (mappath, mode) => {
 const modMultiplierModDividerCalculator = (mod) => {
     let modMultiplier = 1;
     let modDivider = 1;
-    if (mod.includes('EZ')) modMultiplier *= 0.5;
-    if (mod.includes('NF')) modMultiplier *= 0.5;
-    if (mod.includes('HT')) modMultiplier *= 0.5;
-    if (mod.includes('HR')) modDivider /= 1.08;
-    if (mod.includes('DT')) modDivider /= 1.1;
-    if (mod.includes('NC')) modDivider /= 1.1;
-    if (mod.includes('FI')) modDivider /= 1.06;
-    if (mod.includes('HD')) modDivider /= 1.06;
-    if (mod.includes('FL')) modDivider /= 1.06;
+    if (mod.includes("EZ")) modMultiplier *= 0.5;
+    if (mod.includes("NF")) modMultiplier *= 0.5;
+    if (mod.includes("HT")) modMultiplier *= 0.5;
+    if (mod.includes("HR")) modDivider /= 1.08;
+    if (mod.includes("DT")) modDivider /= 1.1;
+    if (mod.includes("NC")) modDivider /= 1.1;
+    if (mod.includes("FI")) modDivider /= 1.06;
+    if (mod.includes("HD")) modDivider /= 1.06;
+    if (mod.includes("FL")) modDivider /= 1.06;
     return { modMultiplier, modDivider };
 }
 
@@ -137,7 +139,7 @@ const maniaScoreCalculator = (notesList, mods, currentScore, objectcount) => {
 function Main() {
     return new Promise(async resolve => {
         try {
-            let responsedata = await axios.get("http://127.0.0.1:24050/json")
+            let responsedata = await axios.get(dataUrl)
                 .then(response => response.data);
             let dataobject = {
                 Hiterror: responsedata.gameplay.hits.hitErrorArray,
@@ -241,7 +243,9 @@ function Main() {
                 Tourney = 22
             */
             
-            if (dataobject.status == 1 || dataobject.status == 4) { // マップ編集画面 = 1, 編集マップ選択画面 = 4(テストプレイはelse内で処理)
+            if (dataobject.status == 1 || dataobject.status == 4) {
+                // マップ編集画面 = 1, 編集マップ選択画面 = 4(テストプレイはelse内で処理)
+
                 // Modeを譜面ファイルから取得
                 let mode = await searchMode(dataobject.beatmappath);
 
@@ -313,7 +317,9 @@ function Main() {
                 PP = null;
                 mode = null;
                 dataobject = null;
-            } else if (dataobject.status == 7 && !isplaying) { // リザルト画面 = 7、プレイ直後のリザルトではなく、他人のリザルトを見ているときにフラグが立つ(isplayingは自分がプレイ中かどうかのフラグ)
+            } else if (dataobject.status == 7 && !isplaying) {
+                // リザルト画面 = 7、プレイ直後のリザルトではなく、他人のリザルトを見ているときにフラグが立つ(isplayingは自分がプレイ中かどうかのフラグ)
+
                 // Modeを譜面ファイルから取得
                 let mode = await searchMode(dataobject.beatmappath);
 
@@ -370,6 +376,17 @@ function Main() {
                     };
                 }
 
+                //リーダーボードの処理
+                let higherPlayerScore = 0;
+                let highestPlayerScore = 0;
+                let currentPosition = 0;
+                if (dataobject.leaderboardData.hasLeaderboard && dataobject.leaderboardData.slots) {
+                    currentPosition = dataobject.leaderboardData.ourplayer.position;
+                    if (currentPosition == 0) currentPosition = dataobject.leaderboardData.slots.length;
+                    higherPlayerScore = dataobject.leaderboardData.slots[currentPosition - 2] ? dataobject.leaderboardData.slots[currentPosition - 2].score : dataobject.leaderboardData.slots[1].score;
+                    highestPlayerScore = dataobject.leaderboardData.slots[0].score;
+                }
+
                 // 送信用データの作成
                 dataobjectForJson = {
                     Hiterror: {
@@ -383,7 +400,7 @@ function Main() {
                         CurrentPP: Math.round(Number(PP.pp) * 100) / 100,
                         ifFCPP: 0,
                         CurrentACC: 0,
-                        score: 0,
+                        score: dataobject.score,
                         good: dataobject.resultGood,
                         ok: dataobject.resultOk,
                         bad: dataobject.resultBad,
@@ -400,9 +417,9 @@ function Main() {
                         ifFCHitsMiss: 0,
                         expectedManiaScore: 0,
                         healthBar: 0,
-                        higherPlayerScore: 0,
-                        highestPlayerScore: 0,
-                        currentPosition: 0,
+                        higherPlayerScore: higherPlayerScore,
+                        highestPlayerScore: highestPlayerScore,
+                        currentPosition: currentPosition,
                         istesting: istesting
                     },
                     Error: {
@@ -415,7 +432,12 @@ function Main() {
                 PP = null;
                 mode = null;
                 dataobject = null;
-            } else { // 上記以外の場合(プレイ中、プレイ直後のリザルト、マルチプレイなどが当てはまる。)
+                currentPosition = null;
+                higherPlayerScore = null;
+                highestPlayerScore = null;
+            } else {
+                // 上記以外の場合(プレイ中、プレイ直後のリザルト、マルチプレイなどが当てはまる。)
+
                 // PP、SRを計算し、PP変数に代入(即時関数を使用)
                 let PP = (() => {
                     const map = new Beatmap({
@@ -483,7 +505,7 @@ function Main() {
                     if (isNaN(sr) || (dataobject.status == 2 && passedObjects == 0 && !istesting)) sr = 0;
 
                     // ifFCの計算
-                    // These calculation method are from BathBot made by MaxOhn. (https://github.com/MaxOhn/Bathbot).
+                    // These calculation method are from BathBot made by MaxOhn. (https://github.com/MaxOhn/Bathbot)
                     // この計算方法はMaxOhn氏が作成したBathBotから引用しています。
                     let ifFCPP = 0;
                     let ifFCHits = {
@@ -686,7 +708,9 @@ function Main() {
 
             // 解決
             resolve();
-        } catch (error) { // エラー時の処理。主にgosumemoryにアクセスできない(起動してない)時に発生する。
+        } catch (error) {
+            // エラー時の処理。主にgosumemoryにアクセスできない(起動してない)時に発生する。
+            
             // エラー時の送信用データの作成
             dataobjectForJson = {
                 Hiterror: {
@@ -734,11 +758,13 @@ function Main() {
     })
 }
 
-require("node:http").createServer((req, res) => {
-    res.end(JSON.stringify(dataobjectForJson));
-}).listen(3000, () => {
-    console.log("Please close this software now! It is not designed to run by itself!\nこのソフトを今すぐ閉じてください！これ単体で動作することを想定されていません！");
-});
+require("node:http")
+    .createServer((req, res) => {
+        res.end(JSON.stringify(dataobjectForJson));
+    })
+    .listen(3000, () => {
+        console.log("Please close this software now! It is not designed to run by itself!\nこのソフトを今すぐ閉じてください！これ単体で動作することを想定されていません！");
+    });
 
 async function loop() {
     let start = new Date().getTime();
