@@ -41,8 +41,16 @@ namespace RealtimePPUR
         {
             var sortPriority = (from string item in sortPriorityList.Items select int.Parse(item.Split(':')[0])).ToList();
             string message = string.Join("/", sortPriority);
-            Clipboard.SetText(message);
-            MessageBox.Show($"Config.cfgのINGAMEOVERLAYPRIORITYの所をクリップボードに自動保存された文章に書き換えてください！再起動したら反映します！\n\nRewrite the INGAMEOVERLAYPRIORITY section of Config.cfg with the text automatically saved to the clipboard! It will be reflected after rebooting!\n\nコピーされた文章(Copied text): {message}", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try
+            {
+                Clipboard.SetText(message);
+                MessageBox.Show($"Config.cfgのINGAMEOVERLAYPRIORITYの所をクリップボードに自動保存された文章に書き換えてください！再起動したら反映します！\n\nRewrite the INGAMEOVERLAYPRIORITY section of Config.cfg with the text automatically saved to the clipboard! It will be reflected after rebooting!\n\nコピーされた文章(Copied text): {message}", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            }
+            catch
+            {
+                MessageBox.Show($"テキストのコピーに失敗しました。自分でConfig.cfgのINGAMEOVERLAYPRIORITYの所を下の値に書き換えてください。再起動したら反映します！\n\nFailed to copy the text. Please rewrite INGAMEOVERLAYPRIORITY in Config.cfg by yourself to the text below. It will be reflected after rebooting!\n\nコピーされる予定だった文章(Text that was to be copied): {message}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             Close();
         }
 

@@ -182,7 +182,7 @@ namespace RealtimePPUR
             this._avgoffsethelp.AutoSize = true;
             this._avgoffsethelp.BackColor = System.Drawing.Color.Transparent;
             this._avgoffsethelp.ForeColor = System.Drawing.Color.White;
-            this._avgoffsethelp.Location = new System.Drawing.Point(82, 69);
+            this._avgoffsethelp.Location = new System.Drawing.Point(82, 71);
             this._avgoffsethelp.Name = "_avgoffsethelp";
             this._avgoffsethelp.Size = new System.Drawing.Size(11, 12);
             this._avgoffsethelp.TabIndex = 0;
