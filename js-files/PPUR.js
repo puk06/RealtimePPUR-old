@@ -12,9 +12,12 @@ let isZeroToOneHundred = true;
 let isplaying = false;
 let istesting = false;
 let isediting = false;
+let statusHasChanged = false;
+let previousStatus = 0;
 let looptimeout = 0;
 let calculatingTime = 0;
 let trialCount = 0;
+let previousMode = null;
 
 const calculateUR = (Hitserrorarray) => {
     if (Hitserrorarray == null || Hitserrorarray.length == 0) return 0;
@@ -176,6 +179,9 @@ function Main() {
                 leaderboardData: responsedata.gameplay.leaderboard
             };
             responsedata = null;
+            
+            if (previousStatus != dataobject.status) statusHasChanged = true;
+            previousStatus = dataobject.status;
 
             switch (dataobject.status) {
                 case 0:
@@ -247,7 +253,14 @@ function Main() {
                 // マップ編集画面 = 1, 編集マップ選択画面 = 4(テストプレイはelse内で処理)
 
                 // Modeを譜面ファイルから取得
-                let mode = await searchMode(dataobject.beatmappath);
+                let mode;
+                if (statusHasChanged || previousMode == null) {
+                    mode = await searchMode(dataobject.beatmappath);
+                    previousMode = mode;
+                    statusHasChanged = false;
+                } else {
+                    mode = previousMode;
+                }
 
                 // PP、SRを計算し、PP変数に代入(即時関数を使用)
                 let PP = (() => {
@@ -321,7 +334,14 @@ function Main() {
                 // リザルト画面 = 7、プレイ直後のリザルトではなく、他人のリザルトを見ているときにフラグが立つ(isplayingは自分がプレイ中かどうかのフラグ)
 
                 // Modeを譜面ファイルから取得
-                let mode = await searchMode(dataobject.beatmappath);
+                let mode;
+                if (statusHasChanged || previousMode == null) {
+                    mode = await searchMode(dataobject.beatmappath);
+                    previousMode = mode;
+                    statusHasChanged = false;
+                } else {
+                    mode = previousMode;
+                }
 
                 // コンバートへの対応
                 if (mode == 0 && dataobject.menuMode != mode) mode = dataobject.menuMode;
@@ -423,6 +443,8 @@ function Main() {
                 dataobject = null;
             } else {
                 // 上記以外の場合(プレイ中、プレイ直後のリザルト、マルチプレイなどが当てはまる。)
+
+                statusHasChanged = false;
 
                 // PP、SRを計算し、PP変数に代入(即時関数を使用)
                 let PP = (() => {
