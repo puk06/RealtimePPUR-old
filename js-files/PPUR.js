@@ -261,7 +261,7 @@ function Main() {
 
                 // Modeを譜面ファイルから取得
                 let mode;
-                if (statusHasChanged || mapHasChanged || previousMode == null) {
+                if ((dataobject.status == 4 && (mapHasChanged || previousMode == null)) || (dataobject.status == 1 && (statusHasChanged || previousMode == null))) {
                     mode = await searchMode(dataobject.beatmappath);
                     previousMode = mode;
                     statusHasChanged = false;
