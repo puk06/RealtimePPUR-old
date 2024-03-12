@@ -445,6 +445,7 @@ function Main() {
                 // 上記以外の場合(プレイ中、プレイ直後のリザルト、マルチプレイなどが当てはまる。)
 
                 statusHasChanged = false;
+                previousMode = null;
 
                 // PP、SRを計算し、PP変数に代入(即時関数を使用)
                 let PP = (() => {
