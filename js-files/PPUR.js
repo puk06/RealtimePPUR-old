@@ -23,9 +23,6 @@ let previousMode = null;
 let previousMd5 = null;
 let previousVersion = null;
 
-//test
-let totalSearched = 0;
-
 const calculateUR = (Hitserrorarray) => {
     if (Hitserrorarray == null || Hitserrorarray.length == 0) return 0;
     const Offset = Hitserrorarray.reduce((acc, val) => acc + val, 0) / Hitserrorarray.length;
@@ -34,8 +31,6 @@ const calculateUR = (Hitserrorarray) => {
 }
 
 const searchMode = (filepath) => {
-    //test
-    totalSearched++;
     return new Promise(resolve => {
         try {
             const modeRegex = /Mode:.*(\d)/;
@@ -342,8 +337,7 @@ function Main() {
                         istesting: istesting
                     },
                     Error: {
-                        Error: "None",
-                        Debug: totalSearched
+                        Error: "None"
                     },
                     calculatingTime: calculatingTime
                 };
