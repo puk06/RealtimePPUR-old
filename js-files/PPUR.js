@@ -13,11 +13,13 @@ let isplaying = false;
 let istesting = false;
 let isediting = false;
 let statusHasChanged = false;
+let mapHasChanged = false;
 let previousStatus = 0;
 let looptimeout = 0;
 let calculatingTime = 0;
 let trialCount = 0;
 let previousMode = null;
+let previousMd5 = null;
 
 const calculateUR = (Hitserrorarray) => {
     if (Hitserrorarray == null || Hitserrorarray.length == 0) return 0;
@@ -178,12 +180,15 @@ function Main() {
                 currentAccuracy: responsedata.gameplay.accuracy,
                 currentScore: responsedata.gameplay.score,
                 healthBar: responsedata.gameplay.hp.normal,
-                leaderboardData: responsedata.gameplay.leaderboard
+                leaderboardData: responsedata.gameplay.leaderboard,
+                md5: responsedata.menu.bm.md5
             };
             responsedata = null;
-            
             if (previousStatus != dataobject.status) statusHasChanged = true;
             previousStatus = dataobject.status;
+
+            if (previousMd5 != dataobject.md5) mapHasChanged = true;
+            previousMd5 = dataobject.md5;
 
             switch (dataobject.status) {
                 case 0:
@@ -256,12 +261,11 @@ function Main() {
 
                 // Modeを譜面ファイルから取得
                 let mode;
-                if (dataobject.status == 4) {
-                    mode = await searchMode(dataobject.beatmappath);
-                } else if (statusHasChanged || previousMode == null) {
+                if (statusHasChanged || mapHasChanged || previousMode == null) {
                     mode = await searchMode(dataobject.beatmappath);
                     previousMode = mode;
                     statusHasChanged = false;
+                    mapHasChanged = false;
                 } else {
                     mode = previousMode;
                 }
@@ -336,6 +340,8 @@ function Main() {
                 dataobject = null;
             } else if (dataobject.status == 7 && !isplaying) {
                 // リザルト画面 = 7、プレイ直後のリザルトではなく、他人のリザルトを見ているときにフラグが立つ(isplayingは自分がプレイ中かどうかのフラグ)
+
+                mapHasChanged = false;
 
                 // Modeを譜面ファイルから取得
                 let mode;
@@ -450,6 +456,7 @@ function Main() {
 
                 statusHasChanged = false;
                 previousMode = null;
+                mapHasChanged = false;
 
                 // PP、SRを計算し、PP変数に代入(即時関数を使用)
                 let PP = (() => {
