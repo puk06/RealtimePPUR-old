@@ -227,7 +227,6 @@ function Main() {
                     break;
 
                 case 7:
-                    currentMode = dataobject.playingMode;
                     isediting = false;
                     istesting = false;
                     break;
@@ -365,7 +364,7 @@ function Main() {
                 }
 
                 // コンバートへの対応
-                if (mode == 0 && dataobject.menuMode != mode) mode = dataobject.menuMode;
+                if (mode == 0 && (dataobject.menuMode != mode)) mode = dataobject.menuMode;
 
                 // PP、SRを計算し、PP変数に代入(即時関数を使用)
                 let PP = (() => {
