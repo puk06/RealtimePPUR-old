@@ -14,12 +14,17 @@ let istesting = false;
 let isediting = false;
 let statusHasChanged = false;
 let mapHasChanged = false;
+let versionHasChanged = false
 let previousStatus = 0;
 let looptimeout = 0;
 let calculatingTime = 0;
 let trialCount = 0;
 let previousMode = null;
 let previousMd5 = null;
+let previousVersion = null;
+
+//test
+let totalSearched = 0;
 
 const calculateUR = (Hitserrorarray) => {
     if (Hitserrorarray == null || Hitserrorarray.length == 0) return 0;
@@ -29,6 +34,8 @@ const calculateUR = (Hitserrorarray) => {
 }
 
 const searchMode = (filepath) => {
+    //test
+    totalSearched++;
     return new Promise(resolve => {
         try {
             const modeRegex = /Mode:.*(\d)/;
@@ -181,14 +188,19 @@ function Main() {
                 currentScore: responsedata.gameplay.score,
                 healthBar: responsedata.gameplay.hp.normal,
                 leaderboardData: responsedata.gameplay.leaderboard,
-                md5: responsedata.menu.bm.md5
+                md5: responsedata.menu.bm.md5,
+                version: responsedata.menu.bm.metadata.difficulty
             };
             responsedata = null;
+
             if (previousStatus != dataobject.status) statusHasChanged = true;
             previousStatus = dataobject.status;
 
             if (previousMd5 != dataobject.md5) mapHasChanged = true;
             previousMd5 = dataobject.md5;
+
+            if (previousVersion != dataobject.version) versionHasChanged = true;
+            previousVersion = dataobject.version;
 
             switch (dataobject.status) {
                 case 0:
@@ -261,11 +273,12 @@ function Main() {
 
                 // Modeを譜面ファイルから取得
                 let mode;
-                if ((dataobject.status == 4 && (mapHasChanged || previousMode == null)) || (dataobject.status == 1 && (statusHasChanged || previousMode == null))) {
+                if ((dataobject.status == 4 && (mapHasChanged || previousMode == null)) || (dataobject.status == 1 && (statusHasChanged || versionHasChanged || previousMode == null))) {
                     mode = await searchMode(dataobject.beatmappath);
                     previousMode = mode;
                     statusHasChanged = false;
                     mapHasChanged = false;
+                    versionHasChanged = false;
                 } else {
                     mode = previousMode;
                 }
@@ -329,7 +342,8 @@ function Main() {
                         istesting: istesting
                     },
                     Error: {
-                        Error: "None"
+                        Error: "None",
+                        Debug: totalSearched
                     },
                     calculatingTime: calculatingTime
                 };
@@ -342,6 +356,9 @@ function Main() {
                 // リザルト画面 = 7、プレイ直後のリザルトではなく、他人のリザルトを見ているときにフラグが立つ(isplayingは自分がプレイ中かどうかのフラグ)
 
                 mapHasChanged = false;
+                previousMd5 = null;
+                versionHasChanged = false;
+                previousVersion = null;
 
                 // Modeを譜面ファイルから取得
                 let mode;
@@ -457,6 +474,9 @@ function Main() {
                 statusHasChanged = false;
                 previousMode = null;
                 mapHasChanged = false;
+                previousMd5 = null;
+                versionHasChanged = false;
+                previousVersion = null;
 
                 // PP、SRを計算し、PP変数に代入(即時関数を使用)
                 let PP = (() => {
@@ -730,6 +750,13 @@ function Main() {
             resolve();
         } catch (error) {
             // エラー時の処理。主にgosumemoryにアクセスできない(起動してない)時に発生する。
+
+            statusHasChanged = false;
+            previousMode = null;
+            mapHasChanged = false;
+            previousMd5 = null;
+            versionHasChanged = false;
+            previousVersion = null;
             
             // エラー時の送信用データの作成
             dataobjectForJson = {
