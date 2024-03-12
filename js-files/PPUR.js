@@ -29,7 +29,9 @@ const calculateUR = (Hitserrorarray) => {
 const searchMode = (filepath) => {
     return new Promise(resolve => {
         try {
+            const modeRegex = /Mode:.*(\d)/;
             let mode = 0;
+
             const file = fs.createReadStream(filepath, "utf8")
                 .on("error", () => {
                     file.close();
@@ -41,8 +43,8 @@ const searchMode = (filepath) => {
             });
 
             lineReader.on("line", (line) => {
-                if (line.startsWith("Mode:")) {
-                    mode = Number(line.split(" ")[1]);
+                if (modeRegex.test(line)) {
+                    mode = Number(line.match(modeRegex)[1]);
                     lineReader.close();
                 }
 
@@ -254,7 +256,9 @@ function Main() {
 
                 // Modeを譜面ファイルから取得
                 let mode;
-                if (statusHasChanged || previousMode == null) {
+                if (dataobject.status == 4) {
+                    mode = await searchMode(dataobject.beatmappath);
+                } else if (statusHasChanged || previousMode == null) {
                     mode = await searchMode(dataobject.beatmappath);
                     previousMode = mode;
                     statusHasChanged = false;
