@@ -8,6 +8,9 @@ const dataUrl = "http://127.0.0.1:24050/json";
 let dataobjectForJson;
 let hiterror;
 let currentMode;
+let previousMode;
+let previousMd5;
+let previousVersion;
 let isZeroToOneHundred = true;
 let isplaying = false;
 let istesting = false;
@@ -19,9 +22,6 @@ let previousStatus = 0;
 let looptimeout = 0;
 let calculatingTime = 0;
 let trialCount = 0;
-let previousMode = null;
-let previousMd5 = null;
-let previousVersion = null;
 
 const calculateUR = (Hitserrorarray) => {
     if (Hitserrorarray == null || Hitserrorarray.length == 0) return 0;
