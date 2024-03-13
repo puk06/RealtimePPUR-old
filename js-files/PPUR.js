@@ -11,6 +11,7 @@ let currentMode;
 let previousMode;
 let previousMd5;
 let previousVersion;
+let previousPPData;
 let isZeroToOneHundred = true;
 let isplaying = false;
 let istesting = false;
@@ -271,34 +272,39 @@ function Main() {
                     mode = await searchMode(dataobject.beatmappath);
                     previousMode = mode;
                     statusHasChanged = false;
-                    mapHasChanged = false;
                     versionHasChanged = false;
                 } else {
                     mode = previousMode;
                 }
 
-                // PP、SRを計算し、PP変数に代入(即時関数を使用)
-                let PP = (() => {
-                    const map = new Beatmap({
-                        path: dataobject.beatmappath
-                    });
+                let PP;
+                if ((dataobject.status == 1 && mapHasChanged) || previousPPData == null) {
+                    PP = (() => {
+                        const map = new Beatmap({
+                            path: dataobject.beatmappath
+                        });
 
-                    const score = {
-                        mode: mode
-                    };
+                        const score = {
+                            mode: mode
+                        };
 
-                    const calc = new Calculator(score);
-                    let sr = calc.performance(map).difficulty.stars;
-                    if (isNaN(sr)) sr = 0;
+                        const calc = new Calculator(score);
+                        let sr = calc.performance(map).difficulty.stars;
+                        if (isNaN(sr)) sr = 0;
 
-                    let sspp = calc.performance(map).pp;
-                    if (isNaN(sspp)) sspp = 0;
+                        let sspp = calc.performance(map).pp;
+                        if (isNaN(sspp)) sspp = 0;
 
-                    return {
-                        sr: sr,
-                        sspp: sspp
-                    };
-                })();
+                        return {
+                            sr: sr,
+                            sspp: sspp
+                        };
+                    })();
+                    previousPPData = PP;
+                    mapHasChanged = false;
+                } else {
+                    PP = previousPPData;
+                }
 
                 // 送信用データの作成
                 dataobjectForJson = {
@@ -352,6 +358,7 @@ function Main() {
                 previousMd5 = null;
                 versionHasChanged = false;
                 previousVersion = null;
+                previousPPData = null;
 
                 // Modeを譜面ファイルから取得
                 let mode;
@@ -470,6 +477,7 @@ function Main() {
                 previousMd5 = null;
                 versionHasChanged = false;
                 previousVersion = null;
+                previousPPData = null;
 
                 // PP、SRを計算し、PP変数に代入(即時関数を使用)
                 let PP = (() => {
@@ -750,6 +758,7 @@ function Main() {
             previousMd5 = null;
             versionHasChanged = false;
             previousVersion = null;
+            previousPPData = null;
             
             // エラー時の送信用データの作成
             dataobjectForJson = {
