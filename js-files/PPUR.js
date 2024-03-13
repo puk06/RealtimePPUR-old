@@ -2,6 +2,7 @@ const axios = require("./node_modules/axios");
 const { Beatmap, Calculator } = require("./node_modules/rosu-pp");
 const path = require("node:path");
 const fs = require("node:fs");
+const crypto = require("node:crypto");
 const readline = require("node:readline");
 const dataUrl = "http://127.0.0.1:24050/json";
 
@@ -184,16 +185,19 @@ function Main() {
                 currentScore: responsedata.gameplay.score,
                 healthBar: responsedata.gameplay.hp.normal,
                 leaderboardData: responsedata.gameplay.leaderboard,
-                md5: responsedata.menu.bm.md5,
                 version: responsedata.menu.bm.metadata.difficulty
             };
             responsedata = null;
 
+            if (dataobject.status == 1 || dataobject.status == 4) {
+                const md5 = crypto.createHash("md5").update(fs.readFileSync(dataobject.beatmappath)).digest("hex");
+                if (previousMd5 != md5) mapHasChanged = true;
+                previousMd5 = md5;
+            }
+
+
             if (previousStatus != dataobject.status) statusHasChanged = true;
             previousStatus = dataobject.status;
-
-            if (previousMd5 != dataobject.md5) mapHasChanged = true;
-            previousMd5 = dataobject.md5;
 
             if (previousVersion != dataobject.version) versionHasChanged = true;
             previousVersion = dataobject.version;
@@ -277,9 +281,8 @@ function Main() {
                     mode = previousMode;
                 }
 
-                let PP;
-                if (dataobject.status == 1 && (mapHasChanged || previousPPData == null)) {
-                    PP = (() => {
+                let PP = (() => {
+                    if ((dataobject.status == 1 && (mapHasChanged || previousPPData == null)) || dataobject.status == 4) {
                         const map = new Beatmap({
                             path: dataobject.beatmappath
                         });
@@ -295,16 +298,22 @@ function Main() {
                         let sspp = calc.performance(map).pp;
                         if (isNaN(sspp)) sspp = 0;
 
+                        previousPPData = {
+                            sr: sr,
+                            sspp: sspp
+                        };
+
+                        mapHasChanged = false;
+
                         return {
                             sr: sr,
                             sspp: sspp
                         };
-                    })();
-                    previousPPData = PP;
-                    mapHasChanged = false;
-                } else {
-                    PP = previousPPData;
-                }
+                    } else {
+                        return previousPPData;
+                    }
+                })();
+                
 
                 // 送信用データの作成
                 dataobjectForJson = {
@@ -358,7 +367,6 @@ function Main() {
                 previousMd5 = null;
                 versionHasChanged = false;
                 previousVersion = null;
-                previousPPData = null;
 
                 // Modeを譜面ファイルから取得
                 let mode;
@@ -477,7 +485,6 @@ function Main() {
                 previousMd5 = null;
                 versionHasChanged = false;
                 previousVersion = null;
-                previousPPData = null;
 
                 // PP、SRを計算し、PP変数に代入(即時関数を使用)
                 let PP = (() => {
