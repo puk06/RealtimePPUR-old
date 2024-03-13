@@ -36,7 +36,7 @@ const searchMode = (filepath) => {
             const modeRegex = /Mode:.*(\d)/;
             let mode = 0;
 
-            const file = fs.createReadStream(filepath, "utf8")
+            const file = fs.createReadStream(filepath, "utf-8")
                 .on("error", () => {
                     file.close();
                     resolve(0);
@@ -263,7 +263,7 @@ function Main() {
             */
             
             if (dataobject.status == 1 || dataobject.status == 4) {
-                // マップ編集画面 = 1, 編集マップ選択画面 = 4(テストプレイはelse内で処理)
+                // マップ編集画面 = 1, 編集マップ選択画面 = 4 (テストプレイはelse内で処理)
 
                 // Modeを譜面ファイルから取得
                 let mode;
@@ -799,7 +799,7 @@ function Main() {
 }
 
 require("node:http")
-    .createServer((req, res) => {
+    .createServer((_, res) => {
         res.end(JSON.stringify(dataobjectForJson));
     })
     .listen(3000, () => {
@@ -825,7 +825,7 @@ function checkConfig() {
         if (trialCount >= 5) {
             isZeroToOneHundred = true;
         } else {
-            let config = fs.readFileSync("Config.cfg", "utf8")
+            let config = fs.readFileSync("Config.cfg", "utf-8")
                 .match(/^.+=.+\r?\n$/gm)
                 .map(line => line.replace(/\r?\n/g, ""));
             let configObject = {};
