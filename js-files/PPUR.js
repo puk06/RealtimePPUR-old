@@ -278,7 +278,7 @@ function Main() {
                 }
 
                 let PP;
-                if ((dataobject.status == 1 && mapHasChanged) || previousPPData == null) {
+                if (dataobject.status == 1 && (mapHasChanged || previousPPData == null)) {
                     PP = (() => {
                         const map = new Beatmap({
                             path: dataobject.beatmappath
